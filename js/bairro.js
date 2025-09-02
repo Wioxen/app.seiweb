@@ -200,9 +200,18 @@ function LoadBairro(onLoadCallback)
                             {
                                 if ((dataMunicipio !== undefined) && (dataMunicipio !== null))
                                 {
-                                    dataBairro.municipioId = dataMunicipio.id;
-                                    dataBairro.municipio = dataMunicipio;
-                                    $('#BairroMunicipio').val(dataMunicipio.descricao);
+                                    RestRequest('GET',
+                                        $baseApiUrl+'municipio/' + dataMunicipio.id,
+                                        null,
+                                        function (xhr) {
+                                            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
+                                        },
+                                        function (response, textStatus, jqXHR) {
+                                            dataBairro.municipioId = response.id;
+                                            dataBairro.municipio = response;    
+                                        
+                                            $('#BairroMunicipio').val(response.descricao);
+                                        });                                      
                                 }
                             });
                         }                        
