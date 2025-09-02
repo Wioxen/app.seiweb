@@ -244,11 +244,20 @@ function LoadEmpresa(onLoadCallback)
                             {
                                 if ((dataBairro !== undefined) && (dataBairro !== null))
                                 {
-                                    dataEmpresa.bairroId = dataBairro.id;
-                                    dataEmpresa.bairro = dataBairro;
-                                    $('#bairro').val(dataBairro.descricao);
-                                    $('#municipio').val(dataBairro.municipio.descricao);
-                                    $('#uf').val(dataBairro.municipio.uf);
+                                    RestRequest('GET',
+                                        $baseApiUrl+'bairro/' + dataBairro.id,
+                                        null,
+                                        function (xhr) {
+                                            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
+                                        },
+                                        function (response, textStatus, jqXHR) {
+                                            dataEmpresa.bairroId = response.id;
+                                            dataEmpresa.bairro = response;    
+                                        
+                                            $('#bairro').val(response.descricao);
+                                            $('#municipio').val(response.municipio.descricao);
+                                            $('#uf').val(response.municipio.uf);                                              
+                                        });       
                                 }
                             });
                         }
