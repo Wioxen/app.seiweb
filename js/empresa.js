@@ -19,7 +19,8 @@ function empresaClick(e) {
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
         <li><a class="dropdown-item" href="#" onclick="EmpresaBairroClick(this);">BAIRRO</a></li>					
         </ul>
-        </div>`
+        </div>`,
+        null
     );    
         					
     //<button class="btn btn-info" data-bs-dismiss="modal"><i class="fas fa-door-open"></i> </button>
@@ -160,7 +161,7 @@ function LoadEmpresa(onLoadCallback)
     carregarTemplateModal('#'+$modalEmpresa.attr('id'),
         'templates/Empresa.html '+formEmpresa, {
         modalTitle: 'Cadastro de Empresa',       
-        modalSize: 'modal-fullscreen',
+        modalSize: 'modal-xl',
         autocompleteUrl: $baseApiUrl+'AutoComplete?table=Empresa',
         autocompleteCampo: '#Pesquisar'+$modalEmpresa.attr('id'),
         autocomplete: {

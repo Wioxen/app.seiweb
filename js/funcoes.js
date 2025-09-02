@@ -568,7 +568,7 @@ function createDynamicModal(title, size, footerHTML, callbackOnClose) {
     // Criar a estrutura do modal
     const modalHTML = `
         <div class="modal fade" id="${modalId}" tabindex="-1">
-            <div class="modal-dialog ${size}">
+            <div class="modal-dialog modal-dialog-scrollable ${size}">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">${title}</h5>
