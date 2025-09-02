@@ -7,7 +7,6 @@ const formEmpresa = '#frmEmpresa';
 function empresaClick(e) {
     $thisEmpresa = $(e);
     dataEmpresa = undefined;
-
     $modalEmpresa = createDynamicModal
     (
         "CADASTRO DE EMPRESA", 
@@ -248,8 +247,8 @@ function LoadEmpresa(onLoadCallback)
                                     dataEmpresa.bairroId = dataBairro.id;
                                     dataEmpresa.bairro = dataBairro;
                                     $('#bairro').val(dataBairro.descricao);
-                                    $('#municipio').val(data.bairro.municipio.descricao);
-                                    $('#uf').val(data.bairro.municipio.uf);
+                                    $('#municipio').val(dataBairro.municipio.descricao);
+                                    $('#uf').val(dataBairro.municipio.uf);
                                 }
                             });
                         }
