@@ -17,49 +17,43 @@
 <body>
     <form id="frmEmpresa">
         <div class="row row-cols-md-2">
-            <div class="col-md-2">
-                <div class="card">
-                    <div id="logoEmpresa" class="card-body text-center border-0">
-                        <!--<div class="d-flex justify-content-center align-items-center w-100">
-                            <div class="text-center">
-                                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                                    <span class="visually-hidden">Carregando...</span>
-                                </div>
-                                <p class="mt-3 text-muted">Carregando...</p>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div id="logoEmpresa" class="text-center">
+                            <button class="btn btn-sm btn-light bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa fa-list"></i>
+                            </button>
+                            <div class="dropdown">
+                                <ul class="dropdown-menu">
+                                    <li><a id="uploadLogoEmpresa" class="dropdown-item" href="#"><i class="fa fa-cloud-upload"></i> Escolher arquivo</a></li>
+                                    <li><a id="apagarLogoEmpresa" class="dropdown-item" href="#"><i class="fa fa-eraser"></i> Apagar</a></li>
+                                </ul>
                             </div>
-                        </div>-->
-                        <button class="btn btn-light bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa fa-list"></i>
-                        </button>
-                        <div class="dropdown">
-                            <ul class="dropdown-menu">
-                                <li><a id="uploadLogoEmpresa" class="dropdown-item" href="#"><i class="fa fa-cloud-upload"></i> Escolher arquivo</a></li>
-                                <li><a id="apagarLogoEmpresa" class="dropdown-item" href="#"><i class="fa fa-eraser"></i> Apagar</a></li>
-                            </ul>
+                            <input id="fileUploadEmpresa" type="file" name="fileupload" hidden accept=".png, .jpg, .jpeg" />
+                            <img id="LogoEmpresa" class="card-img-top rounded-circle mb-3" src="#" alt="[FOTO]" style="max-height: 90px;" />
                         </div>
-                        <input id="fileUploadEmpresa" type="file" name="fileupload" hidden accept=".png, .jpg, .jpeg" />
-                        <img id="LogoEmpresa" class="card-img-top rounded-circle mb-3" src="#" alt="[FOTO]">
                     </div>
-                </div>
-            </div>
-            <div class="col-md-10">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="input-group input-group-sm">
-                                    <input id="cnpj" type="text" class="form-control form-control-sm cnpj" placeholder="Digite o CNPJ (apenas números)" aria-label="" aria-describedby="btnCnpj" maxlength="14">
-                                    <span class="input-group-text btn btn-info" id="btnCnpj">Consultar CNPJ</span>
-                                </div>                                
-                                <div class="form-text">Digite o CNPJ sem pontuação (apenas 14 números)</div>                                        
+                    <div class="col-md-10">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="input-group input-group-sm">
+                                            <input id="cnpj" type="text" class="form-control form-control-sm cnpj" placeholder="Digite o CNPJ (apenas números)" aria-label="" aria-describedby="btnCnpj" maxlength="14">
+                                            <span class="input-group-text btn btn-info" id="btnCnpj">Consultar CNPJ</span>
+                                        </div>                                
+                                        <div class="form-text">Digite o CNPJ sem pontuação (apenas 14 números)</div>                                        
+                                    </div>
+                                </div>                                        
                             </div>
-                        </div>                                        
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <label for="descricao" class="form-label required">Nome da Empresa</label>
-                        <input type="text" id="descricao" name="descricao" class="form-control form-control-sm text-uppercase" placeholder="" required />
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="descricao" class="form-label required">Nome da Empresa</label>
+                                <input type="text" id="descricao" name="descricao" class="form-control form-control-sm text-uppercase" placeholder="" required />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <ul class="nav nav-pills mb-3" id="pills-tab-emp" role="tablist">
