@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SEIWEB</title>
+
+    <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="../assets/dist/css/estilo.css" rel="stylesheet" />
+</head>
+<body>
+    <form id="frmMunicipio">
+        <div class="row mb-1">
+            <div class="col-md-12">
+                <label class="form-label">Descrição</label>
+                <input id="MunicipioDescricao" class="form-control form-control-sm text-uppercase" type="text" />
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <label class="form-label">Estado</label>
+                <!--<div class="text-start mb-1">
+                    <select id="MunicipioUf" class="form-select form-select-sm text-uppercase" disabled></select>
+                </div>-->
+                <div id="selectMunicipioUf" data-control="MunicipioUf">
+                    <div class="loading-label w-100">
+                        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+                        Carregando ...
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <label class="form-label">Código IBGE</label>
+                <div class="input-group input-group-sm">
+                    <input id="MunicipioIbge" type="text" class="form-control form-control-sm text-uppercase" />
+                    <button id="btnIbge" class="btn btn-sm btn-light border" type="button" tabindex="-1">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>        
+    </div>
+</body>
+</html>
