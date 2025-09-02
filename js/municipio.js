@@ -2,7 +2,10 @@ var dataMunicipio = undefined;
 var $thisMunicipio = undefined;
 var $modalMunicipio = undefined;
 
-function MunicipioClick(data, callbackOnClose){
+function MunicipioClick(e, data, callbackOnClose)
+{
+    $thisMunicipio = $(e);
+
     $modalMunicipio = createDynamicModal("Município", 
         "modal-md modal-dialog-centered animate__animated animate__backInUp", 
         "",

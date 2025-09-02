@@ -239,6 +239,7 @@ function LoadEmpresa(onLoadCallback)
 
                         if (item.id === 0){
                             bairroClick(
+                            $('#bairro'),                                
                             {id: 0, descricao: item.descricao}, 
                             function()
                             {
@@ -326,7 +327,7 @@ function CarregarLogoEmpresa()
 }
 
 function EmpresaBairroClick(e){
-    bairroClick();
+    bairroClick(e);
 }
 
 /*carregarTemplateModal('templates/Empresa.html #divEmpresa', {

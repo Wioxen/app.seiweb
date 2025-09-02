@@ -1,10 +1,10 @@
 var dataBairro = undefined;
-//var $thisBairro = undefined;
+var $thisBairro = undefined;
 var $modalBairro = undefined;
 
-function bairroClick(data, callbackOnClose)
+function bairroClick(e, data, callbackOnClose)
 {
-    //$thisBairro = $(e);
+    $thisBairro = $(e);
     //dataBairro = undefined;    
     $modalBairro = createDynamicModal
     (
@@ -194,6 +194,7 @@ function LoadBairro(onLoadCallback)
 
                         if (item.id === 0){
                             MunicipioClick(
+                            $('#BairroMunicipio'),
                             {id: 0, descricao: item.descricao, ibge: ""}, 
                             function()
                             {
@@ -217,5 +218,5 @@ function LoadBairro(onLoadCallback)
 }
 
 function BairroMunicipioClick(e){
-    MunicipioClick();
+    MunicipioClick(e);
 }
