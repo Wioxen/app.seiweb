@@ -1,0 +1,111 @@
+.ui-autocomplete {
+    z-index: 999999999 !important;
+}
+
+/*.ui-autocomplete-loading {
+    background: url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/images/ui-anim_basic_16x16.gif) no-repeat right center
+}*/
+
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Estilos para o autocomplete com Bootstrap */
+.list-group.autocomplete-list {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 1060;
+}
+
+.list-group-item.autocomplete-item {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-bottom: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.list-group-item.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item.autocomplete-item:hover,
+.list-group-item.autocomplete-item.ui-state-focus {
+    background-color: #f8f9fa;
+    color: #495057;
+    transform: translateX(2px);
+}
+
+.list-group-item.autocomplete-item.ui-state-active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Loading indicator */
+.loading {
+    background: url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/images/ui-anim_basic_16x16.gif) no-repeat right center;
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 16px;
+}
+
+/* Mensagem de nenhum resultado */
+.list-group-item.no-results {
+    pointer-events: none;
+    background-color: #f8f9fa;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 576px) {
+    .list-group.autocomplete-list {
+        max-width: calc(100vw - 30px);
+        left: 15px !important;
+        right: 15px !important;
+    }
+}
+
+.nav-link:hover {
+    color: white !important;
+    background-color: #0b5ed7 !important;
+    border-color: #0a58ca !important;
+}
+
+.btn-crud {
+    width: 120px;
+}
+
+.btn-crud-x1 {
+    width: 60px;
+}
+
+/* Garantir que o loadingModal fique acima de outros modais */
+#loadingModal.modal {
+    z-index: 9999 !important; /* Valor inicial alto */
+}
+
+#loadingModal .modal-backdrop {
+    z-index: 9998 !important;
+}
+
+.loading-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    min-height: 31px;
+}
+.form-label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
