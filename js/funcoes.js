@@ -1,5 +1,5 @@
-//const $baseApiUrl = "https://api.seiweb.com.br/";
-const $baseApiUrl = "https://localhost:32793/";
+const $baseApiUrl = "https://api.seiweb.com.br/";
+//const $baseApiUrl = "https://localhost:32793/";
 
 // Função para ajustar z-index dos modais
 function adjustModalZIndex() {
