@@ -65,7 +65,7 @@ function carregarTemplateModal(modalId, templateUrl, configDinamico = {}) {
             configurarAutocomplete(config.autocompleteCampo, config.autocompleteUrl, config.autocomplete);
         }
 
-        if (!$(modalId).hasClass('show') && !$().is(':visible')) {
+        if (!$(modalId).hasClass('show') && !$(modalId).is(':visible')) {
             $(modalId).modal('show');
             
             setTimeout(() => {

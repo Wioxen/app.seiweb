@@ -7,10 +7,7 @@ function bairroClick(e, data, callbackOnClose)
     $thisBairro = $(e);
     //dataBairro = undefined;    
     $modalBairro = createDynamicModal
-    (
-        "Bairro", 
-        "modal-md modal-dialog-centered animate__animated animate__backInDown", 
-        `<div class="dropdown dropup">
+    (`<div class="dropdown dropup">
             <button class="btn btn-secondary btn-crud-x1" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-list"></i>
             </button>
@@ -18,8 +15,8 @@ function bairroClick(e, data, callbackOnClose)
             <li>
             <a class="dropdown-item" href="#" onclick="BairroMunicipioClick(this);">MUNICÍPIO</a></li>
             </ul>
-        </div>`
-    , callbackOnClose);
+     </div>`, 
+     callbackOnClose);
 
     configurarAutocomplete(
         '#Pesquisar'+$modalBairro.attr('id'),
@@ -136,7 +133,7 @@ function LoadBairro(onLoadCallback)
     carregarTemplateModal('#'+$modalBairro.attr('id'),
     'templates/Bairro.html #frmBairro', {
         modalTitle: 'Bairro',
-        modalSize: 'modal-md',
+        modalSize: 'modal-dialog-centered modal-md animate__animated animate__backInDown',
         autocompleteUrl: $baseApiUrl+'AutoComplete?table=Bairro',
         autocompleteCampo: '#Pesquisar'+$modalBairro.attr('id'),
         autocomplete: {

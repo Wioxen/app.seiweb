@@ -1,5 +1,5 @@
-const $baseApiUrl = "https://api.seiweb.com.br/";
-//const $baseApiUrl = "https://localhost:32769/";
+//const $baseApiUrl = "https://api.seiweb.com.br/";
+const $baseApiUrl = "https://localhost:32793/";
 
 // Função para ajustar z-index dos modais
 function adjustModalZIndex() {
@@ -561,17 +561,58 @@ function buscaCnpj(_cnpj, callbackSuccess, callbackError) {
 }
 
 // Função para criar e abrir o modal dinâmico
-function createDynamicModal(title, size, footerHTML, callbackOnClose) {
+function createDynamicModal_01(title, size, modal_body, modal_footer = "", callbackOnClose = null) {
     // Gerar um ID único para o modal
-    const modalId = 'dynamicModal-' + new Date().getTime();
+    const modalId = 'dynamicModal-01-' + new Date().getTime();
     
     // Criar a estrutura do modal
     const modalHTML = `
         <div class="modal fade" id="${modalId}" tabindex="-1">
             <div class="modal-dialog modal-dialog-scrollable ${size}">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary" style="color: white;">
                         <h5 class="modal-title">${title}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${modal_body}
+                    </div>
+                    <div class="modal-footer x-modal-footer">
+                        ${modal_footer}					
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    $('body').append(modalHTML);
+    
+    const $modal = $('#' + modalId);
+
+    $modal.on('hidden.bs.modal', function () {
+        $(this).remove();
+        console.log('Modal destruído');
+
+        if (typeof callbackOnClose === 'function') {
+            callbackOnClose();
+        }        
+    });
+
+    return $modal;
+}
+
+// Função para criar e abrir o modal dinâmico
+function createDynamicModal(modal_footer, callbackOnClose) {
+    // Gerar um ID único para o modal
+    const modalId = 'dynamicModal-' + new Date().getTime();
+    
+    // Criar a estrutura do modal
+    const modalHTML = `
+        <div class="modal fade" id="${modalId}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-header border-0 pb-0">
@@ -589,12 +630,11 @@ function createDynamicModal(title, size, footerHTML, callbackOnClose) {
                     </div>
                     <div class="modal-footer">
                         <div class="me-auto">
-                            <button id="btnNovo${modalId}" class="btn btn-primary btn-crud-x1"><i class="fa fa-plus"></i> </button>
                             <button id="btnCancelar${modalId}" class="btn btn-warning btn-crud-x1"><i class="fa fa-ban"></i> </button>
                             <button id="btnExcluir${modalId}" class="btn btn-danger btn-crud-x1"><i class="fa fa-trash"></i> </button>
                             <button id="btnSalvar${modalId}" class="btn btn-success btn-crud-x1"><i class="fa fa-check"></i> </button>
                         </div>	
-                        ${footerHTML}					
+                        ${modal_footer}					
                     </div>
                 </div>
             </div>
@@ -608,7 +648,6 @@ function createDynamicModal(title, size, footerHTML, callbackOnClose) {
     $modal.on('hidden.bs.modal', function () {
         $(this).remove();
         console.log('Modal destruído');
-
         if (typeof callbackOnClose === 'function') {
             callbackOnClose();
         }        
@@ -730,4 +769,81 @@ function EnviarImagem($this, successCallback, errorCallback) {
     reader.onerror = function () {
         console.log('there are some problems');
     };
+}
+
+function CarregaDados(modalId, resource, _drawCallback)
+{
+    var $tabela = $('#'+resource+'Tb').DataTable({
+        "autoWidth": false, // Desativa o cálculo automático de largura                
+        "headerCallback": function(thead, data, start, end, display) {
+            $(thead).hide();
+            $('.dt-scroll-head').remove();
+            $('.dt-scroll-foot').remove();
+            /*$('.dt-layout-row').first().addClass('dt-layout-row modal-header');
+            $('.dt-layout-row').last().addClass('dataTables_paginate');
+            $('.dt-paging-button').addClass('btn btn-sm btn-primary')
+            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');*/
+        },
+        scrollX: true,
+        ajax: $baseApiUrl + resource,
+        columns: [
+            {
+                data: 'id',
+                orderable: false,
+                "width": "5%",
+                "render": function(data, type, row) {
+                    return `<button type="button" data-id="${data}" class="btn btn-sm btn-dark btn-editar-${resource}"><i class="fa fa-pen"></i></button>`;
+                }
+            },
+            { data: 'descricao' }
+        ],
+        "language": {
+            "info": "Mostrando _START_ até _END_ de _TOTAL_ registros",
+            "infoEmpty": "Mostrando 0 até 0 de 0 registros",
+            //"infoFiltered": "(filtrados de _MAX_ registros no total)",
+            "infoFiltered": "",
+            "infoPostFix": "",
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "loadingRecords": "Carregando...",
+            "processing": "Processando...",
+            "search": "Pesquisar:",
+            "zeroRecords": "Nenhum registro encontrado",
+            "paginate": {
+                "first": "<i class='fa fa-angle-double-left'></i>",
+                "previous": "<i class='fa fa-chevron-left'></i>",
+                "next": "<i class='fa fa-chevron-right'></i>",
+                "last": "<i class='fa fa-angle-double-right'></i>"
+            }
+        },               
+        "drawCallback": function (settings) {
+            $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
+            $('.dt-layout-row').last().addClass('dataTables_paginate');
+            $('.dt-paging-button').addClass('btn btn-sm btn-primary')
+            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');
+
+            if (typeof _drawCallback === 'function') {
+                _drawCallback(settings);
+            }
+        },                
+        "initComplete": function() {
+            $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
+            $('.dt-layout-row').last().addClass('dataTables_paginate');
+            $('.dt-paging-button').addClass('btn btn-sm btn-primary')
+            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');
+        }
+    });    
+
+    var $modal = $(modalId);
+
+    if (!$modal.hasClass('show') && !$modal.is(':visible')) {
+ 
+        $modal.on('shown.bs.modal', function () {
+            $tabela.draw();
+            $('#dt-search-0').focus();
+        });
+    
+        $modal.modal('show');
+    }
+
+    return $tabela;
 }

@@ -1,29 +1,25 @@
 var dataEmpresa = undefined;
 var $thisEmpresa = undefined;
 var $modalEmpresa = undefined;
+var $modalListaEmpresa = undefined;
+var $tbEmpresa = undefined;
 
 const formEmpresa = '#frmEmpresa';
 
 function empresaClick(e) {
     $thisEmpresa = $(e);
-    dataEmpresa = undefined;
 
-    $modalEmpresa = createDynamicModal
+    $modalListaEmpresa = createDynamicModal_01
     (
-        "CADASTRO DE EMPRESA", 
-        "modal-xl", 
-        `<div class="dropdown">
-        <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa fa-list"></i>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-        <li><a class="dropdown-item" href="#" onclick="EmpresaBairroClick(this);">BAIRRO</a></li>					
-        </ul>
-        </div>`,
-        null
-    );    
-        					
-    //<button class="btn btn-info" data-bs-dismiss="modal"><i class="fas fa-door-open"></i> </button>
+        "Empresa", 
+        "modal-lg", 
+        `<table id="empresaTb" class="row-border stripe hover" style="width:100%"></table>`,
+        `<div class="footer-buttons">
+            <button id="btnNovoEmpresa" type="button" class="btn btn-success">
+                <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
+            </button>
+        </div>`
+    );
 
     RestRequest('POST',
         $baseApiUrl+"usuariomodulo",
@@ -32,33 +28,44 @@ function empresaClick(e) {
         function (data) {
             hideLoadingModal();
 
-            $('#btnNovo'+$modalEmpresa.attr('id'))
-//            .removeClass('btn-crud-x1')
-//            .addClass('btn-crud')
-            //.html('Novo <i class="fa fa-plus"></i>')
+            $('#btnNovoEmpresa')
             .click(NovoEmpresaClick);
 
-            $('#btnCancelar'+$modalEmpresa.attr('id'))
-            //.removeClass('btn-crud-x1')
-            //.addClass('btn-crud')
-            //.html('Cancelar <i class="fa fa-ban"></i>')
-            .click(CancelarEmpresaClick);
-
-            $('#btnExcluir'+$modalEmpresa.attr('id'))
-            //.removeClass('btn-crud-x1')
-            //.addClass('btn-crud')
-            //.html('Excluir <i class="fa fa-trash"></i>')
-            .click(ExcluirEmpresaClick);
-            
-            $('#btnSalvar'+$modalEmpresa.attr('id'))
-            //.removeClass('btn-crud-x1')
-            //.addClass('btn-crud')
-            //.html('Salvar <i class="fa fa-check"></i>')
-            .click(SalvarEmpresaClick);
-
-            LoadEmpresa();
+            $tbEmpresa = CarregaDados('#'+$modalListaEmpresa.attr('id'),'empresa',function(settings){
+                $('.btn-editar-empresa').off('click').on('click', EditarEmpresaClick);
+            });
         });
 }
+
+function CriarModalEmpresa(){
+    hideLoadingModal();
+    
+    $modalEmpresa = createDynamicModal
+    (
+        `<div class="dropdown">
+        <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-list"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+        <li><a class="dropdown-item" href="#" onclick="EmpresaBairroClick(this);">BAIRRO</a></li>					
+        </ul>
+        </div>`
+    );
+
+    $('#Pesquisar'+$modalEmpresa.attr('id')).remove();
+
+    $modalEmpresa.on('hidden.bs.modal', function () {
+        $tbEmpresa.ajax.reload(function(json){
+            //$('.btn-editar-empresa').off('click').on('click', EditarEmpresaClick);
+            //console.log(json);
+        });
+    });
+
+    $('#btnCancelar'+$modalEmpresa.attr('id')).click(CancelarEmpresaClick);
+    $('#btnExcluir'+$modalEmpresa.attr('id')).click(ExcluirEmpresaClick);    
+    $('#btnSalvar'+$modalEmpresa.attr('id')).click(SalvarEmpresaClick);            
+}
+
 
 function NovoEmpresaClick(e){
     e.preventDefault();
@@ -68,7 +75,7 @@ function NovoEmpresaClick(e){
         {modulo : $thisEmpresa.attr('data-modulo')+"1"},
         null,
         function (data) {
-            hideLoadingModal();
+            CriarModalEmpresa();
 
             LoadEmpresa(function(response, status, xhr){
                 toggleModalBody('#'+$modalEmpresa.attr('id'), false);
@@ -82,11 +89,34 @@ function NovoEmpresaClick(e){
 function CancelarEmpresaClick(e){
     e.preventDefault();
     dataEmpresa = undefined;
-    LoadEmpresa(function(response, status, xhr){
-        setTimeout(() => {
-            $('#Pesquisar'+$modalEmpresa.attr('id')).focus();
-        }, 500);            
-    });
+    $modalEmpresa.modal('hide');
+}
+
+function EditarEmpresaClick(e){
+    e.preventDefault();
+    var $thisButton = $(this);
+    RestRequest('GET',
+        $baseApiUrl+"Empresa/"+$thisButton.data('id'),
+        null,
+        null,
+        function (data) {
+            dataEmpresa = data;
+            CriarModalEmpresa();
+            LoadEmpresa(function(response, status, xhr){
+                toggleModalBody('#'+$modalEmpresa.attr('id'), false);
+                setTimeout(() => {
+                    preencherFormularioCompleto(dataEmpresa, formEmpresa);
+                    CarregarLogoEmpresa();
+                    $('#cnpj').trigger('input').trigger('change');
+                    $('#cep').trigger('input').trigger('change');
+                    $('#telefone').trigger('input').trigger('change');
+                    $('#celular').trigger('input').trigger('change');
+                    $('#codigoTributacao').trigger('input').trigger('change');                                
+                    $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');
+                    $('#descricao').focus();
+                }, 500);            
+            });            
+        });
 }
 
 function ExcluirEmpresaClick(e){
@@ -148,10 +178,11 @@ function SalvarEmpresaClick(e){
             dataEmpresa,
             null,
             function (response, textStatus, jqXHR) {
-                hideLoadingModal();
                 if (jqXHR.status === 201){
                     dataEmpresa.id = response.id;
                 }                
+                hideLoadingModal();
+                $modalEmpresa.modal('hide');
             });  
     }    
 }
@@ -161,36 +192,7 @@ function LoadEmpresa(onLoadCallback)
     carregarTemplateModal('#'+$modalEmpresa.attr('id'),
         'templates/Empresa.html '+formEmpresa, {
         modalTitle: 'Cadastro de Empresa',       
-        modalSize: 'modal-xl',
-        autocompleteUrl: $baseApiUrl+'AutoComplete?table=Empresa',
-        autocompleteCampo: '#Pesquisar'+$modalEmpresa.attr('id'),
-        autocomplete: {
-            onSelect: function(item) {
-                if ((item.id != null) && (item.id != 0))
-                {
-                    RestRequest('GET',
-                        $baseApiUrl+"Empresa/"+item.id,
-                        null,
-                        null,
-                        function (data) {
-                            dataEmpresa = data;
-                            hideLoadingModal();
-                            toggleModalBody('#'+$modalEmpresa.attr('id'), false);
-                            setTimeout(() => {
-                                preencherFormularioCompleto(dataEmpresa, formEmpresa);
-                                CarregarLogoEmpresa();
-                                $('#cnpj').trigger('input').trigger('change');
-                                $('#cep').trigger('input').trigger('change');
-                                $('#telefone').trigger('input').trigger('change');
-                                $('#celular').trigger('input').trigger('change');
-                                $('#codigoTributacao').trigger('input').trigger('change');                                
-                                $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');
-                                $('#descricao').focus();
-                            }, 500);            
-                        });
-                }
-            }
-        },
+        modalSize: 'modal-dialog-scrollable modal-xl',
         onLoad: function(response, status, xhr)
         {
             $('#itemServico').mask('00.00');

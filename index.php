@@ -65,15 +65,16 @@
     </style>	
 
 	<!-- CSS Files -->
-	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="assets/css/plugins.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+	<!--<link rel="stylesheet" href="assets/css/plugins.min.css">-->
 	<link rel="stylesheet" href="assets/css/kaiadmin.min.css">
 
 	<!-- CSS Just for demo purpose, don't include it in your project -->
-	<link rel="stylesheet" href="assets/css/demo.css">
+	<!--<link rel="stylesheet" href="assets/css/demo.css"> -->
 	<link rel="stylesheet" href="assets/css/estilo.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.min.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"  />	
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.css"  />	
 </head>
 <body>
 	<input type="hidden" id="accesstoken" value="<?php echo isset($_GET['access_token']) ? $_GET['access_token'] : ''; ?>" />
@@ -425,9 +426,9 @@
 	<div class="cf-turnstile" data-sitekey="0x4AAAAAABuVdzwbnHVBP83i"></div>
 
 	<!--   Core JS Files   -->
-	<script src="assets/js/core/jquery-3.7.1.min.js"></script>
-	<script src="assets/js/core/popper.min.js"></script>
-	<script src="assets/js/core/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
 	<!-- jQuery Scrollbar -->
 	<script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
@@ -442,7 +443,8 @@
 	<script src="assets/js/plugin/chart-circle/circles.min.js"></script>
 
 	<!-- Datatables -->
-	<script src="assets/js/plugin/datatables/datatables.min.js"></script>
+	<!--<script src="assets/js/plugin/datatables/datatables.min.js"></script>-->
+	<script src="https://cdn.datatables.net/2.3.3/js/dataTables.js"></script>
 
 	<!-- Bootstrap Notify -->
 	<script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
