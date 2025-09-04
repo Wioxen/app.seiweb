@@ -1,5 +1,5 @@
 const $baseApiUrl = "https://api.seiweb.com.br/";
-//const $baseApiUrl = "https://localhost:32793/";
+//const $baseApiUrl = "https://localhost:32803/";
 
 // Função para ajustar z-index dos modais
 function adjustModalZIndex() {
@@ -786,7 +786,9 @@ function CarregaDados(modalId, resource, _drawCallback)
             $('.dataTables_paginate').appendTo(modalId+' .modal-footer');*/
         },
         scrollX: true,
-        ajax: $baseApiUrl + resource,
+        ajax: $baseApiUrl + resource,        
+        "processing": true,
+        "serverSide": true,        
         columns: [
             {
                 data: 'id',
@@ -796,7 +798,9 @@ function CarregaDados(modalId, resource, _drawCallback)
                     return `<button type="button" data-id="${data}" class="btn btn-sm btn-dark btn-editar-${resource}"><i class="fa fa-pen"></i></button>`;
                 }
             },
-            { data: 'descricao' }
+            { 
+                data: 'descricao'              
+             }
         ],
         "language": {
             "info": "Mostrando _START_ até _END_ de _TOTAL_ registros",
