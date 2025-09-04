@@ -1,5 +1,5 @@
-const $baseApiUrl = "https://api.seiweb.com.br/";
-//const $baseApiUrl = "https://localhost:32793/";
+//const $baseApiUrl = "https://api.seiweb.com.br/";
+const $baseApiUrl = "https://localhost:32793/";
 
 // Função para ajustar z-index dos modais
 function adjustModalZIndex() {
@@ -630,9 +630,9 @@ function createDynamicModal(modal_footer, callbackOnClose) {
                     </div>
                     <div class="modal-footer">
                         <div class="me-auto">
-                            <button id="btnCancelar${modalId}" class="btn btn-warning btn-crud-x1"><i class="fa fa-ban"></i> </button>
-                            <button id="btnExcluir${modalId}" class="btn btn-danger btn-crud-x1"><i class="fa fa-trash"></i> </button>
-                            <button id="btnSalvar${modalId}" class="btn btn-success btn-crud-x1"><i class="fa fa-check"></i> </button>
+                            <button id="btnCancelar${modalId}" class="btn btn-warning"><i class="fa fa-ban"></i> Cancelar</button>
+                            <button id="btnExcluir${modalId}" class="btn btn-danger"><i class="fa fa-trash"></i> Excluir</button>
+                            <button id="btnSalvar${modalId}" class="btn btn-success"><i class="fa fa-check"></i> Salvar</button>
                         </div>	
                         ${modal_footer}					
                     </div>
@@ -774,6 +774,7 @@ function EnviarImagem($this, successCallback, errorCallback) {
 function CarregaDados(modalId, resource, _drawCallback)
 {
     var $tabela = $('#'+resource+'Tb').DataTable({
+        "stateSave": false,
         "autoWidth": false, // Desativa o cálculo automático de largura                
         "headerCallback": function(thead, data, start, end, display) {
             $(thead).hide();

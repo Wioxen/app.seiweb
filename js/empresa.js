@@ -9,18 +9,6 @@ const formEmpresa = '#frmEmpresa';
 function empresaClick(e) {
     $thisEmpresa = $(e);
 
-    $modalListaEmpresa = createDynamicModal_01
-    (
-        "Empresa", 
-        "modal-lg", 
-        `<table id="empresaTb" class="row-border stripe hover" style="width:100%"></table>`,
-        `<div class="footer-buttons">
-            <button id="btnNovoEmpresa" type="button" class="btn btn-success">
-                <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
-            </button>
-        </div>`
-    );
-
     RestRequest('POST',
         $baseApiUrl+"usuariomodulo",
         {modulo : $thisEmpresa.attr('data-modulo')+"4"},
@@ -28,23 +16,41 @@ function empresaClick(e) {
         function (data) {
             hideLoadingModal();
 
-            $('#btnNovoEmpresa')
-            .click(NovoEmpresaClick);
+            $modalListaEmpresa = createDynamicModal_01
+            (
+                "Empresa", 
+                "modal-lg", 
+                `<table id="empresaTb" class="row-border stripe hover" style="width:100%"></table>`,
+                `<div class="footer-buttons">
+                    <button id="btnNovoEmpresa" type="button" class="btn btn-success">
+                        <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
+                    </button>
+                </div>`
+            );
 
-            $tbEmpresa = CarregaDados('#'+$modalListaEmpresa.attr('id'),'empresa',function(settings){
-                $('.btn-editar-empresa').off('click').on('click', EditarEmpresaClick);
-            });
+            $('#btnNovoEmpresa').click(NovoEmpresaClick);
+
+            $tbEmpresa = 
+                CarregaDados
+                (
+                    '#'+$modalListaEmpresa.attr('id'),
+                    'empresa',
+                    function(settings)
+                    {
+                        $('.btn-editar-empresa').off('click').on('click', EditarEmpresaClick);
+                    }
+                );
         });
 }
 
-function CriarModalEmpresa(){
+function CriarModalEmpresa(onLoadCallback){
     hideLoadingModal();
     
     $modalEmpresa = createDynamicModal
     (
         `<div class="dropdown">
         <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa fa-list"></i>
+        <i class="fa fa-list"></i> Mais opções
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
         <li><a class="dropdown-item" href="#" onclick="EmpresaBairroClick(this);">BAIRRO</a></li>					
@@ -55,15 +61,18 @@ function CriarModalEmpresa(){
     $('#Pesquisar'+$modalEmpresa.attr('id')).remove();
 
     $modalEmpresa.on('hidden.bs.modal', function () {
-        $tbEmpresa.ajax.reload(function(json){
-            //$('.btn-editar-empresa').off('click').on('click', EditarEmpresaClick);
-            //console.log(json);
-        });
+        $tbEmpresa.ajax.reload();
     });
 
     $('#btnCancelar'+$modalEmpresa.attr('id')).click(CancelarEmpresaClick);
     $('#btnExcluir'+$modalEmpresa.attr('id')).click(ExcluirEmpresaClick);    
     $('#btnSalvar'+$modalEmpresa.attr('id')).click(SalvarEmpresaClick);            
+
+    LoadEmpresa(function(response, status, xhr){
+        if (typeof onLoadCallback === 'function') {
+            onLoadCallback(response, status, xhr);
+        }
+    });            
 }
 
 
@@ -75,14 +84,13 @@ function NovoEmpresaClick(e){
         {modulo : $thisEmpresa.attr('data-modulo')+"1"},
         null,
         function (data) {
-            CriarModalEmpresa();
-
-            LoadEmpresa(function(response, status, xhr){
+            CriarModalEmpresa(
+            function(response, status, xhr){
                 toggleModalBody('#'+$modalEmpresa.attr('id'), false);
                 setTimeout(() => {
                     $('#cnpj').focus();
                 }, 500);            
-            });            
+            });
         });    
 }
 
@@ -101,8 +109,7 @@ function EditarEmpresaClick(e){
         null,
         function (data) {
             dataEmpresa = data;
-            CriarModalEmpresa();
-            LoadEmpresa(function(response, status, xhr){
+            CriarModalEmpresa(function(response, status, xhr){
                 toggleModalBody('#'+$modalEmpresa.attr('id'), false);
                 setTimeout(() => {
                     preencherFormularioCompleto(dataEmpresa, formEmpresa);
@@ -115,7 +122,7 @@ function EditarEmpresaClick(e){
                     $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');
                     $('#descricao').focus();
                 }, 500);            
-            });            
+            });
         });
 }
 
