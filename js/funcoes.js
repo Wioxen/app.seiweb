@@ -799,7 +799,8 @@ function CarregaDados(modalId, resource, _drawCallback)
                 }
             },
             { 
-                data: 'descricao'              
+                data: 'descricao',              
+                orderable: false,
              }
         ],
         "language": {

@@ -6,10 +6,7 @@ function MunicipioClick(e, data, callbackOnClose)
 {
     $thisMunicipio = $(e);
 
-    $modalMunicipio = createDynamicModal("Município", 
-        "modal-md modal-dialog-centered animate__animated animate__backInUp", 
-        "",
-    callbackOnClose);
+    $modalMunicipio = createDynamicModal("",callbackOnClose);
 
     configurarAutocomplete(
         '#Pesquisar'+$modalMunicipio.attr('id'),
@@ -130,7 +127,7 @@ function LoadMunicipio(onLoadCallback)
     carregarTemplateModal('#'+$modalMunicipio.attr('id'),
     'templates/Municipio.html #frmMunicipio', {
         modalTitle: 'Municipio',
-        modalSize: 'modal-md',
+        modalSize: 'modal-dialog-centered modal-md animate__animated animate__backInDown',
         autocompleteUrl: $baseApiUrl+'AutoComplete?table=Municipio',
         autocompleteCampo: '#Pesquisar'+$modalMunicipio.attr('id'),
         autocomplete: {

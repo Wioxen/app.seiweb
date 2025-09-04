@@ -8,8 +8,8 @@ function bairroClick(e, data, callbackOnClose)
     //dataBairro = undefined;    
     $modalBairro = createDynamicModal
     (`<div class="dropdown dropup">
-            <button class="btn btn-secondary btn-crud-x1" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-list"></i>
+            <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-list"></i> Mais Opções
             </button>
             <ul id="crud-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             <li>
