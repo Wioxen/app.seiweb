@@ -501,6 +501,7 @@
 <script src="js/municipio.js"></script>
 <script src="js/bairro.js"></script>
 <script src="js/empresa.js"></script>
+<script src="js/aluno.js"></script>
 <script>
 $(document).ready(function() {
 	//setInterval(checkTurnstileStatus, 1000);
