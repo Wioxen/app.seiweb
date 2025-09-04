@@ -7,7 +7,7 @@ function MunicipioClick(e, data, callbackOnClose)
     $thisMunicipio = $(e);
 
     $modalMunicipio = createDynamicModal("",callbackOnClose);
-
+    
     configurarAutocomplete(
         '#Pesquisar'+$modalMunicipio.attr('id'),
         $baseApiUrl+'AutoComplete?table=Municipio',

@@ -6,6 +6,7 @@ function bairroClick(e, data, callbackOnClose)
 {
     $thisBairro = $(e);
     //dataBairro = undefined;    
+    
     $modalBairro = createDynamicModal
     (`<div class="dropdown dropup">
             <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
