@@ -611,7 +611,7 @@ function createDynamicModal(modal_footer, callbackOnClose) {
         <div class="modal fade" id="${modalId}" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary">
                         <h5 class="modal-title"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -771,8 +771,13 @@ function EnviarImagem($this, successCallback, errorCallback) {
     };
 }
 
-function CarregaDados(modalId, resource, _drawCallback)
+function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_modal, showModalCallback, columns, _drawCallback)
 {
+    const defaultColumns = [];    
+    const finalColumns = columns || defaultColumns;
+
+    var $modal = createDynamicModal_01(title_modal,size_modal,body_modal,footer_modal);
+
     var $tabela = $('#'+resource+'Tb').DataTable({
         "stateSave": false,
         "autoWidth": false, // Desativa o cálculo automático de largura                
@@ -789,20 +794,7 @@ function CarregaDados(modalId, resource, _drawCallback)
         ajax: $baseApiUrl + resource,        
         "processing": true,
         "serverSide": true,        
-        columns: [
-            {
-                data: 'id',
-                orderable: false,
-                "width": "5%",
-                "render": function(data, type, row) {
-                    return `<button type="button" data-id="${data}" class="btn btn-sm btn-dark btn-editar-${resource}"><i class="fa fa-pen"></i></button>`;
-                }
-            },
-            { 
-                data: 'descricao',              
-                orderable: false,
-             }
-        ],
+        columns: finalColumns,
         "language": {
             "info": "Mostrando _START_ até _END_ de _TOTAL_ registros",
             "infoEmpty": "Mostrando 0 até 0 de 0 registros",
@@ -825,10 +817,9 @@ function CarregaDados(modalId, resource, _drawCallback)
             $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
             $('.dt-layout-row').last().addClass('dataTables_paginate');
             $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');
+            $('.dataTables_paginate').appendTo('#'+$modal.attr('id')+' .modal-footer');
 
             if (typeof _drawCallback === 'function') {
-                console.log(settings);
                 _drawCallback(settings);
             }
         },                
@@ -836,121 +827,26 @@ function CarregaDados(modalId, resource, _drawCallback)
             $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
             $('.dt-layout-row').last().addClass('dataTables_paginate');
             $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');
+            $('.dataTables_paginate').appendTo('#'+$modal.attr('id')+' .modal-footer');
         }
     });    
 
-    var $modal = $(modalId);
-
-    if (!$modal.hasClass('show') && !$modal.is(':visible')) {
- 
+    if (!$modal.hasClass('show') && !$modal.is(':visible')) {        
         $modal.on('shown.bs.modal', function () {
             $tabela.draw();
+
             $('#dt-search-0').focus();
+
+            if (typeof showModalCallback === 'function') {
+                showModalCallback();
+            }
         });
     
         $modal.modal('show');
     }
 
-    return $tabela;
-}
-
-
-function CarregaDadosPessoa(modalId, resource, _drawCallback)
-{
-    var $tabela = $('#'+resource+'Tb').DataTable({
-        "stateSave": false,
-        "autoWidth": false, // Desativa o cálculo automático de largura                
-        "headerCallback": function(thead, data, start, end, display) {
-            $(thead).hide();
-            $('.dt-scroll-head').remove();
-            $('.dt-scroll-foot').remove();
-            /*$('.dt-layout-row').first().addClass('dt-layout-row modal-header');
-            $('.dt-layout-row').last().addClass('dataTables_paginate');
-            $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');*/
-        },
-        scrollX: true,
-        ajax: $baseApiUrl + resource,        
-        "processing": true,
-        "serverSide": true,        
-        columns: [
-            {
-                data: 'foto',
-                orderable: false,
-                "width": "5%",
-                "render": function(data, type, row) {
-                    return `<img id="img-aluno-${row}" data-foto=${data} class="foto avatar-img rounded-circle" src="#" style="width: 40px; height: 40px;" />`
-                }
-            },
-            { 
-                data: 'descricao',              
-                orderable: false,
-            },
-            {
-                data: 'id',
-                orderable: false,
-                "width": "5%",
-                "render": function(data, type, row) {
-                    return `<div class="dropdown">
-                            <button class="btn btn-sm btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-list"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-                            <li><a class="dropdown-item btn-editar-${resource}" data-id="${data}" href="#">Editar</a></li>					
-                            </ul>
-                            </div>`
-                }
-            }
-        ],
-        "language": {
-            "info": "Mostrando _START_ até _END_ de _TOTAL_ registros",
-            "infoEmpty": "Mostrando 0 até 0 de 0 registros",
-            //"infoFiltered": "(filtrados de _MAX_ registros no total)",
-            "infoFiltered": "",
-            "infoPostFix": "",
-            "lengthMenu": "Mostrar _MENU_ registros por página",
-            "loadingRecords": "Carregando...",
-            "processing": "Processando...",
-            "search": "Pesquisar:",
-            "zeroRecords": "Nenhum registro encontrado",
-            "paginate": {
-                "first": "<i class='fa fa-angle-double-left'></i>",
-                "previous": "<i class='fa fa-chevron-left'></i>",
-                "next": "<i class='fa fa-chevron-right'></i>",
-                "last": "<i class='fa fa-angle-double-right'></i>"
-            }
-        },               
-        "drawCallback": function (settings) {
-            $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
-            $('.dt-layout-row').last().addClass('dataTables_paginate');
-            $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');
-
-            if (typeof _drawCallback === 'function') {
-                console.log(settings);
-                _drawCallback(settings);
-            }
-        },                
-        "initComplete": function() {
-            $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
-            $('.dt-layout-row').last().addClass('dataTables_paginate');
-            $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');
-        }
-    });    
-
-    var $modal = $(modalId);
-
-    if (!$modal.hasClass('show') && !$modal.is(':visible')) {
- 
-        $modal.on('shown.bs.modal', function () {
-            $tabela.draw();
-            $('#dt-search-0').focus();
-        });
-    
-        $modal.modal('show');
-    }
-
-    return $tabela;
+    return {
+        tabela: $tabela,
+        modal: $modal
+    };
 }

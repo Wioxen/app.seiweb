@@ -1,8 +1,7 @@
 var dataEmpresa = undefined;
 var $thisEmpresa = undefined;
 var $modalEmpresa = undefined;
-var $modalListaEmpresa = undefined;
-var $tbEmpresa = undefined;
+var $cadastroEmpresa = undefined;
 
 const formEmpresa = '#frmEmpresa';
 
@@ -16,31 +15,43 @@ function empresaClick(e) {
         function (data) {
             hideLoadingModal();
 
-            $modalListaEmpresa = createDynamicModal_01
-            (
-                "Empresa", 
-                "modal-lg", 
-                `<table id="empresaTb" class="row-border stripe hover" style="width:100%"></table>`,
-                `<div class="footer-buttons">
-                    <button id="btnNovoEmpresa" type="button" class="btn btn-success">
-                        <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
-                    </button>
-                </div>`
-            );
+            const defaultColumns  = [
+                {
+                    data: 'id',
+                    orderable: false,
+                    "width": "5%",
+                    "render": function(data, type, row) {
+                        return `<button type="button" data-id="${data}" class="btn btn-sm btn-dark btn-editar-empresa"><i class="fa fa-pen"></i></button>`;
+                    }
+                },
+                { 
+                    data: 'descricao',              
+                    orderable: false,
+                }
+            ];
 
-            $('#btnNovoEmpresa').click(NovoEmpresaClick);
-
-            $tbEmpresa = 
-                CarregaDados
+            $cadastroEmpresa = 
+                CarregaDataTable
                 (
-                    '#'+$modalListaEmpresa.attr('id'),
-                    'empresa',
+                    'Empresa',
+                    'Cadastrar Empresa',
+                    'modal-lg',
+                    `<table id="EmpresaTb" class="row-border stripe hover" style="width:100%"></table>`,
+                    `<div class="footer-buttons">
+                        <button id="btnNovoEmpresa" type="button" class="btn btn-success">
+                            <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
+                        </button>
+                    </div>`,
+                    function (){
+                        $('#btnNovoEmpresa').click(NovoEmpresaClick);                        
+                    },
+                    defaultColumns,
                     function(settings)
                     {
                         $('.btn-editar-empresa').off('click').on('click', EditarEmpresaClick);
                     }
                 );
-        });
+    });        
 }
 
 function CriarModalEmpresa(onLoadCallback){
@@ -61,7 +72,7 @@ function CriarModalEmpresa(onLoadCallback){
     $('#Pesquisar'+$modalEmpresa.attr('id')).remove();
 
     $modalEmpresa.on('hidden.bs.modal', function () {
-        $tbEmpresa.ajax.reload();
+        $cadastroEmpresa.tabela.ajax.reload();
     });
 
     $('#btnCancelar'+$modalEmpresa.attr('id')).click(CancelarEmpresaClick);
@@ -198,7 +209,7 @@ function LoadEmpresa(onLoadCallback)
 {
     carregarTemplateModal('#'+$modalEmpresa.attr('id'),
         'templates/Empresa.html '+formEmpresa, {
-        modalTitle: 'Cadastro de Empresa',       
+        modalTitle: 'Cadastrar Empresa',       
         modalSize: 'modal-dialog-scrollable modal-xl',
         onLoad: function(response, status, xhr)
         {

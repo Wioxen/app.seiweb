@@ -1,8 +1,7 @@
 var dataAluno = undefined;
 var $thisAluno = undefined;
 var $modalAluno = undefined;
-var $modalListaAluno = undefined;
-var $tbAluno = undefined;
+var $cadastroAluno = undefined;
 
 function alunoClick(e) {
     $thisAluno = $(e);
@@ -14,34 +13,60 @@ function alunoClick(e) {
         function (data) {
             hideLoadingModal();
 
-            $modalListaAluno = createDynamicModal_01
-            (
-                "Aluno", 
-                "modal-lg", 
-                `<table id="AlunoTb" class="row-border stripe hover" style="width:100%"></table>`,
-                `<div class="footer-buttons">
-                    <button id="btnNovoAluno" type="button" class="btn btn-success">
-                        <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
-                    </button>
-                </div>`
-            );
+            const defaultColumns = [
+                {
+                    data: 'foto',
+                    orderable: false,
+                    "width": "10%",
+                    "render": function(data, type, row) {
+                        //return `<img id="img-aluno-${row}" data-foto=${data} class="foto avatar-img rounded-circle" src="#" style="width: 40px; height: 40px;" />`
+                        return `<span id="img-aluno-${row}" data-foto="${data}" class="foto"><i class="fa fa-spin fa-spinner fa-2x"></i></span>`
+                    }
+                },
+                { 
+                    data: 'descricao',              
+                    orderable: false,
+                    "width": "80%"
+                },
+                {
+                    data: 'id',
+                    orderable: false,
+                    "width": "10%",
+                    "render": function(data, type, row) {
+                        return `<div class="dropdown">
+                                <button class="btn btn-sm btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-list"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+                                <li><a class="dropdown-item btn-editar-aluno" data-id="${data}" href="#">Editar</a></li>					
+                                </ul>
+                                </div>`
+                    }
+                }
+            ];
 
-            //$modalListaAluno.find('.modal-body').addClass('p-0');
-
-            $('#btnNovoAluno').click(NovoAlunoClick);
-
-            $tbAluno = 
-                CarregaDadosPessoa
+            $cadastroAluno = 
+                CarregaDataTable
                 (
-                    '#'+$modalListaAluno.attr('id'),
                     'Aluno',
+                    'Cadastrar Aluno',
+                    'modal-lg',
+                    `<table id="AlunoTb" class="row-border stripe hover" style="width:100%"></table>`,
+                    `<div class="footer-buttons">
+                        <button id="btnNovoAluno" type="button" class="btn btn-success">
+                            <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
+                        </button>
+                    </div>`,
+                    function (){
+                        $('#btnNovoAluno').click(NovoAlunoClick);                        
+                    },
+                    defaultColumns,
                     function(settings)
                     {
-                        $('.btn-editar-Aluno').off('click').on('click', EditarAlunoClick);
+                        $('.btn-editar-aluno').off('click').on('click', EditarAlunoClick);
 
                         $('.foto').each(function(){
                             var $this = $(this);
-
                             RestRequest(
                                 'GET',
                                 $baseApiUrl+'Imagem?codigo=' + $this.data('foto'),
@@ -50,12 +75,11 @@ function alunoClick(e) {
                                     xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
                                 },
                                 function (response, textStatus, jqXHR) {
-                                    $this.attr('src', response);      
+                                    $this.html(`<img class="avatar-img rounded-circle" src="${response}" style="width: 39px; height: 39px;" />`);      
                                 }); 
-
                         })
                     }
-                );
+                );               
         });
 }
 
@@ -77,7 +101,7 @@ function CriarModalAluno(onLoadCallback){
     $('#Pesquisar'+$modalAluno.attr('id')).remove();
 
     $modalAluno.on('hidden.bs.modal', function () {
-        $tbAluno.ajax.reload();
+        $cadastroAluno.tabela.ajax.reload();
     });
 
     $('#btnCancelar'+$modalAluno.attr('id')).click(CancelarAlunoClick);
@@ -219,7 +243,7 @@ function LoadAluno(onLoadCallback)
 {
     carregarTemplateModal('#'+$modalAluno.attr('id'),
         'templates/Aluno.html #frmAluno', {
-        modalTitle: 'Cadastro de Aluno',       
+        modalTitle: 'Cadastrar Aluno',       
         modalSize: 'modal-dialog-scrollable modal-xl',
         onLoad: function(response, status, xhr)
         {            
