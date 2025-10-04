@@ -1173,6 +1173,11 @@
 							e.preventDefault();
 							redirectToLogin();
 						});					
+					},
+					error: function(jqXHR, textStatus, errorThrown){
+						if (jqXHR.status === 401) {
+							redirectToLogin();
+						}
 					}
 				});
 			}
