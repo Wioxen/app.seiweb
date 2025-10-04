@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
+	<title>SEIWEB - Sistema Escolar Integrado</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
-	<link rel="icon" href="assets/img/kaiadmin/favicon.ico" type="image/x-icon"/>
+	<link rel="icon" href="assets/img/logo-icon.png" type="image/x-icon"/>
 
 	<!-- Fonts and icons -->
 	<script src="assets/js/plugin/webfont/webfont.min.js"></script>
@@ -369,7 +369,7 @@
 											<div class="col col-stats ms-3 ms-sm-0">
 												<div class="numbers">
 													<p class="card-category">Contas a pagar, Cobrança</p>
-													<h4 class="card-title">Financeiro</h4>
+													<h4 class="card-title">Tesouraria</h4>
 												</div>
 											</div>
 										</div>
@@ -935,7 +935,7 @@
 			<div class="custom-content">
 				<div class="switcher">
 					<div class="switch-block">
-						<h4>Logo Cabeçalho</h4>
+						<h4>Logo</h4>
 						<div class="btnSwitch">
 							<button type="button" class=" selected changeLogoHeaderColor" data-color="dark"></button>
 							<button type="button" class="changeLogoHeaderColor" data-color="blue"></button>
@@ -956,7 +956,7 @@
 						</div>
 					</div>
 					<div class="switch-block">
-						<h4>Barra de Navegação Cabeçalho</h4>
+						<h4>Barra de Navegação</h4>
 						<div class="btnSwitch">
 							<button type="button" class="changeTopBarColor" data-color="dark"></button>
 							<button type="button" class="changeTopBarColor" data-color="blue"></button>
@@ -1134,6 +1134,8 @@
 							</div>
 						</li>
 						<li>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Alterar Senha</a>
 							<div class="dropdown-divider"></div>
 							<a class="dropdown-item" href="#">Configuração</a>
 							<div class="dropdown-divider"></div>
