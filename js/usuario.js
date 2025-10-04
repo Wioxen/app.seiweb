@@ -121,6 +121,7 @@ function ResetDefaultUsuario(onLoadCallback){
     hideLoadingModal();
 
     modalUsuario = createDynamicModal();
+    modalUsuario.find('.modal-header-search').hide();
 
     carregarTemplateModal('#'+modalUsuario.attr('id'),
         'templates/'+resourceUsuario+'.html #frm'+resourceUsuario, {

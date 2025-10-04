@@ -691,7 +691,7 @@ function createDynamicModal() {
                         <h5 class="modal-title"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-header border-0 pb-0">
+                    <div class="modal-header modal-header-search border-0 pb-0">
                         <div class="input-group input-group-sm">
                             <input id="Pesquisar${modalId}" type="text" class="form-control form-control-sm text-uppercase" placeholder="Digite 3 ou mais caracteres">
                             <span class="input-group-text"><i class="fa fa-search"></i></span>
@@ -707,7 +707,7 @@ function createDynamicModal() {
                     </div>
                     <div class="modal-footer">
                         <div class="me-auto">
-                            <button id="${gerarHash(16)}" class="btn btn-warning btn-cancelar"><i class="fa fa-undo"></i> Cancelar</button>
+                            <button id="${gerarHash(16)}" class="btn btn-warning btn-cancelar"><i class="fa fa-ban"></i> Cancelar</button>
                             <button id="${gerarHash(16)}" class="btn btn-danger btn-excluir"><i class="fa fa-trash"></i> Excluir</button>
                             <button id="${gerarHash(16)}" class="btn btn-success btn-salvar"><i class="fa fa-check"></i> Salvar</button>
                         </div>	
