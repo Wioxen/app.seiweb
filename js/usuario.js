@@ -1,0 +1,295 @@
+var dataUsuario = undefined;
+var modalUsuario = undefined;
+var cadastroUsuario = undefined;
+var resourceUsuario = undefined;
+var $thisUsuario = undefined;
+    
+function DetailUsuario (d) {
+    console.log(d);
+    return `
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        Criado em
+        <small>${d.createdAt}</small>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div>
+        <div class="fw-bold">${d.email}</div>
+        ${(d.verifiedAt === null) ? `<a onclick="ReenviarEmail(this);" data-email=${d.email} href="#" class="badge text-bg-primary text-decoration-none"><i class="fa fa-envelope"></i> Reenviar</a>`:``}
+        </div>
+        ${(d.verifiedAt === null) ? '<span class="badge bg-warning text-dark rounded-pill"><i class="fa fa-refresh fa-spin"></i> Não Verificado</span>':`<span class="badge text-bg-success"><i class="fa fa-check"></i> Verificado</span>`}
+    </li>
+    </ul>
+    `;
+}
+
+function ReenviarEmail(e){
+    event.preventDefault();
+    var $this = $(e);
+    RestRequest('POST',
+        $baseApiUrl+"ReenviarNotificacaoDeRegistro?email="+$this.data('email'),
+        null,
+        null,
+        function (data) {
+            hideLoadingModal();
+            zAlerta("Solicitação enviada com sucesso.");
+        });
+}
+
+function UsuarioClick(e) {
+    $thisUsuario = $(e);
+    resourceUsuario = "Usuario";
+    RestRequest('GET',
+        `${$baseApiUrl}${resourceUsuario}`,
+        null,
+        null,
+        function (data) {
+            hideLoadingModal();
+            const defaultColumns = [
+                /*{
+                    class: 'warning-Usuario', orderable: false, searchable: false, data: null, defaultContent: '', "width": "2%",
+                    "render": function(data, type, row) {
+                        return `<span><i class="fa fa-exclamation-triangle text-warning"></i></span>`
+                    } 
+                },*/
+                {
+                    data: 'foto',
+                    orderable: false,
+                    "width": "6%",
+                    "render": function(data, type, row) {
+                        return `<span id="img-${resourceUsuario}-${row.id}" data-foto="${data}" class="photo"><i class="fa fa-spin fa-spinner fa-2x"></i></span>`
+                    }
+                },
+                { 
+                    data: null,              
+                    orderable: false,
+                    "width": "80%",
+                    "render": function(data, type, row) {
+                        return `<span>${row.firstName} ${row.lastName}</span>`
+                    }                    
+                },
+                { 
+                    data: null,              
+                    orderable: false,
+                    "width": "5%",
+                    "render": function(data, type, row) {
+                        return `<span class="badge text-bg-${(row.role === "gerente") ? 'dark':'primary'}">${row.role}</span>`
+                    }                    
+                },
+                {
+                    data: 'id',
+                    orderable: false,
+                    "width": "8%",
+                    "render": function(data, type, row) {
+                        return `<div class="dropdown">
+                                <button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+                                <li><a class="dropdown-item" href="#" onclick="Editar${resourceUsuario}Click(this);"><i class="fas fa-edit"></i> Editar</a></li>					
+                                </ul>
+                                </div>`                        
+                    }
+                }
+            ];
+
+            cadastroUsuario = 
+                CarregaDataTable
+                (
+                    'datatable/'+resourceUsuario,
+                    'Usuários',
+                    'modal-lg',
+                    `<table id="${resourceUsuario}Tb" class="row-border stripe hover" style="width:100%"></table>`,
+                    `<div class="footer-buttons">
+                        <button id="K2Od4nfzY03Xpqki" type="button" class="btn btn-success" onclick="Novo${resourceUsuario}Click(this);">
+                            <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
+                        </button>
+                    </div>`,
+                    null,
+                    defaultColumns,
+                    function(settings)
+                    {
+                        CarregarFotoLista('.photo');
+                    },
+                    false,
+                    DetailUsuario
+                );                         
+        });      
+}
+
+function ResetDefaultUsuario(onLoadCallback){
+    hideLoadingModal();
+
+    modalUsuario = createDynamicModal();
+
+    carregarTemplateModal('#'+modalUsuario.attr('id'),
+        'templates/'+resourceUsuario+'.html #frm'+resourceUsuario, {
+        modalTitle: 'Cadastrar Usuário',       
+        modalSize: 'modal-dialog-scrollable modal-lg',
+        onLoad: function(response, status, xhr)
+        {            
+            modalUsuario.find('.btn-cancelar').click(CancelarUsuarioClick);
+            modalUsuario.find('.btn-excluir').click(ExcluirUsuarioClick);    
+            modalUsuario.find('.btn-salvar').click(SalvarUsuarioClick);            
+
+            $('#uploadFoto'+resourceUsuario).off('click').on('click', uploadFotoUsuario);
+            $('#apagarFoto'+resourceUsuario).off('click').on('click', apagarFotoUsuario);
+            $('#fileUpload'+resourceUsuario).off('change').on('change', fileUploadUsuario);
+
+            if ((dataUsuario !== undefined) && (dataUsuario != null) && (dataUsuario.id !== 0))
+            {
+                preencherFormularioCompleto(dataUsuario, '#frm'+resourceUsuario);
+
+                CarregarFoto($('#Foto'+resourceUsuario), dataUsuario.photo);
+
+                carregaSelect2('ControleAcesso',modalUsuario,'#selectUsuarioAcesso','id', ConvertToInt(dataUsuario.controlaccessid));
+
+                $('#UsuarioPhone').trigger('input').trigger('change');
+                $('#UsuarioPhoneWhats').prop('checked',(dataUsuario.phoneWhats === 1));
+                $('#UsuarioStatus').prop('checked',(dataUsuario.status === 1));
+                $(`input[name="UsuarioRole"][value="${dataUsuario.role}"]`).prop('checked', true);
+            } else {
+                carregaSelect2('ControleAcesso',modalUsuario,'#selectUsuarioAcesso','id');
+            }
+
+            if (typeof onLoadCallback === 'function') {
+                onLoadCallback(response, status, xhr);
+            }          
+        }
+    });      
+}
+
+function NovoUsuarioClick(e){
+    event.preventDefault();
+    RestRequest('GET',
+        `${$baseApiUrl}${resourceUsuario}/novo`,
+        null,
+        null,
+        function (data) {
+            dataUsuario = {id: 0, firstname: null };
+            ResetDefaultUsuario(
+            function(response, status, xhr){
+                if (!modalUsuario.hasClass('show') && !modalUsuario.is(':visible')) 
+                {
+                    modalUsuario.modal('show');                
+                    toggleModalBody('#'+modalUsuario.attr('id'), false);
+                    setTimeout(() => {
+                        $('#UsuarioFirstName').focus();
+                    }, 500);            
+                }          
+            });
+        });    
+}
+
+function CancelarUsuarioClick(e){
+    e.preventDefault();
+    dataUsuario = undefined;
+    modalUsuario.modal('hide');
+}
+
+function EditarUsuarioClick(e){
+    event.preventDefault();
+
+    RestRequest('GET',
+        `${$baseApiUrl}${resourceUsuario}`,
+        null,
+        null,
+        function (data) {
+            GetUsuario(e.closest('tr').id,
+            function (data) {
+                hideLoadingModal();
+                dataUsuario = data;
+                ResetDefaultUsuario(function(response, status, xhr){
+                    if (!modalUsuario.hasClass('show') && !modalUsuario.is(':visible')) 
+                    {
+                        modalUsuario.modal('show');                
+                        toggleModalBody('#'+modalUsuario.attr('id'), false);
+                        setTimeout(() => {
+                            $('#UsuarioFirstName').focus();
+                        }, 500);            
+                    }
+                });
+            });
+        });
+}
+
+function SalvarUsuarioClick(e){
+    e.preventDefault();
+
+    if ((dataUsuario !== undefined) && (dataUsuario !== null))
+    {
+        dataUsuario.firstname = StrToValue($('#UsuarioFirstName').val());
+        dataUsuario.lastname = StrToValue($('#UsuarioLastName').val());
+        dataUsuario.email = StrToValue($('#UsuarioEmail').val());
+        dataUsuario.phone = StrToValue($('#UsuarioPhone').val());
+        dataUsuario.phonewhats = checkboxValue($('#UsuarioPhoneWhats'),1,0);
+        dataUsuario.role = $('input[name="UsuarioRole"]:checked').val();
+        dataUsuario.status = checkboxValue($('#UsuarioStatus'),1,0);
+        dataUsuario.controlaccessid = IntToValue(parseInt($('#UsuarioAcesso').val()));
+
+        RestRequest((dataUsuario.id === 0 ? 'POST' : 'PUT'),
+            $baseApiUrl+"Usuario"+(dataUsuario.id === 0 ? '' : `/${dataUsuario.id}`),
+            dataUsuario,
+            null,
+            function (response, textStatus, jqXHR) {
+                hideLoadingModal();
+                cadastroUsuario.tabela.ajax.reload(); 
+                modalUsuario.modal('hide');            
+            });  
+    }    
+}
+
+function ExcluirUsuarioClick(e){
+    e.preventDefault();
+    if ((dataUsuario !== undefined) && (dataUsuario !== null)){
+        if (dataUsuario.id !== 0){
+            zPergunta_Exclui(function(e){
+                e.preventDefault();
+                RestRequest('DELETE',
+                    $baseApiUrl+resourceUsuario+"/"+dataUsuario.id,
+                    null,
+                    null,
+                    function (data) {
+                        hideLoadingModal();
+                        setTimeout(() => {
+                            CancelarUsuarioClick(e);
+                            cadastroUsuario.tabela.ajax.reload();
+                        }, 500);                     
+                    });  
+            });        
+        }
+    }
+}
+
+function uploadFotoUsuario(e) {
+    e.preventDefault();
+    $('#fileUploadUsuario').trigger('click');
+}
+
+function apagarFotoUsuario() {
+    dataUsuario.photo = null;
+    $('#fileUploadUsuario').val('');
+    $('#FotoUsuario').find('img').attr('src', '#');
+}
+
+function fileUploadUsuario(e) {
+    EnviarImagem($(this), 
+    function (repo) {
+        dataUsuario.photo = repo;
+        CarregarFoto($('#FotoUsuario'), repo);
+    });
+}
+
+function GetUsuario(id,onSuccessCallback){
+    RestRequest('GET',
+        $baseApiUrl+resourceUsuario+"/"+id,
+        null,
+        function(xhr){
+            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
+        },
+        function(response, status, xhr){
+            if (typeof onSuccessCallback === 'function') {
+                onSuccessCallback(response, status, xhr);
+            }            
+        });    
+}

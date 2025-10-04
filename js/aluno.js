@@ -3,6 +3,18 @@ var $thisAluno = undefined;
 var $modalAluno = undefined;
 var $cadastroAluno = undefined;
 
+function DetailAluno (d) {
+    return `
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">An item</li>
+  <li class="list-group-item">A second item</li>
+  <li class="list-group-item">A third item</li>
+  <li class="list-group-item">A fourth item</li>
+  <li class="list-group-item">And a fifth one</li>
+</ul>
+    `;
+}
+
 function alunoClick(e) {
     $thisAluno = $(e);
 
@@ -14,13 +26,17 @@ function alunoClick(e) {
             hideLoadingModal();
 
             const defaultColumns = [
+                {class: 'warning-aluno', orderable: false, searchable: false, data: null, defaultContent: '', "width": "2%",
+                    "render": function(data, type, row) {
+                        return `<span><i class="fa fa-exclamation-triangle text-warning"></i></span>`
+                    } },
                 {
                     data: 'foto',
                     orderable: false,
-                    "width": "10%",
+                    "width": "6%",
                     "render": function(data, type, row) {
                         //return `<img id="img-aluno-${row}" data-foto=${data} class="foto avatar-img rounded-circle" src="#" style="width: 40px; height: 40px;" />`
-                        return `<span id="img-aluno-${row}" data-foto="${data}" class="foto"><i class="fa fa-spin fa-spinner fa-2x"></i></span>`
+                        return `<span id="img-aluno-${row.id}" data-foto="${data}" class="foto"><i class="fa fa-spin fa-spinner fa-2x"></i></span>`
                     }
                 },
                 { 
@@ -31,16 +47,16 @@ function alunoClick(e) {
                 {
                     data: 'id',
                     orderable: false,
-                    "width": "10%",
+                    "width": "8%",
                     "render": function(data, type, row) {
                         return `<div class="dropdown">
-                                <button class="btn btn-sm btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-list"></i>
+                                <button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h"></i>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-                                <li><a class="dropdown-item btn-editar-aluno" data-id="${data}" href="#">Editar</a></li>					
+                                <li><a class="dropdown-item" href="#" onclick="EditarAlunoClick(this);"><i class="fas fa-edit"></i> Editar</a></li>					
                                 </ul>
-                                </div>`
+                                </div>`                        
                     }
                 }
             ];
@@ -48,87 +64,83 @@ function alunoClick(e) {
             $cadastroAluno = 
                 CarregaDataTable
                 (
-                    'Aluno',
-                    'Cadastrar Aluno',
-                    'modal-lg',
+                    'datatable/aluno',
+                    'Alunos',
+                    'modal-xl',
                     `<table id="AlunoTb" class="row-border stripe hover" style="width:100%"></table>`,
                     `<div class="footer-buttons">
-                        <button id="btnNovoAluno" type="button" class="btn btn-success">
+                        <button id="btnNovoAluno" type="button" class="btn btn-success" onclick="NovoAlunoClick(this);">
                             <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
                         </button>
                     </div>`,
-                    function (){
-                        $('#btnNovoAluno').click(NovoAlunoClick);                        
-                    },
+                    null,
                     defaultColumns,
                     function(settings)
                     {
-                        $('.btn-editar-aluno').off('click').on('click', EditarAlunoClick);
-
-                        $('.foto').each(function(){
-                            var $this = $(this);
-                            RestRequest(
-                                'GET',
-                                $baseApiUrl+'Imagem?codigo=' + $this.data('foto'),
-                                null,
-                                function (xhr) {
-                                    xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-                                },
-                                function (response, textStatus, jqXHR) {
-                                    $this.html(`<img class="avatar-img rounded-circle" src="${response}" style="width: 39px; height: 39px;" />`);      
-                                }); 
-                        })
-                    }
+                        CarregarFoto('.foto');
+                    },
+                    false,
+                    DetailAluno
                 );               
         });
 }
 
-function CriarModalAluno(onLoadCallback){
+function ResetDefaultAluno(onLoadCallback){
     hideLoadingModal();
     
-    $modalAluno = createDynamicModal
-    (
-        `<div class="dropdown">
-        <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa fa-list"></i> Mais opções
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-        <li><a class="dropdown-item" href="#" onclick="AlunoBairroClick(this);">BAIRRO</a></li>					
-        </ul>
-        </div>`
-    );
+    $modalAluno = createDynamicModal("",null,false);
 
-    $('#Pesquisar'+$modalAluno.attr('id')).remove();
+    carregarTemplateModal('#'+$modalAluno.attr('id'),
+        'templates/Aluno.html #frmAluno', {
+        modalTitle: 'Cadastrar Aluno',       
+        modalSize: 'modal-dialog-scrollable modal-xl',
+        onLoad: function(response, status, xhr)
+        {            
+            $('#btnCancelar'+$modalAluno.attr('id')).click(CancelarAlunoClick);
+            $('#btnExcluir'+$modalAluno.attr('id')).click(ExcluirAlunoClick);    
+            $('#btnSalvar'+$modalAluno.attr('id')).click(SalvarAlunoClick);            
 
-    $modalAluno.on('hidden.bs.modal', function () {
-        $cadastroAluno.tabela.ajax.reload();
-    });
+            preencherFormularioCompleto(dataAluno, '#frmAluno');
 
-    $('#btnCancelar'+$modalAluno.attr('id')).click(CancelarAlunoClick);
-    $('#btnExcluir'+$modalAluno.attr('id')).click(ExcluirAlunoClick);    
-    $('#btnSalvar'+$modalAluno.attr('id')).click(SalvarAlunoClick);            
+            CarregarFotoAluno();
+            
+            carregaSelect('lista/saidadoaluno','#selectSaida','id',false,(dataAluno.saidaDoAlunoId === undefined) ? null:dataAluno.saidaDoAlunoId);
+            carregaSelect('lista/sexo','#selectSexo','codigo',false,(dataAluno.pessoa.sexo === undefined) ? null:dataAluno.pessoa.sexo);
 
-    LoadAluno(function(response, status, xhr){
-        if (typeof onLoadCallback === 'function') {
-            onLoadCallback(response, status, xhr);
+            $('#AlunoDtNasc').val(DateToStr(dataAluno.pessoa.dtNasc)).trigger('input').trigger('change');
+            $('#AlunoCpf').val(VarToStr(dataAluno.pessoa.cpfCnpj)).trigger('input').trigger('change');
+
+            $('#uploadFotoAluno').off('click').on('click', uploadFotoAluno);
+            $('#apagarFotoAluno').off('click').on('click', apagarFotoAluno);
+            $('#fileUploadAluno').off('change').on('change', fileUploadAluno);
+
+            $('#btnAlunoCep').off('click').on('click', ConsultaCepAluno);
+
+            if (typeof onLoadCallback === 'function') {
+                onLoadCallback(response, status, xhr);
+            }          
         }
-    });            
+    });      
 }
 
 function NovoAlunoClick(e){
-    e.preventDefault();
+    event.preventDefault();
     dataAluno = {id: 0, pessoa: {id: 0}};
     RestRequest('POST',
         $baseApiUrl+"usuariomodulo",
         {modulo : $thisAluno.attr('data-modulo')+"1"},
         null,
         function (data) {
-            CriarModalAluno(
+            ResetDefaultAluno(
             function(response, status, xhr){
-                toggleModalBody('#'+$modalAluno.attr('id'), false);
-                setTimeout(() => {
-                    $('#cnpj').focus();
-                }, 500);            
+                if (!$modalAluno.hasClass('show') && !$modalAluno.is(':visible')) 
+                {
+                    $modalAluno.modal('show');                
+                    toggleModalBody('#'+$modalAluno.attr('id'), false);
+                    setTimeout(() => {
+                        $('#AlunoNome').focus();
+                    }, 500);            
+                }          
             });
         });    
 }
@@ -140,23 +152,22 @@ function CancelarAlunoClick(e){
 }
 
 function EditarAlunoClick(e){
-    e.preventDefault();
-    var $thisButton = $(this);
-    RestRequest('GET',
-        $baseApiUrl+"Aluno/"+$thisButton.data('id'),
-        null,
-        null,
-        function (data) {
+    event.preventDefault();
+    
+    GetAluno(e.closest('tr').id,
+    function (data) {
             dataAluno = data;
-            CriarModalAluno(function(response, status, xhr){
-                toggleModalBody('#'+$modalAluno.attr('id'), false);
-                setTimeout(() => {
-                    CarregarFotoAluno();
-                    preencherFormularioCompleto(dataAluno, '#frmAluno');
-                    $('#descricao').focus();
-                }, 500);            
+            ResetDefaultAluno(function(response, status, xhr){
+                if (!$modalAluno.hasClass('show') && !$modalAluno.is(':visible')) 
+                {
+                    $modalAluno.modal('show');                
+                    toggleModalBody('#'+$modalAluno.attr('id'), false);
+                    setTimeout(() => {
+                        $('#AlunoNome').focus();
+                    }, 500);            
+                }
             });
-        });
+    });
 }
 
 function ExcluirAlunoClick(e){
@@ -173,6 +184,7 @@ function ExcluirAlunoClick(e){
                         hideLoadingModal();
                         setTimeout(() => {
                             CancelarAlunoClick(e);
+                            $cadastroAluno.tabela.ajax.reload();
                         }, 500);                     
                     });  
             });        
@@ -185,7 +197,12 @@ function SalvarAlunoClick(e){
 
     if ((dataAluno !== undefined) && (dataAluno !== null))
     {
-        dataAluno.pessoa.descricao = $('#AlunoDescricao').val().trim() ? $('#AlunoDescricao').val().toUpperCase() : null;
+        dataAluno.saidaDoAlunoId = StrToInt($('#AlunoSaida').val());
+        dataAluno.pessoa.descricao = StrToValue($('#AlunoNome').val());
+        dataAluno.pessoa.dtNasc = StrToDate($('#AlunoDtNasc').val());
+        dataAluno.pessoa.sexo = StrToValue($('#AlunoSexo').val());
+        dataAluno.pessoa.rg = StrToValue($('#AlunoRg').val());
+        dataAluno.pessoa.cpfCnpj = StrToValue(extrairNumeros($('#AlunoCpf').val()));
 
         RestRequest((dataAluno.id === 0 ? 'POST' : 'PUT'),
             $baseApiUrl+"Aluno"+(dataAluno.id === 0 ? '' : `/${dataAluno.id}`),
@@ -194,9 +211,15 @@ function SalvarAlunoClick(e){
             function (response, textStatus, jqXHR) {
                 if (jqXHR.status === 201){
                     dataAluno.id = response.id;
-                }                
-                hideLoadingModal();
-                $modalAluno.modal('hide');
+                }               
+
+                GetAluno(dataAluno.id,
+                        function (response, textStatus, jqXHR) {
+                            hideLoadingModal();
+                            $('#rm').val(response.rm);
+                            $('#AlunoSenhaNet').val(response.pessoa.senhaNet);
+                            $cadastroAluno.tabela.ajax.reload();             
+                        });                 
             });  
     }    
 }
@@ -219,11 +242,11 @@ function CarregarFotoAluno()
             $baseApiUrl+'Imagem?codigo=' + dataAluno.pessoa.foto,
             null,
             function (xhr) {
+                $('#FotoAluno').html('<i class="fa fa-spin fa-spinner fa-3x"></i>');
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             },
             function (response, textStatus, jqXHR) {
-                console.log(jqXHR);     
-                $('#FotoAluno').attr('src', response);      
+                $('#FotoAluno').html(`<img class="card-img-top rounded-circle" src="${response}" alt="[FOTO]" style="max-height: 140px; width: 140px;" />`);      
             });    
     }
 }
@@ -234,26 +257,45 @@ function fileUploadAluno(e) {
         function (repo) {
             console.log(repo);
             dataAluno.pessoa.foto = repo;
-            CarregarFotoAluno();
+            //CarregarFotoAluno();
         });
     }
 }
 
-function LoadAluno(onLoadCallback)
-{
-    carregarTemplateModal('#'+$modalAluno.attr('id'),
-        'templates/Aluno.html #frmAluno', {
-        modalTitle: 'Cadastrar Aluno',       
-        modalSize: 'modal-dialog-scrollable modal-xl',
-        onLoad: function(response, status, xhr)
-        {            
-            $('#uploadFotoAluno').off('click').on('click', uploadFotoAluno);
-            $('#apagarFotoAluno').off('click').on('click', apagarFotoAluno);
-            $('#fileUploadAluno').off('change').on('change', fileUploadAluno);
+function AlunoNovoSaidaClick(e){
+    event.preventDefault();
+    dataSaidaDoAluno = {id: 0, descricao: null};
+    SaidaDoAlunoClick(function(response, textStatus, jqXHR){
+        carregaSelect('lista/saidadoaluno','#selectSaida','id',false,response.id);
+    },
+    function(response, textStatus, jqXHR){
+        carregaSelect('lista/saidadoaluno','#selectSaida','id',false,dataAluno.saidaDoAlunoId);
+    });
+}
 
-            if (typeof onLoadCallback === 'function') {
-                onLoadCallback(response, status, xhr);
-            }
-        }
-    });            
+function GetAluno(id,onSuccessCallback){
+    RestRequest('GET',
+        $baseApiUrl+"Aluno/"+id,
+        null,
+        null,
+        function(response, status, xhr){
+            if (typeof onSuccessCallback === 'function') {
+                onSuccessCallback(response, status, xhr);
+            }            
+        });    
+}
+
+function ConsultaCepAluno(){
+    buscaCep($('#cep'),
+        function(data){
+            hideLoadingModal();
+            dataAluno.pessoa.bairroId = data.bairro.id;
+            dataAluno.pessoa.bairro = data.bairro;
+            $('#AlunoEndereco').val(data.endereco);
+            $('#AlunoBairro').val(data.bairro.descricao);
+            $('#AlunoComplemento').val(data.complemento);
+            $('#AlunoMunicipio').val(data.bairro.municipio.descricao);
+            $('#AlunoUf').val(data.bairro.municipio.uf);
+            $('#AlunoNumero').focus();
+        });
 }

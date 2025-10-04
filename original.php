@@ -328,13 +328,30 @@
 							<li class="nav-item topbar-user dropdown hidden-caret">
 								<a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
 									<div class="avatar-sm" id="avatar-container">
-										<!--<img src="#" alt="" class="avatar-img rounded-circle">-->
+										<img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
 									</div>
 									<span class="profile-username" id="username-container">
-										<!--<span class="op-7"></span> <span class="fw-bold"></span>-->
+										<span class="op-7">Hi,</span> <span class="fw-bold">Hizrian</span>
 									</span>
 								</a>
-								<ul id="dropdown_user" class="dropdown-menu dropdown-user animated fadeIn">
+								<ul class="dropdown-menu dropdown-user animated fadeIn">
+									<div class="dropdown-user-scroll scrollbar-outer">
+										<li>
+											<div class="user-box">
+												<div class="avatar-lg"><img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+												<div class="u-text">
+													<h4>Hizrian</h4>
+													<p class="text-muted">hello@example.com</p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item" href="#">Configuração</a>
+											<div class="dropdown-divider"></div>
+											<a id="Logout" class="dropdown-item" href="#">Logout</a>
+										</li>
+									</div>
 								</ul>
 							</li>
 						</ul>
@@ -359,42 +376,38 @@
 						<div class="col-sm-6 col-md-3">
 							<div class="card card-stats card-round">
 								<div class="card-body ">
-									<a href="#">
-										<div class="row align-items-center">
-											<div class="col-icon">
-												<div class="icon-big text-center icon-primary bubble-shadow-small">
-													<i class="fas fa-hand-holding-usd"></i>
-												</div>
-											</div>
-											<div class="col col-stats ms-3 ms-sm-0">
-												<div class="numbers">
-													<p class="card-category">Contas a pagar, Cobrança</p>
-													<h4 class="card-title">Financeiro</h4>
-												</div>
+									<div class="row align-items-center">
+										<div class="col-icon">
+											<div class="icon-big text-center icon-primary bubble-shadow-small">
+												<i class="fas fa-users"></i>
 											</div>
 										</div>
-									</a>
+										<div class="col col-stats ms-3 ms-sm-0">
+											<div class="numbers">
+												<p class="card-category">Visitors</p>
+												<h4 class="card-title">1,294</h4>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="col-sm-6 col-md-3">
 							<div class="card card-stats card-round">
 								<div class="card-body">
-									<a href="#">
-										<div class="row align-items-center">
-											<div class="col-icon">
-												<div class="icon-big text-center icon-info bubble-shadow-small">
-													<i class="fas fa-user-check"></i>
-												</div>
+									<div class="row align-items-center">
+										<div class="col-icon">
+											<div class="icon-big text-center icon-info bubble-shadow-small">
+												<i class="fas fa-user-check"></i>
 											</div>
-											<div class="col col-stats ms-3 ms-sm-0">
-												<div class="numbers">
-													<p class="card-category">E-mail, SMS, Notificações</p>
-													<h4 class="card-title">Mensagens</h4>
-												</div>
+										</div>
+										<div class="col col-stats ms-3 ms-sm-0">
+											<div class="numbers">
+												<p class="card-category">Subscribers</p>
+												<h4 class="card-title">1303</h4>
 											</div>
-										</div>										
-									</a>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -410,7 +423,7 @@
 											</div>
 											<div class="col col-stats ms-3 ms-sm-0">
 												<div class="numbers">
-													<p class="card-category">Gabarito, Relatórios, Estatísticas</p>
+													<p class="card-category"></p>
 													<h4 class="card-title">Correção</h4>
 												</div>
 											</div>
@@ -431,7 +444,7 @@
 										</div>
 										<div class="col col-stats ms-3 ms-sm-0">
 											<div class="numbers">
-												<p class="card-category">Cadastro de acervo, Empréstimo ...</p>
+												<p class="card-category"></p>
 												<h4 class="card-title">Biblioteca</h4>
 											</div>
 										</div>
@@ -911,19 +924,24 @@
 					<nav class="pull-left">
 						<ul class="nav">
 							<li class="nav-item">
-								<a class="nav-link nav-link-x" href="#">
-									Suporte <i class="fa fa-whatsapp"></i>
+								<a class="nav-link" href="http://www.themekita.com">
+									ThemeKita
 								</a>
 							</li>
-							<li class="nav-item ">
-								<a class="nav-link nav-link-x" href="#">
-									Licenses <i class="fas fa-key"></i>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Help
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Licenses
 								</a>
 							</li>
 						</ul>
 					</nav>
 					<div class="copyright ms-auto">
-						2025, v1.0.0 <i class="fas fa-bolt text-warning"></i> by <a href=#">SEIWEB</a>
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="http://www.themekita.com">ThemeKita</a>
 					</div>				
 				</div>
 			</footer>
@@ -1012,9 +1030,7 @@
 	<script src="assets/js/plugin/chart-circle/circles.min.js"></script>
 
 	<!-- Datatables -->
-	<script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
-	<script src="https://cdn.datatables.net/select/3.1.0/js/dataTables.select.js"></script>
-	<script src="https://cdn.datatables.net/select/3.1.0/js/select.dataTables.js"></script>
+	<script src="assets/js/plugin/datatables/datatables.min.js"></script>
 
 	<!-- Bootstrap Notify -->
 	<script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
@@ -1104,77 +1120,64 @@
 				
 		
 		localStorage.setItem('login_url',$loginUrl+'index.php?access_token='+$('#accesstoken').val());
-		localStorage.setItem('token','Bearer '+$('#authkey').val());			
+		localStorage.setItem('token','Bearer '+$('#authkey').val());	
+		
 	// Função para mostrar spinners e depois o conteúdo real após 3 segundos
 			function initializeProfileSpinners() {
 				// Container para a imagem do avatar
 				const avatarContainer = document.getElementById('avatar-container');
 				// Container para o nome de usuário
 				const usernameContainer = document.getElementById('username-container');
-				const dropdownuser = document.getElementById('dropdown_user');
+				//const dropdownuser = document.getElementById('dropdown_user');
 				
 				
 				// Salvar o conteúdo original
 				const originalAvatar = `
-					<img src="#" alt="..." class="avatar-img rounded-circle">
+					<img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
 				`;
 				const originalUsername = `
-					<span class="op-7">Olá,</span> <span class="fw-bold first-name">Igor</span>
+					<span class="op-7">Olá,</span> <span class="fw-bold">Igor</span>
 				`;
 				
-				const originalDropdownuser = `
+				/*const originalDropdownuser = `
 					<div class="dropdown-user-scroll scrollbar-outer">
 						<li>
 							<div class="user-box">
-								<div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
+								<div class="avatar-lg"><img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
 								<div class="u-text">
-									<h4 class="first-name">Igor</h4>
-									<p class="text-muted"></p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Meu Perfil</a>
+									<h4>Igor</h4>
+									<p class="text-muted">hello@example.com</p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
 								</div>
 							</div>
 						</li>
 						<li>
 							<div class="dropdown-divider"></div>
-							<a id="Logout" class="dropdown-item" href="#">Configuração</a>
-							<div class="dropdown-divider"></div>
 							<a id="Logout" class="dropdown-item" href="#">Logout</a>
 						</li>
 					</div>
-				`;				
+				`;*/
+				
+				// Adicionar spinners
+				avatarContainer.innerHTML = `
+					<div class="spinner-container">
+						<div class="avatar-spinner"></div>
+					</div>
+				`;
+				usernameContainer.innerHTML = `
+					<div class="username-spinner"></div>
+				`;
 				
 				// Restaurar conteúdo original após 3 segundos
-				$.ajax({
-					url: `${$baseApiUrl}Perfil`,
-					method: 'GET',
-					dataType: 'json',
-					beforeSend: function (xhr) {
-			            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-			
-						// Adicionar spinners
-						avatarContainer.innerHTML = `
-							<div class="spinner-container">
-								<div class="avatar-spinner"></div>
-							</div>
-						`;
-						usernameContainer.innerHTML = `
-							<div class="username-spinner"></div>
-						`;						
-					},
-					success: function(data) {
-						avatarContainer.innerHTML = originalAvatar;
-						usernameContainer.innerHTML = originalUsername;
-						dropdownuser.innerHTML = originalDropdownuser;
-
-						$('.first-name').text(data.firstname);
-						$('.u-text').find('p').text(data.email);
-						$('.avatar-img').attr('src',data.photo);
-						
-						$('#Logout').off('click').on('click', (e) => {
-							e.preventDefault();
-							redirectToLogin();
-						});					
-					}
-				});
+				setTimeout(() => {
+					avatarContainer.innerHTML = originalAvatar;
+					usernameContainer.innerHTML = originalUsername;
+					//dropdownuser.innerHTML = originalDropdownuser;
+					
+					$('#Logout').off('click').on('click', (e) => {
+						e.preventDefault();
+						redirectToLogin();
+					});
+				}, 3000);
 			}
 			
 			// Inicializar os spinners
@@ -1274,8 +1277,5 @@
 			//$('#loadingModal').modal('show');
 	});
 	</script>		
-	<script>
-		
-	</script>	
 </body>
 </html>

@@ -1,25 +1,11 @@
 var dataBairro = undefined;
-var $thisBairro = undefined;
 var $modalBairro = undefined;
 
-function bairroClick(e, data, callbackOnClose)
+function bairroClick(onSuccessCallback)
 {
-    $thisBairro = $(e);
-    //dataBairro = undefined;    
-    
-    $modalBairro = createDynamicModal
-    (`<div class="dropdown dropup">
-            <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-list"></i> Mais Opções
-            </button>
-            <ul id="crud-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li>
-            <a class="dropdown-item" href="#" onclick="BairroMunicipioClick(this);">MUNICÍPIO</a></li>
-            </ul>
-     </div>`, 
-     callbackOnClose);
+    $modalBairro = createDynamicModal();
 
-    configurarAutocomplete(
+     configurarAutocomplete(
         '#Pesquisar'+$modalBairro.attr('id'),
         $baseApiUrl+'AutoComplete?table=Bairro',
         {
@@ -34,8 +20,8 @@ function bairroClick(e, data, callbackOnClose)
                         $baseApiUrl+"Bairro/"+item.id,
                         null,
                         null,
-                        function (data) {
-                            dataBairro = data;
+                        function (r) {
+                            dataBairro = r;
                             hideLoadingModal();
                             setTimeout(() => {
                                 $('#BairroDescricao').val(dataBairro.descricao).focus();
@@ -50,21 +36,12 @@ function bairroClick(e, data, callbackOnClose)
     $('#btnNovo'+$modalBairro.attr('id')).click(NovoBairroClick);
     $('#btnCancelar'+$modalBairro.attr('id')).click(CancelarBairroClick);
     $('#btnExcluir'+$modalBairro.attr('id')).click(ExcluirBairroClick);
-    $('#btnSalvar'+$modalBairro.attr('id')).click(SalvarBairroClick);
+    $('#btnSalvar'+$modalBairro.attr('id')).click(e => {
+        e.preventDefault();
+        SalvarBairro(onSuccessCallback);
+    });
 
-    if ((data !== null) && (data !== undefined))
-    {
-        dataBairro = data;
-        LoadBairro(function(response, status, xhr){
-            toggleModalBody('#'+$modalBairro.attr('id'), false);
-            setTimeout(() => {
-                $('#BairroDescricao').val(dataBairro.descricao).focus();
-            }, 600);
-        });
-    } else 
-    {
-        LoadBairro();
-    }    
+    LoadBairro();
 }
 
 function NovoBairroClick(e){
@@ -81,11 +58,7 @@ function NovoBairroClick(e){
 function CancelarBairroClick(e){
     e.preventDefault();
     dataBairro = undefined;
-    LoadBairro(function(response, status, xhr){
-        setTimeout(() => {
-            $('#Pesquisar'+$modalBairro.attr('id')).focus();
-        }, 500);            
-    });
+    $modalBairro.modal('hide');
 }
 
 function ExcluirBairroClick(e){
@@ -109,9 +82,8 @@ function ExcluirBairroClick(e){
     }
 }
 
-function SalvarBairroClick(e){
-    e.preventDefault();
-
+function SalvarBairro(onSuccessCallback)
+{
     if ((dataBairro !== undefined) && (dataBairro !== null)){
         dataBairro.descricao = $('#BairroDescricao').val().toUpperCase();
     
@@ -120,11 +92,24 @@ function SalvarBairroClick(e){
             dataBairro,
             null,
             function (response, textStatus, jqXHR) {
-                hideLoadingModal();
                 if (jqXHR.status === 201){
                     dataBairro.id = response.id;
                 }
-                $modalBairro.modal('hide');
+                RestRequest('GET',
+                    $baseApiUrl+'bairro/' + dataBairro.id,
+                    null,
+                    function (xhr) {
+                        xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
+                    },
+                    function (response, textStatus, jqXHR) {
+                        hideLoadingModal();
+
+                        $modalBairro.modal('hide');
+                        
+                        if (typeof onSuccessCallback === 'function') {
+                            onSuccessCallback(response, textStatus, jqXHR);
+                        }                
+                    });                  
             });  
     }    
 }
@@ -139,7 +124,7 @@ function LoadBairro(onLoadCallback)
         autocompleteCampo: '#Pesquisar'+$modalBairro.attr('id'),
         autocomplete: {
             onSelect: function(item) {
-                if (item.id != 0)
+                if ((item.id !== 0) && (item.id !== null))
                 {
                     RestRequest('GET',
                         $baseApiUrl+"Bairro/"+item.id,
@@ -180,42 +165,29 @@ function LoadBairro(onLoadCallback)
                         };
                     },                                 
                     onSelect: function(item) {
-                        dataBairro.municipioId = null;
-                        dataBairro.municipio = null;
-                        $('#BairroMunicipio').val('');    
-
-                        if ((item.id !== 0) && (item.id !== null))
+                        if ((item.id === 0) || (item.id === undefined) || (item.id === null))
                         {
-                            dataBairro.municipioId = item.id;
-                            $('#BairroMunicipio').val(item.descricao);    
+                            dataMunicipio = {id: 0, descricao: item.descricao};
+                            MunicipioClick(BairroMunicipioSuccess);
                         }
-
-                        if (item.id === 0){
-                            MunicipioClick(
-                            $('#BairroMunicipio'),
-                            {id: 0, descricao: item.descricao, ibge: ""}, 
-                            function()
-                            {
-                                if ((dataMunicipio !== undefined) && (dataMunicipio !== null))
-                                {
-                                    RestRequest('GET',
-                                        $baseApiUrl+'municipio/' + dataMunicipio.id,
-                                        null,
-                                        function (xhr) {
-                                            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-                                        },
-                                        function (response, textStatus, jqXHR) {
-                                            dataBairro.municipioId = response.id;
-                                            dataBairro.municipio = response;    
-                                        
-                                            $('#BairroMunicipio').val(response.descricao);
-                                        });                                      
-                                }
+                        else 
+                        {
+                            GetMunicipio(item.id,function(response){
+                                dataBairro.municipio = response;
+                                dataBairro.municipioId = response.id;
+                                $('#municipio').val(response.descricao);                                                    
                             });
-                        }                        
+                        }                      
                     }
                 }
             );  
+
+            toggleModalBody('#'+$modalBairro.attr('id'), false);
+
+            setTimeout(() => {
+                $('#BairroDescricao').val((dataBairro === null || dataBairro === undefined)?"":dataBairro.descricao).focus();
+                $('#BairroMunicipio').val((dataBairro === null || dataBairro === undefined)?"":dataBairro.municipio.descricao);
+            }, 600);
 
             if (typeof onLoadCallback === 'function') {
                 onLoadCallback(response, status, xhr);
@@ -224,6 +196,34 @@ function LoadBairro(onLoadCallback)
     });  
 }
 
-function BairroMunicipioClick(e){
-    MunicipioClick(e);
+function BairroEditarMunicipioClick(e){
+    event.preventDefault();
+    dataMunicipio = dataBairro.municipio;
+    MunicipioClick(BairroMunicipioSuccess);
+}
+
+function BairroNovoMunicipioClick(e){
+    event.preventDefault();
+    dataMunicipio = {id: 0,descricao:"",municipio:null};
+    MunicipioClick(BairroMunicipioSuccess);
+}
+
+function BairroMunicipioSuccess(){
+    dataBairro.municipioId = response.id;
+    dataBairro.municipio = response;    
+    $('#BairroMunicipio').val(response.descricao);
+}
+
+function GetBairro(id,onSuccessCallback)
+{
+    RestRequest('GET',
+                $baseApiUrl+'bairro/' + id,
+                null,
+                null,
+                function (response, textStatus, jqXHR) {
+                    hideLoadingModal();
+                    if (typeof onSuccessCallback === 'function') {
+                        onSuccessCallback(response, textStatus, jqXHR);
+                    }
+                });    
 }

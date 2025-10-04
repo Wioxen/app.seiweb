@@ -5,6 +5,16 @@ var $cadastroEmpresa = undefined;
 
 const formEmpresa = '#frmEmpresa';
 
+function meuFormatoPersonalizado(d) {
+    return `
+        <div class="row-details">
+            <h5>Detalhes do Registro #${d.id}</h5>
+            <p><strong>Nome:</strong> ${d.id}</p>
+            <p><strong>Email:</strong> ${d.id}</p>
+        </div>
+    `;
+}
+
 function empresaClick(e) {
     $thisEmpresa = $(e);
 
@@ -16,91 +26,154 @@ function empresaClick(e) {
             hideLoadingModal();
 
             const defaultColumns  = [
-                {
-                    data: 'id',
+                { 
+                    //title: 'Descrição',
+                    data: 'descricao',    
                     orderable: false,
-                    "width": "5%",
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    "width": "8%",
                     "render": function(data, type, row) {
-                        return `<button type="button" data-id="${data}" class="btn btn-sm btn-dark btn-editar-empresa"><i class="fa fa-pen"></i></button>`;
+                        return `<div class="dropdown">
+                                <button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+                                <li><a class="dropdown-item" href="#" onclick="EditarEmpresaClick(this);"><i class="fas fa-edit"></i> Editar</a></li>					
+                                </ul>
+                                </div>`                        
                     }
                 },
-                { 
-                    data: 'descricao',              
-                    orderable: false,
-                }
             ];
 
             $cadastroEmpresa = 
                 CarregaDataTable
                 (
-                    'Empresa',
+                    'datatable?table=Empresa',
                     'Cadastrar Empresa',
                     'modal-lg',
                     `<table id="EmpresaTb" class="row-border stripe hover" style="width:100%"></table>`,
                     `<div class="footer-buttons">
-                        <button id="btnNovoEmpresa" type="button" class="btn btn-success">
+                        <button id="btnNovoEmpresa" type="button" class="btn btn-success" onclick="NovoEmpresaClick(this);">
                             <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
                         </button>
                     </div>`,
-                    function (){
-                        $('#btnNovoEmpresa').click(NovoEmpresaClick);                        
-                    },
+                    null,
                     defaultColumns,
-                    function(settings)
-                    {
-                        $('.btn-editar-empresa').off('click').on('click', EditarEmpresaClick);
-                    }
+                    null,
+                    false
                 );
     });        
 }
 
-function CriarModalEmpresa(onLoadCallback){
+function ResetDefaultEmpresa(onLoadCallback){
     hideLoadingModal();
-    
-    $modalEmpresa = createDynamicModal
-    (
-        `<div class="dropdown">
-        <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa fa-list"></i> Mais opções
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-        <li><a class="dropdown-item" href="#" onclick="EmpresaBairroClick(this);">BAIRRO</a></li>					
-        </ul>
-        </div>`
-    );
 
-    $('#Pesquisar'+$modalEmpresa.attr('id')).remove();
+    $modalEmpresa = createDynamicModal("",null,false);        
 
-    $modalEmpresa.on('hidden.bs.modal', function () {
-        $cadastroEmpresa.tabela.ajax.reload();
-    });
+    carregarTemplateModal('#'+$modalEmpresa.attr('id'),
+        'templates/Empresa.html '+formEmpresa, {
+        modalTitle: 'Cadastrar Empresa',       
+        modalSize: 'modal-dialog-scrollable modal-xl',
+        onLoad: function(response, status, xhr)
+        {
+            $('#itemServico').mask('00.00');
+            $('#codigoTributacao').mask('0000-0/00');
 
-    $('#btnCancelar'+$modalEmpresa.attr('id')).click(CancelarEmpresaClick);
-    $('#btnExcluir'+$modalEmpresa.attr('id')).click(ExcluirEmpresaClick);    
-    $('#btnSalvar'+$modalEmpresa.attr('id')).click(SalvarEmpresaClick);            
+            $('#btnCep').off('click').on('click', ConsultaCepEmpresa);
+            $('#btnCnpj').off('click').on('click', ConsultaCnpjEmpresa);
 
-    LoadEmpresa(function(response, status, xhr){
-        if (typeof onLoadCallback === 'function') {
-            onLoadCallback(response, status, xhr);
+            $('#uploadLogoEmpresa').off('click').on('click', uploadLogoEmpresa);
+            $('#apagarLogoEmpresa').off('click').on('click', apagarLogoEmpresa);
+            $('#fileUploadEmpresa').off('change').on('change', fileUploadEmpresa);
+
+            carregaSelect('lista/naturezas','#selectNatureza','codigo');
+            carregaSelect('lista/regimes','#selectRegime','codigo');
+
+            configurarAutocomplete(
+                '#bairro',
+                $baseApiUrl+'AutoComplete?table=Bairro',
+                {
+                    minLength: 2,
+                    delay: 300,
+                    onResponse: function(event,ui) {
+                        if (!ui.content.length) {
+                            ui.content.push({id: 0, descricao: $('#bairro').val().toUpperCase()});
+                            ui.content.push({id: null, descricao: "Nenhum registro encontrado"});
+                        }
+                    },
+                    create: function() {
+                        $(this).data('ui-autocomplete')._renderItem = function(ul, item) {
+                            return $('<li></li>')
+                            .addClass((item.id === 0) ? "list-group-item list-group-item-action fw-bold fst-italic" : "list-group-item list-group-item-action")
+                            .append((item.id === 0) ? '<i class="fa fa-plus bg-transparent border-0 text-dark"></i> Adicionar "' + item.descricao + '"' : item.descricao)
+                            .appendTo(ul);
+                        };
+                    },                        
+                    onSelect: function(item) {
+                        if ((item.id === 0) || (item.id === undefined) || (item.id === null))
+                        {
+                            dataBairro = {id: 0, descricao: item.descricao};
+                            bairroClick(EmpresaBairroSuccess);
+                        }
+                        else 
+                        {
+                            GetBairro(item.id,function(response){
+                                dataEmpresa.bairro = response;
+                                dataEmpresa.bairroId = response.id;
+                                $('#bairro').val(response.descricao);                                                    
+                            });
+                        }
+                    }
+                }
+            );
+			
+			preencherFormularioCompleto(dataEmpresa, formEmpresa);
+            
+			CarregarLogoEmpresa();
+
+			$('#cnpj').trigger('input').trigger('change');
+			$('#cep').trigger('input').trigger('change');
+			$('#telefone').trigger('input').trigger('change');
+			$('#celular').trigger('input').trigger('change');
+			$('#codigoTributacao').trigger('input').trigger('change');                                
+			$('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');			
+
+			$('#btnCancelar'+$modalEmpresa.attr('id')).click(CancelarEmpresaClick);
+			$('#btnExcluir'+$modalEmpresa.attr('id')).click(ExcluirEmpresaClick);    
+			$('#btnSalvar'+$modalEmpresa.attr('id')).click(SalvarEmpresaClick);            
+
+            if (typeof onLoadCallback === 'function') 
+            {
+                onLoadCallback(response, status, xhr);
+            }
         }
-    });            
+    });                
 }
 
 
-function NovoEmpresaClick(e){
-    e.preventDefault();
+function NovoEmpresaClick(e)
+{
     dataEmpresa = {id: 0};
     RestRequest('POST',
         $baseApiUrl+"usuariomodulo",
         {modulo : $thisEmpresa.attr('data-modulo')+"1"},
         null,
         function (data) {
-            CriarModalEmpresa(
-            function(response, status, xhr){
-                toggleModalBody('#'+$modalEmpresa.attr('id'), false);
-                setTimeout(() => {
-                    $('#cnpj').focus();
-                }, 500);            
+            ResetDefaultEmpresa(
+            function(response, status, xhr)
+            {
+                if (!$modalEmpresa.hasClass('show') && !$modalEmpresa.is(':visible')) {
+                    $modalEmpresa.modal('show');
+
+                    toggleModalBody('#'+$modalEmpresa.attr('id'), false);
+
+                    setTimeout(() => {
+                        $('#cnpj').focus();
+                    }, 500);            
+                }
             });
         });    
 }
@@ -109,30 +182,27 @@ function CancelarEmpresaClick(e){
     e.preventDefault();
     dataEmpresa = undefined;
     $modalEmpresa.modal('hide');
+    //$cadastroEmpresa.tabela.ajax.reload();
 }
 
 function EditarEmpresaClick(e){
-    e.preventDefault();
-    var $thisButton = $(this);
     RestRequest('GET',
-        $baseApiUrl+"Empresa/"+$thisButton.data('id'),
+        $baseApiUrl+"Empresa/"+e.closest('tr').id,
         null,
         null,
         function (data) {
             dataEmpresa = data;
-            CriarModalEmpresa(function(response, status, xhr){
-                toggleModalBody('#'+$modalEmpresa.attr('id'), false);
-                setTimeout(() => {
-                    preencherFormularioCompleto(dataEmpresa, formEmpresa);
-                    CarregarLogoEmpresa();
-                    $('#cnpj').trigger('input').trigger('change');
-                    $('#cep').trigger('input').trigger('change');
-                    $('#telefone').trigger('input').trigger('change');
-                    $('#celular').trigger('input').trigger('change');
-                    $('#codigoTributacao').trigger('input').trigger('change');                                
-                    $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');
-                    $('#descricao').focus();
-                }, 500);            
+            ResetDefaultEmpresa(function(response, status, xhr){
+                if (!$modalEmpresa.hasClass('show') && !$modalEmpresa.is(':visible')) 
+                {
+                    $modalEmpresa.modal('show');
+
+                    toggleModalBody('#'+$modalEmpresa.attr('id'), false);
+                 
+                    setTimeout(() => {
+                        $('#descricao').focus();
+                    }, 500);            
+                }
             });
         });
 }
@@ -151,6 +221,7 @@ function ExcluirEmpresaClick(e){
                         hideLoadingModal();
                         setTimeout(() => {
                             CancelarEmpresaClick(e);
+                            $cadastroEmpresa.tabela.ajax.reload();
                         }, 500);                     
                     });  
             });        
@@ -201,96 +272,9 @@ function SalvarEmpresaClick(e){
                 }                
                 hideLoadingModal();
                 $modalEmpresa.modal('hide');
+                $cadastroEmpresa.tabela.ajax.reload();
             });  
     }    
-}
-
-function LoadEmpresa(onLoadCallback)
-{
-    carregarTemplateModal('#'+$modalEmpresa.attr('id'),
-        'templates/Empresa.html '+formEmpresa, {
-        modalTitle: 'Cadastrar Empresa',       
-        modalSize: 'modal-dialog-scrollable modal-xl',
-        onLoad: function(response, status, xhr)
-        {
-            $('#itemServico').mask('00.00');
-            $('#codigoTributacao').mask('0000-0/00');
-
-            $('#btnCep').off('click').on('click', ConsultaCepEmpresa);
-            $('#btnCnpj').off('click').on('click', ConsultaCnpjEmpresa);
-
-            $('#uploadLogoEmpresa').off('click').on('click', uploadLogoEmpresa);
-            $('#apagarLogoEmpresa').off('click').on('click', apagarLogoEmpresa);
-            $('#fileUploadEmpresa').off('change').on('change', fileUploadEmpresa);
-
-            carregaSelect('lista/naturezas','#selectNatureza','codigo');
-            carregaSelect('lista/regimes','#selectRegime','codigo');
-
-            configurarAutocomplete(
-                '#bairro',
-                $baseApiUrl+'AutoComplete?table=Bairro',
-                {
-                    minLength: 2,
-                    delay: 300,
-                    onResponse: function(event,ui) {
-                        if (!ui.content.length) {
-                            ui.content.push({id: 0, descricao: $('#bairro').val().toUpperCase()});
-                            ui.content.push({id: null, descricao: "Nenhum registro encontrado"});
-                        }
-                    },
-                    create: function() {
-                        $(this).data('ui-autocomplete')._renderItem = function(ul, item) {
-                            return $('<li></li>')
-                            .addClass((item.id === 0) ? "list-group-item list-group-item-action fw-bold fst-italic" : "list-group-item list-group-item-action")
-                            .append((item.id === 0) ? '<i class="fa fa-plus bg-transparent border-0 text-dark"></i> Adicionar "' + item.descricao + '"' : item.descricao)
-                            .appendTo(ul);
-                        };
-                    },                        
-                    onSelect: function(item) {
-                        dataEmpresa.bairroId = null;
-                        dataEmpresa.bairro = null;
-                        $('#bairro').val('');
-                        
-                        if ((item.id !== 0) && (item.id !== null))
-                        {
-                            dataEmpresa.bairroId = item.id;
-                            $('#bairro').val(item.descricao);
-                        }
-
-                        if (item.id === 0){
-                            bairroClick(
-                            $('#bairro'),                                
-                            {id: 0, descricao: item.descricao}, 
-                            function()
-                            {
-                                if ((dataBairro !== undefined) && (dataBairro !== null))
-                                {
-                                    RestRequest('GET',
-                                        $baseApiUrl+'bairro/' + dataBairro.id,
-                                        null,
-                                        function (xhr) {
-                                            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-                                        },
-                                        function (response, textStatus, jqXHR) {
-                                            dataEmpresa.bairroId = response.id;
-                                            dataEmpresa.bairro = response;    
-                                        
-                                            $('#bairro').val(response.descricao);
-                                            $('#municipio').val(response.municipio.descricao);
-                                            $('#uf').val(response.municipio.uf);                                              
-                                        });       
-                                }
-                            });
-                        }
-                    }
-                }
-            );
-
-            if (typeof onLoadCallback === 'function') {
-                onLoadCallback(response, status, xhr);
-            }
-        }
-    });            
 }
 
 function ConsultaCepEmpresa(){
@@ -340,7 +324,7 @@ function fileUploadEmpresa(e) {
 
 function CarregarLogoEmpresa()
 {
-    if ((dataEmpresa.logo !== null) && (dataEmpresa.logo !== undefined)){
+    if ((dataEmpresa.logo !== null) && (dataEmpresa.logo !== undefined) && (dataEmpresa.logo !== 0)){
         RestRequest(
             'GET',
             $baseApiUrl+'Imagem?codigo=' + dataEmpresa.logo,
@@ -349,15 +333,32 @@ function CarregarLogoEmpresa()
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             },
             function (response, textStatus, jqXHR) {
-                console.log(jqXHR);     
                 $('#LogoEmpresa').attr('src', response);      
             });    
     }
 }
 
-function EmpresaBairroClick(e){
-    bairroClick(e);
+function EmpresaEditarBairroClick(e){
+    event.preventDefault();
+    dataBairro = dataEmpresa.bairro;
+    bairroClick(EmpresaBairroSuccess);
 }
+
+function EmpresaNovoBairroClick(e){
+    event.preventDefault();
+    dataBairro = {id: 0,descricao:"",municipio:null};
+    bairroClick(EmpresaBairroSuccess);
+}
+
+function EmpresaBairroSuccess (response, textStatus, jqXHR){
+        dataEmpresa.bairroId = response.id;
+        dataEmpresa.bairro = response;    
+                                        
+        $('#bairro').val(response.descricao);
+        $('#municipio').val(response.municipio.descricao);
+        $('#uf').val(response.municipio.uf);                                              
+    }
+
 
 /*carregarTemplateModal('templates/Empresa.html #divEmpresa', {
     modalTitle: 'Cadastro de Empresa',

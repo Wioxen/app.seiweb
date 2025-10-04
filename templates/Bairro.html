@@ -19,13 +19,18 @@
         <div class="row mb-1">
             <div class="col-md-12">
                 <label class="form-label">Descrição</label>
-                <input id="BairroDescricao" name="descricao" class="form-control form-control-sm text-uppercase" type="text" />
+                <div class="input-group input-group-sm">                                            
+                    <input id="BairroDescricao" name="descricao" class="form-control form-control-sm text-uppercase" type="text" />
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <label class="form-label">Município</label>
-                <input id="BairroMunicipio" name="municipio[descricao]" class="form-control form-control-sm text-uppercase" type="text" />
+                <label class="form-label">Município <a href="#" onclick="BairroNovoMunicipioClick(this);"><i class="fa fa-plus-circle"></i></a></label>
+                <div class="input-group input-group-sm">                                            
+                    <input id="BairroMunicipio" name="municipio[descricao]" class="form-control form-control-sm text-uppercase" type="text" />
+                    <button class="input-group-text" onclick="BairroEditarMunicipioClick(this);"><i class="fa fa-edit"></i></button>
+                </div>    
             </div>
         </div>
     </div>

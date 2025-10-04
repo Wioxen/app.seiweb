@@ -59,26 +59,30 @@ function carregarTemplateModal(modalId, templateUrl, configDinamico = {}) {
 
         // Aplica máscaras nos inputs
         aplicarMascaras(config.masks);
+
+        //
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))        
         
         // Configura autocomplete se especificado
         if (config.autocompleteCampo && config.autocompleteUrl) {
             configurarAutocomplete(config.autocompleteCampo, config.autocompleteUrl, config.autocomplete);
         }
 
-        if (!$(modalId).hasClass('show') && !$(modalId).is(':visible')) {
-            $(modalId).modal('show');
-            
-            setTimeout(() => {
-                // Limpa campo de autocomplete após carregar
-                if (config.autocompleteCampo) {
-                    $(config.autocompleteCampo).val('').focus();
-                }            
-            }, 500);
-        }
-
         if (typeof config.onLoad === 'function') {
             config.onLoad(response, status, xhr);
-        }        
+        } else {        
+            if (!$(modalId).hasClass('show') && !$(modalId).is(':visible')) {
+                $(modalId).modal('show');
+                
+                setTimeout(() => {
+                    // Limpa campo de autocomplete após carregar
+                    if (config.autocompleteCampo) {
+                        $(config.autocompleteCampo).val('').focus();
+                    }            
+                }, 500);
+            }
+        }
     });
 }
 
