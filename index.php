@@ -1135,7 +1135,7 @@
 						</li>
 						<li>
 							<div class="dropdown-divider"></div>
-							<a id="Logout" class="dropdown-item" href="#">Configuração</a>
+							<a class="dropdown-item" href="#">Configuração</a>
 							<div class="dropdown-divider"></div>
 							<a id="Logout" class="dropdown-item" href="#">Logout</a>
 						</li>
