@@ -1191,9 +1191,13 @@
 										className: 'btn btn-danger'
 									}
 								}
-							}).then(() => {
-								swal.close();
-								redirectToLogin();
+							}).then((Yes) => {
+								if (Yes) {
+									swal.close();
+									redirectToLogin();
+								} else {
+									swal.close();
+								}								
 							});							
 						});					
 					},
