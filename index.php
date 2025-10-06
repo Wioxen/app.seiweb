@@ -1122,7 +1122,7 @@
 					<img src="#" alt="..." class="avatar-img rounded-circle">
 				`;
 				const originalUsername = `
-					<span class="op-7">Olá,</span> <span class="fw-bold first-name">Igor</span>
+					<span class="op-7">Olá,</span> <span id="first-name" class="fw-bold first-name">Igor</span>
 				`;
 				
 				const originalDropdownuser = `
@@ -1176,7 +1176,25 @@
 						
 						$('#Logout').off('click').on('click', (e) => {
 							e.preventDefault();
-							redirectToLogin();
+							swal({
+								title: 'Atenção?',
+								text: `${$('#first-name').text()}, deseja realmente sair do sistema?`,
+								type: 'warning',
+								buttons:{
+									confirm: {
+										text : 'Sim, desejo sair',
+										className : 'btn btn-success'
+									},
+									cancel: {
+										text:  'Não, desejo permanecer',
+										visible: true,
+										className: 'btn btn-danger'
+									}
+								}
+							}).then(() => {
+								swal.close();
+								redirectToLogin();
+							});							
 						});					
 					},
 					error: function(jqXHR, textStatus, errorThrown){
