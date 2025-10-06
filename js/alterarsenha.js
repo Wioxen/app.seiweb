@@ -114,9 +114,16 @@ function AlterarSenhaClick(e){
                 contentType: 'application/json',
                 data: JSON.stringify(payload),
                 timeout: 30000,
-                success: function(response) {
+                success: function() {
                     hideLoadingModal();
+
                     modalAlterarSenha.modal('hide');
+
+					swal({
+						title: "Sucesso",
+						text: "Senha alterada com sucesso!",
+						icon: "success"
+					});                    
                 },
                 error: exibeerror
             });

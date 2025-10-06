@@ -585,10 +585,11 @@ table.dataTable tbody tr.selected.shown td.details-control::before {
     background: transparent;
     border: none;
 }
-.loading-spinner {
+
+/*.loading-spinner {
     width: 3rem;
     height: 3rem;
-}
+}*/
 .alert-danger {
     margin-top: 20px;
 }

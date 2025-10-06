@@ -1,5 +1,5 @@
 const $baseApiUrl = "https://api.seiweb.com.br/";
-//const $baseApiUrl = "https://localhost:32769/";
+//const $baseApiUrl = "https://localhost:32771/";
 const $loginUrl = "https://login.seiweb.com.br/";
 //const $loginUrl = "https://localhost/login.seiweb/";
 
@@ -378,6 +378,9 @@ function RestRequest(_type, resource, payload, beforeSendCallback, successCallba
 
 function exibeerror(xhr, status, error) {
     hideLoadingModal();
+    console.log(xhr);
+    console.log(status);
+    console.log(error);
     handleDefaultError(xhr, status, error);
 }
 
