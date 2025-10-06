@@ -18,6 +18,8 @@ function AlterarSenhaClick(e){
         });
 
     modalAlterarSenha.find('.modal-body').load('templates/AlterarSenha.html #frmAlterarSenha', function(response, status, xhr) {
+
+
         // Validação da senha
         $('#password').on('input', function() {
             const password = $(this).val();
@@ -132,7 +134,7 @@ function AlterarSenhaClick(e){
         modalAlterarSenha.modal('show');
 
         setTimeout(() => {
-            $('#SenhaAtual').focus();
+            $('#SenhaAtual').val('').focus();
         }, 500);
     });
 }
