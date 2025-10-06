@@ -9,7 +9,7 @@ function DetailUsuario (d) {
     return `
     <div class="row">
     <div class="col-12">
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush w-100">
     <li class="list-group-item d-flex justify-content-between align-items-center">
         Criado em
         <small>${d.createdAt}</small>
