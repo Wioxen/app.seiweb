@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>SEIWEB - Sistema Escolar Integrado</title>
@@ -1077,6 +1077,8 @@
 	<script src="js/modulo.js"></script>
 	<script src="js/usuario.js"></script>
 	<script src="js/controleacesso.js"></script>
+	<script src="js/alterarsenha.js"></script>
+	<script src="js/configuracao.js"></script>
 	<script>
 	// Opcional: Adicionar também um listener para mudanças dinâmicas
 	$(document).on('show.bs.collapse', function(e) {
@@ -1135,9 +1137,9 @@
 						</li>
 						<li>
 							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Alterar Senha</a>
+							<a class="dropdown-item" href="#" onclick="AlterarSenhaClick(this);">Alterar Senha</a>
 							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Configuração</a>
+							<a class="dropdown-item" href="#" onclick="ConfiguracaoClick(this);">Configuração</a>
 							<div class="dropdown-divider"></div>
 							<a id="Logout" class="dropdown-item" href="#">Logout</a>
 						</li>

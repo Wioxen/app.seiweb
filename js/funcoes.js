@@ -18,7 +18,7 @@ const $loginUrl = "https://localhost/login.seiweb/";
     backdrops.forEach(backdrop => {
         backdrop.style.zIndex = '';
     });
-    
+
     // Agora aplicar z-index na ordem correta
     backdrops.forEach((backdrop, index) => {
         backdrop.style.zIndex = 1040 + (index * 10);
@@ -377,6 +377,7 @@ function RestRequest(_type, resource, payload, beforeSendCallback, successCallba
 }
 
 function exibeerror(xhr, status, error) {
+    hideLoadingModal();
     handleDefaultError(xhr, status, error);
 }
 

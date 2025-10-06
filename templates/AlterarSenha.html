@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de Senha</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <form id="frmAlterarSenha">
+        <div class="mb-3">
+            <label for="SenhaAtual" class="form-label">Senha Atual</label>
+            <input type="password" class="form-control" id="SenhaAtual" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Nova Senha</label>
+            <input type="password" class="form-control" id="password" required>
+            <div id="strengthText" class="strength-text"></div>
+            <div class="password-strength">
+                <div class="progress">
+                    <div id="passwordStrength" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirmar Senha</label>
+            <input type="password" class="form-control" id="confirmPassword" required>
+            <div id="confirmError" class="error-message"></div>
+        </div>
+
+        <div id="passwordRequirements mb-3">
+            <div id="lengthReq" class="requirement invalid">✓ Mínimo 6 caracteres</div>
+            <div id="uppercaseReq" class="requirement invalid">✓ 1 letra maiúscula</div>
+            <div id="lowercaseReq" class="requirement invalid">✓ 1 letra minúscula</div>
+            <div id="numberReq" class="requirement invalid">✓ 1 número</div>
+            <div id="specialReq" class="requirement invalid">✓ 1 caractere especial</div>
+        </div>
+
+
+        <div id="errorContainer" class="alert alert-danger mt-3 d-none"></div>
+    </form>
+
+    <!-- Modal de Loading -->
+    <div class="modal fade loading-modal" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="mt-3 text-white">Processando registro...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<!-- Modal de Erros -->
+	<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header bg-danger text-white">
+					<h5 class="modal-title" id="errorModalLabel">Erros de Validação</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="list-group" id="errorList">
+						<!-- Os erros serão inseridos aqui dinamicamente -->
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</div>	
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Inicializa o modal
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+            
+			// Função para mostrar erros no modal
+			function showErrors(errorResponse) {
+				try {
+					const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+					const errorList = $('#errorList');
+					
+					// Limpa a lista de erros anterior
+					errorList.empty();
+					
+					// Tenta parsear o responseText se existir
+					if (errorResponse.responseText) {
+						try {
+							const errorData = JSON.parse(errorResponse.responseText);
+							processErrorData(errorData, errorList);
+						} catch (e) {
+							// Se não conseguir parsear, mostra o texto cru
+							errorList.append(`
+								<div class="list-group-item list-group-item-danger">
+									${errorResponse.responseText}
+								</div>
+							`);
+						}
+					} 
+					// Se não houver responseText, verifica se há objeto errors
+					else if (errorResponse.errors) {
+						processErrorData(errorResponse, errorList);
+					}
+					// Se não houver nenhum dos anteriores, mostra a mensagem genérica
+					else {
+						errorList.append(`
+							<div class="list-group-item list-group-item-danger">
+								${typeof errorResponse === 'string' ? errorResponse : 'Ocorreu um erro desconhecido.'}
+							</div>
+						`);
+					}
+					
+					// Mostra o modal
+					errorModal.show();
+				} catch (e) {
+					console.error('Erro ao processar mensagem de erro:', e);
+					$('#errorContainer').removeClass('d-none').html(
+						typeof errorResponse === 'string' ? errorResponse : 'Erro ao processar mensagem de erro.'
+					);
+				}
+			}
+
+			// Função auxiliar para processar dados de erro
+			function processErrorData(errorData, errorList) {
+				if (errorData.errors) {
+					// Adiciona cada erro à lista
+					for (const [field, messages] of Object.entries(errorData.errors)) {
+						messages.forEach(message => {
+							errorList.append(`
+								<div class="list-group-item list-group-item-danger">
+									<strong>${field}:</strong> ${message}
+								</div>
+							`);
+						});
+					}
+				} else if (errorData.title) {
+					// Se não houver erros específicos, mostra a mensagem geral
+					errorList.append(`
+						<div class="list-group-item list-group-item-danger">
+							${errorData.title}
+						</div>
+					`);
+				} else {
+					// Se o formato for desconhecido, mostra o erro completo
+					errorList.append(`
+						<div class="list-group-item list-group-item-danger">
+							${JSON.stringify(errorData)}
+						</div>
+					`);
+				}
+			}
+            
+            // Validação da senha
+            $('#password').on('input', function() {
+                const password = $(this).val();
+                let strength = 0;
+                const requirements = {
+                    length: password.length >= 6,
+                    uppercase: /[A-Z]/.test(password),
+                    lowercase: /[a-z]/.test(password),
+                    number: /[0-9]/.test(password),
+                    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+                };
+                
+                // Atualiza os requisitos visuais
+                Object.keys(requirements).forEach(key => {
+                    const element = $(`#${key}Req`);
+                    element.toggleClass('valid', requirements[key]);
+                    element.toggleClass('invalid', !requirements[key]);
+                    if (requirements[key]) strength += 20;
+                });
+                
+                // Pontuação adicional
+                if (password.length >= 10) strength += 10;
+                if (password.length >= 12) strength += 10;
+                if ((password.match(/[!@#$%^&*(),.?":{}|<>]/g) || []).length >= 2) strength += 10;
+                if ((password.match(/[0-9]/g) || []).length >= 2) strength += 10;
+                
+                strength = Math.min(strength, 100);
+                
+                // Atualiza a barra de progresso
+                const strengthBar = $('#passwordStrength');
+                strengthBar.css('width', strength + '%');
+                
+                // Atualiza a cor e texto
+                let strengthClass, strengthText;
+                if (password.length === 0) {
+                    strengthText = '';
+                } else if (strength < 30) {
+                    strengthClass = 'bg-danger';
+                    strengthText = "<span class='very-weak'>Muito fraca</span> - Fácil de adivinhar";
+                } else if (strength < 50) {
+                    strengthClass = 'bg-warning';
+                    strengthText = "<span class='weak'>Fraca</span> - Pode ser melhorada";
+                } else if (strength < 75) {
+                    strengthClass = 'bg-info';
+                    strengthText = "<span class='medium'>Média</span> - Aceitável, mas pode ser mais forte";
+                } else if (strength < 90) {
+                    strengthClass = 'bg-primary';
+                    strengthText = "<span class='strong'>Forte</span> - Boa segurança";
+                } else {
+                    strengthClass = 'bg-success';
+                    strengthText = "<span class='very-strong'>Muito forte</span> - Excelente segurança";
+                }
+                
+                strengthBar.removeClass().addClass('progress-bar ' + strengthClass);
+                $('#strengthText').html(strengthText);
+                
+                // Valida a confirmação de senha
+                validateConfirmPassword();
+            });
+            
+            // Validação da confirmação de senha
+            $('#confirmPassword').on('input', validateConfirmPassword);
+            
+            function validateConfirmPassword() {
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmPassword').val();
+                const confirmError = $('#confirmError');
+                
+                if (confirmPassword === '') {
+                    confirmError.text('');
+                    $('#submitBtn').prop('disabled', true);
+                } else if (password !== confirmPassword) {
+                    confirmError.text('As senhas não coincidem!');
+                    $('#submitBtn').prop('disabled', true);
+                } else {
+                    confirmError.text('');
+                    // Verifica se todos os requisitos foram atendidos
+                    const allValid = $('.requirement.valid').length === 5;
+                    $('#submitBtn').prop('disabled', !allValid);
+                }
+            }
+            
+            // Submissão do formulário
+            $('#passwordForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                $('#errorContainer').addClass('d-none').html('');
+                
+                if ($('#submitBtn').prop('disabled')) {
+                    showError('Por favor, preencha todos os requisitos de senha e confirme corretamente.');
+                    return;
+                }
+                              
+                // Dados para enviar
+                const payload = {
+					Token: $('#authkey').val(),
+                    Password: $('#password').val(),
+                    ConfirmPassword: $('#confirmPassword').val()
+                };
+                
+                // Simula uma requisição AJAX (substitua pela sua chamada real)
+                $.ajax({
+                    url: 'https://api.seiweb.com.br/RegistrarUsuario',
+                    type: 'POST',
+					beforeSend: function (xhr) {
+						// Mostra o modal de loading
+						loadingModal.show();
+						xhr.setRequestHeader('Authorization', 'Bearer '+$.trim($("#authkey").val()));
+					},					
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload),
+                    timeout: 30000,
+                    success: function(response) {
+						  setTimeout(function() {
+							loadingModal.hide();
+							$('#passwordForm')[0].reset();
+							$('#submitBtn').prop('disabled', true);
+							$('#strengthText').html('');
+							$('#passwordStrength').css('width', '0%');
+							window.location.href = $.trim($("#redirecturi").val());
+						  }, 500);
+                    },
+                    error: function(xhr, status, error) {
+						var $xhr = xhr;
+						setTimeout(function() {
+							loadingModal.hide();
+							
+							console.log('Erro na requisição:', xhr);  
+
+							// Verifica se é um objeto de erro do jQuery (com responseText)
+							if ($xhr.responseText || ($xhr.status && $xhr.status >= 400)) {
+								showErrors($xhr);
+							} 
+							// Caso seja outro tipo de erro (como timeout)
+							else {
+								let errorMessage = 'Ocorreu um erro ao processar a requisição.';
+								
+								if (status === 'timeout') {
+									errorMessage = 'Tempo de requisição excedido. Tente novamente.';
+								} else if (error) {
+									errorMessage = error;
+								}
+								
+								showErrors(errorMessage);
+							}							
+						}, 500);						
+					}
+                });
+            });
+        });
+    </script>
+</body>
+</html>
