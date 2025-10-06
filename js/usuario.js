@@ -7,6 +7,8 @@ var $thisUsuario = undefined;
 function DetailUsuario (d) {
     console.log(d);
     return `
+    <div class="row">
+    <div class="col-12">
     <ul class="list-group list-group-flush">
     <li class="list-group-item d-flex justify-content-between align-items-center">
         Criado em
@@ -20,6 +22,8 @@ function DetailUsuario (d) {
         ${(d.verifiedAt === null) ? '<span class="badge bg-warning text-dark rounded-pill"><i class="fa fa-refresh fa-spin"></i> Não Verificado</span>':`<span class="badge text-bg-success"><i class="fa fa-check"></i> Verificado</span>`}
     </li>
     </ul>
+    </div>
+    </div>
     `;
 }
 
