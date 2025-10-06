@@ -1,9 +1,3 @@
-const $baseApiUrl = "https://api.seiweb.com.br/";
-const $loginUrl = "https://login.seiweb.com.br/";
-
-/*const $baseApiUrl = "https://localhost:32771/";
-const $loginUrl = "https://localhost/login.seiweb/";*/
-
 // Função para ajustar z-index dos modais
 /*function adjustModalZIndex() {
     const modals = document.querySelectorAll('.modal.show');

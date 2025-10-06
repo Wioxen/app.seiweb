@@ -1068,6 +1068,7 @@
 	<script src="assets/js/jquery.tabbable.js"></script>
 	<script src="assets/js/jquery.mask.js"></script>
 	<script src="assets/js/carregar-template.js"></script>
+	<script src="js/global.js"></script>
 	<script src="js/funcoes.js"></script>
 	<script src="js/municipio.js"></script>
 	<script src="js/bairro.js"></script>
