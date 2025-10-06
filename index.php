@@ -351,7 +351,7 @@
 							<h6 id="data-hora" class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
 						</div>
 						<div class="ms-md-auto py-2 py-md-0">
-							<!--<a href="#" class="btn btn-label-info btn-round me-2" onclick="UsuarioAcessoClick(this);"><i class="fa fa-user"></i> Teste</a>-->
+							<a href="#" class="btn btn-label-info btn-round me-2" onclick="UsuarioAcessoClick(this);"><i class="fa fa-user"></i> Visitante</a>
 							<a href="#" class="btn btn-primary btn-round" onclick="alunoClick(this);"><i class="fa fa-users"></i> Cadastro de aluno</a>
 						</div>
 					</div>
