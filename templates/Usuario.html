@@ -38,18 +38,7 @@
                 </div>
                 <div class="col-md-9">
                     <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label class="form-label" for="UsuarioNivel">Nível</label>
-                            <select id="UsuarioNivel" name="level" class="form-select form-select-sm">
-                                <option value="0"></option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                        </div>
-                        <div class="col-md-9 d-flex justify-content-end">
+                        <div class="col-12 d-flex justify-content-end">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="UsuarioStatus" checked>
                                 <label class="form-check-label" for="UsuarioStatus">ativo</label>
@@ -109,15 +98,28 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Controle de acesso</label>
-                            <div id="selectUsuarioAcesso" data-control="UsuarioAcesso">
-                                <div class="loading-label w-100">
-                                    <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
-                                    Carregando, aguarde ...
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="form-label">Controle de acesso</label>
+                                    <div id="selectUsuarioAcesso" data-control="UsuarioAcesso">
+                                        <div class="loading-label w-100">
+                                            <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+                                            Carregando, aguarde ...
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-
-                            
+                                <div class="col-md-4">
+                                    <label class="form-label" for="UsuarioNivel">Nível</label>
+                                    <select id="UsuarioNivel" name="level" class="form-select form-select-sm">
+                                        <option value="0"></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>                            
                         </div>                        
                     </div>                    
                 </div>
