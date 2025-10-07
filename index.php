@@ -1072,6 +1072,7 @@
 	<script src="js/funcoes.js"></script>
 	<script src="js/municipio.js"></script>
 	<script src="js/bairro.js"></script>
+	<script src="js/certificadodigital.js"></script>
 	<script src="js/empresa.js"></script>
 	<script src="js/saidadoaluno.js"></script>
 	<script src="js/aluno.js"></script>
@@ -1194,6 +1195,7 @@
 			});
 			
 			$('#dynamic-menu').html(menuHTML);
+
 			inicializarMenu();
 		}
 		
@@ -1201,9 +1203,7 @@
 			console.log('Menu dinâmico carregado e inicializado');
 		}
 		
-		carregarMenu();
-		
-		
+		carregarMenu();				
 		//$('#loadingModal').modal('show');
 	});
 	</script>		

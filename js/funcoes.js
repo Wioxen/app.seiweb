@@ -63,7 +63,7 @@ $(document).on({
 }, '.modal');
 
 // Função específica para o loadingModal
-/*function adjustLoadingModalZIndex() {
+function adjustLoadingModalZIndex() {
     const loadingModal = document.getElementById('loadingModal');
     if (!loadingModal || !loadingModal.classList.contains('show')) return;
     
@@ -91,7 +91,7 @@ $(document).on({
     if (loadingBackdrop) {
         loadingBackdrop.style.zIndex = maxBackdropZIndex + 100;
     }
-}*/
+}
 
 // Sobrescrever a função padrão do Bootstrap para abrir modais
 /*const originalModal = $.fn.modal;
@@ -153,7 +153,7 @@ function showLoadingModal() {
         document.body.appendChild(backdrop);
     }
     
-    //adjustLoadingModalZIndex();
+    adjustLoadingModalZIndex();
 }
 
 function hideLoadingModal() {
@@ -731,7 +731,7 @@ function createDynamicModal() {
     return $modal;
 }
 
-function carregaSelect(resource, selectContainerId, fieldkey, concatenar = true, _defaultValue = null){
+function carregaSelect(resource, selectContainerId, fieldkey, concatenar = true, successCallback){
     RestRequest('GET',
         $baseApiUrl+resource,
         null,
@@ -744,21 +744,23 @@ function carregaSelect(resource, selectContainerId, fieldkey, concatenar = true,
         },
         function(response, textStatus, jqXHR){
             $(selectContainerId).html(`<select id="${$(selectContainerId).attr('data-control')}" class="form-select form-select-sm text-uppercase"></select>`); 
+            
             $('#'+$(selectContainerId).attr('data-control')).append(`<option value="0"></option>`);
+            
             $.each(response,function(index,value){
                 $('#'+$(selectContainerId).attr('data-control')).append(`<option value="${value[fieldkey]}">${((concatenar === true) ? value[fieldkey] + ' - ' : '') + value.descricao}</option>`);
             });
 
-            if (_defaultValue !== null){
-               $('#'+$(selectContainerId).attr('data-control')).val(_defaultValue); 
-            }
+            if (typeof successCallback === 'function') {
+                successCallback(response, textStatus, jqXHR);
+            } 
          },
         function(jqXHR, textStatus, errorThrown){
             $(selectContainerId).html(`${jqXHR.responseText}`);
         });    
 }
 
-function carregaSelect2(resource, _modal, selectContainerId, fieldkey, _defaultValue = 0){
+function carregaSelect2(resource, _modal, selectContainerId, fieldkey, successCallback){
     RestRequest('GET',
         $baseApiUrl+'select2?table='+resource,
         null,
@@ -791,9 +793,12 @@ function carregaSelect2(resource, _modal, selectContainerId, fieldkey, _defaultV
                 dropdownParent: _modal,
                 allowClear: true                
             });
+            
+            thisSelect.on("select2:select", function (e) { console.log("select2:select", e); });
 
-            thisSelect.val(_defaultValue);
-            thisSelect.trigger('change'); // Notify Select2 of the change            
+            if (typeof successCallback === 'function') {
+                successCallback(response, textStatus, jqXHR);
+            }            
         },
         function(jqXHR, textStatus, errorThrown){
             $(selectContainerId)

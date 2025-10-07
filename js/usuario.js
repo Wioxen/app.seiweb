@@ -1,11 +1,9 @@
 var dataUsuario = undefined;
 var modalUsuario = undefined;
 var cadastroUsuario = undefined;
-var resourceUsuario = undefined;
-var $thisUsuario = undefined;
+var resourceUsuario = "Usuario";
     
 function DetailUsuario (d) {
-    console.log(d);
     return `
     <div class="row">
     <div class="col-12">
@@ -16,7 +14,7 @@ function DetailUsuario (d) {
     </li>
     <li class="list-group-item d-flex justify-content-between align-items-start">
         <div>
-        <div class="fw-bold">${d.email}</div>
+         <div class="fw-bold">${d.email}</div>
         ${(d.verifiedAt === null) ? `<a onclick="ReenviarEmail(this);" data-email=${d.email} href="#" class="badge text-bg-primary text-decoration-none"><i class="fa fa-envelope"></i> Reenviar</a>`:``}
         </div>
         ${(d.verifiedAt === null) ? '<span class="badge bg-warning text-dark rounded-pill"><i class="fa fa-refresh fa-spin"></i> Não Verificado</span>':`<small class="badge text-bg-success"><i class="fa fa-check"></i> Verificado</small>`}
@@ -41,8 +39,6 @@ function ReenviarEmail(e){
 }
 
 function UsuarioClick(e) {
-    $thisUsuario = $(e);
-    resourceUsuario = "Usuario";
     RestRequest('GET',
         `${$baseApiUrl}${resourceUsuario}`,
         null,
@@ -147,15 +143,21 @@ function ResetDefaultUsuario(onLoadCallback){
 
                 CarregarFoto($('#Foto'+resourceUsuario), dataUsuario.photo);
 
-                carregaSelect2('ControleAcesso',modalUsuario,'#selectUsuarioAcesso','id', ConvertToInt(dataUsuario.controlaccessid));
-
                 $('#UsuarioPhone').trigger('input').trigger('change');
                 $('#UsuarioPhoneWhats').prop('checked',(dataUsuario.phoneWhats === 1));
                 $('#UsuarioStatus').prop('checked',(dataUsuario.status === 1));
                 $(`input[name="UsuarioRole"][value="${dataUsuario.role}"]`).prop('checked', true);
-            } else {
-                carregaSelect2('ControleAcesso',modalUsuario,'#selectUsuarioAcesso','id');
             }
+
+            carregaSelect2('ControleAcesso',modalUsuario,'#selectUsuarioAcesso','id',function(response, textStatus, jqXHR){
+                if ((dataUsuario !== undefined) && (dataUsuario != null) && (dataUsuario.controlaccessid !== 0))
+                {
+                    var thisSelect = $('#'+$('#selectUsuarioAcesso').attr('data-control'));
+                    thisSelect.val(dataUsuario.controlaccessid);
+                    thisSelect.trigger('change');                    
+                }
+            });
+
 
             if (typeof onLoadCallback === 'function') {
                 onLoadCallback(response, status, xhr);

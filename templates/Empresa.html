@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-md-10">
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-12">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="input-group input-group-sm">
@@ -176,6 +176,17 @@
                     <div class="tab-pane fade" id="pills-profile-emp" role="tabpanel" aria-labelledby="pills-profile-tab-emp" tabindex="0">
                         <div class="row mb-1">
                             <div class="col-md-12">
+                                <label class="form-label" for="CertificadoDigital">Certificado Digital <a href="#" onclick="CertificadoDigitalClick(this);"><i class="fa fa-plus-circle"></i></a></label>
+                                <div id="selectCertificado" data-control="CertificadoDigital">
+                                    <div class="loading-label w-100">
+                                        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+                                        Carregando registros, aguarde ...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-md-12">
                                 <label class="form-label" for="naturezaOperacao">Natureza da Operação</label>
                                 <div id="selectNatureza" data-control="naturezaOperacao">
                                     <div class="loading-label w-100">
@@ -215,45 +226,41 @@
                         <div class="row mb-1">
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label" for="cnae">CNAE</label>
                                         <input type="text" class="form-control form-control-sm text-uppercase" id="cnae" placeholder="" />
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label" for="itemServico">Item</label>
                                         <input type="text" class="form-control form-control-sm text-uppercase" id="itemServico" placeholder="" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label" for="aliquota">Alíquota</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase currency" id="aliquota" placeholder="0,00 %" />
                                     </div>
                                 </div>                                
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <label class="form-label" for="codigoTributacao">Código de Tributação</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="codigoTributacao" placeholder="" />
+                                        <label class="form-label" for="aliquota">Alíquota</label>
+                                        <input type="text" class="form-control form-control-sm text-uppercase currency" id="aliquota" placeholder="0,00 %" />
                                     </div>        
                                     <div class="col-md-8">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label class="form-label" for="usuario">Usuário</label>
-                                                <input type="text" class="form-control form-control-sm" id="usuario" placeholder="" />
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label" for="senha">Senha</label>
-                                                <input type="text" class="form-control form-control-sm" id="senha" placeholder="" />
-                                            </div>
-                                        </div>
+                                        <label class="form-label" for="codigoTributacao">Código de Tributação</label>
+                                        <input type="text" class="form-control form-control-sm text-uppercase" id="codigoTributacao" placeholder="" />
                                     </div>        
                                 </div>                                
                             </div>
                         </div>
                         <div class="row mb-1">                            
                             <div class="col-md-6">
-                                <label class="form-label" for="certificado">Nome do Certificado</label>
-                                <input type="text" class="form-control form-control-sm" id="certificado" />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="usuario">Usuário</label>
+                                        <input type="text" class="form-control form-control-sm" id="usuario" placeholder="" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="senha">Senha</label>
+                                        <input type="text" class="form-control form-control-sm" id="senha" placeholder="" />
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="row">

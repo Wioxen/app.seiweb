@@ -1,9 +1,7 @@
 var dataEmpresa = undefined;
-var $thisEmpresa = undefined;
-var $modalEmpresa = undefined;
-var $cadastroEmpresa = undefined;
-
-const formEmpresa = '#frmEmpresa';
+var modalEmpresa = undefined;
+var cadastroEmpresa = undefined;
+var resourceEmpresa = "Empresa";
 
 function meuFormatoPersonalizado(d) {
     return `
@@ -15,12 +13,10 @@ function meuFormatoPersonalizado(d) {
     `;
 }
 
-function empresaClick(e) {
-    $thisEmpresa = $(e);
-
-    RestRequest('POST',
-        $baseApiUrl+"usuariomodulo",
-        {modulo : $thisEmpresa.attr('data-modulo')+"4"},
+function EmpresaClick(e) {
+    RestRequest('GET',
+        `${$baseApiUrl}${resourceEmpresa}`,
+        null,
         null,
         function (data) {
             hideLoadingModal();
@@ -48,7 +44,7 @@ function empresaClick(e) {
                 },
             ];
 
-            $cadastroEmpresa = 
+            cadastroEmpresa = 
                 CarregaDataTable
                 (
                     'datatable?table=Empresa',
@@ -64,17 +60,18 @@ function empresaClick(e) {
                     defaultColumns,
                     null,
                     false
-                );
-    });        
+                );                       
+        });           
 }
 
 function ResetDefaultEmpresa(onLoadCallback){
     hideLoadingModal();
 
-    $modalEmpresa = createDynamicModal("",null,false);        
+    modalEmpresa = createDynamicModal();        
+    modalEmpresa.find('.modal-header-search').hide();
 
-    carregarTemplateModal('#'+$modalEmpresa.attr('id'),
-        'templates/Empresa.html '+formEmpresa, {
+    carregarTemplateModal('#'+modalEmpresa.attr('id'),
+        'templates/'+resourceEmpresa+'.html #frm'+resourceEmpresa, {
         modalTitle: 'Cadastrar Empresa',       
         modalSize: 'modal-dialog-scrollable modal-xl',
         onLoad: function(response, status, xhr)
@@ -88,9 +85,6 @@ function ResetDefaultEmpresa(onLoadCallback){
             $('#uploadLogoEmpresa').off('click').on('click', uploadLogoEmpresa);
             $('#apagarLogoEmpresa').off('click').on('click', apagarLogoEmpresa);
             $('#fileUploadEmpresa').off('change').on('change', fileUploadEmpresa);
-
-            carregaSelect('lista/naturezas','#selectNatureza','codigo');
-            carregaSelect('lista/regimes','#selectRegime','codigo');
 
             configurarAutocomplete(
                 '#bairro',
@@ -130,7 +124,7 @@ function ResetDefaultEmpresa(onLoadCallback){
                 }
             );
 			
-			preencherFormularioCompleto(dataEmpresa, formEmpresa);
+			preencherFormularioCompleto(dataEmpresa, '#frm'+resourceEmpresa);
             
 			CarregarLogoEmpresa();
 
@@ -141,9 +135,38 @@ function ResetDefaultEmpresa(onLoadCallback){
 			$('#codigoTributacao').trigger('input').trigger('change');                                
 			$('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');			
 
-			$('#btnCancelar'+$modalEmpresa.attr('id')).click(CancelarEmpresaClick);
-			$('#btnExcluir'+$modalEmpresa.attr('id')).click(ExcluirEmpresaClick);    
-			$('#btnSalvar'+$modalEmpresa.attr('id')).click(SalvarEmpresaClick);            
+            modalEmpresa.find('.btn-cancelar').click(CancelarEmpresaClick);
+            modalEmpresa.find('.btn-excluir').click(ExcluirEmpresaClick);    
+            modalEmpresa.find('.btn-salvar').click(SalvarEmpresaClick);            
+
+            carregaSelect2('CertificadoDigital',modalEmpresa,'#selectCertificado','id',function(response, textStatus, jqXHR){
+                if ((dataEmpresa !== undefined) && (dataEmpresa != null) && (dataEmpresa.certificadoDigitalId !== 0))
+                {
+                    var thisSelect = $('#CertificadoDigital');
+                    thisSelect
+                        .val(dataEmpresa.certificadoDigitalId)
+                        .trigger('change');                    
+                }
+            });
+
+            carregaSelect('lista/naturezas','#selectNatureza','codigo',true,function(response, textStatus, jqXHR){
+                if ((dataEmpresa !== undefined) && (dataEmpresa != null) && (dataEmpresa.naturezaOperacao !== 0))
+                {
+                    $('#naturezaOperacao')
+                        .val(dataEmpresa.naturezaOperacao)
+                        .trigger('change');                    
+                }
+            });
+
+            carregaSelect('lista/regimes','#selectRegime','codigo',true,function(response, textStatus, jqXHR){
+                if ((dataEmpresa !== undefined) && (dataEmpresa != null) && (dataEmpresa.regimeTributacao !== 0))
+                {
+                    $('#regimeTributacao')
+                        .val(dataEmpresa.regimeTributacao)
+                        .trigger('change');                    
+                }
+            });
+
 
             if (typeof onLoadCallback === 'function') 
             {
@@ -156,53 +179,55 @@ function ResetDefaultEmpresa(onLoadCallback){
 
 function NovoEmpresaClick(e)
 {
-    dataEmpresa = {id: 0};
-    RestRequest('POST',
-        $baseApiUrl+"usuariomodulo",
-        {modulo : $thisEmpresa.attr('data-modulo')+"1"},
+    event.preventDefault();
+    RestRequest('GET',
+        `${$baseApiUrl}${resourceEmpresa}/novo`,
+        null,
         null,
         function (data) {
+            dataEmpresa = {id: 0, descricao: null };
             ResetDefaultEmpresa(
-            function(response, status, xhr)
-            {
-                if (!$modalEmpresa.hasClass('show') && !$modalEmpresa.is(':visible')) {
-                    $modalEmpresa.modal('show');
-
-                    toggleModalBody('#'+$modalEmpresa.attr('id'), false);
-
+            function(response, status, xhr){
+                if (!modalEmpresa.hasClass('show') && !modalEmpresa.is(':visible')) 
+                {
+                    modalEmpresa.modal('show');                
+                    toggleModalBody('#'+modalEmpresa.attr('id'), false);
                     setTimeout(() => {
-                        $('#cnpj').focus();
+                        $('#descricao').focus();
                     }, 500);            
-                }
+                }          
             });
-        });    
+        });  
 }
 
 function CancelarEmpresaClick(e){
     e.preventDefault();
     dataEmpresa = undefined;
-    $modalEmpresa.modal('hide');
-    //$cadastroEmpresa.tabela.ajax.reload();
+    modalEmpresa.modal('hide');
 }
 
 function EditarEmpresaClick(e){
+    event.preventDefault();
+
     RestRequest('GET',
-        $baseApiUrl+"Empresa/"+e.closest('tr').id,
+        `${$baseApiUrl}${resourceEmpresa}`,
         null,
         null,
         function (data) {
-            dataEmpresa = data;
-            ResetDefaultEmpresa(function(response, status, xhr){
-                if (!$modalEmpresa.hasClass('show') && !$modalEmpresa.is(':visible')) 
-                {
-                    $modalEmpresa.modal('show');
-
-                    toggleModalBody('#'+$modalEmpresa.attr('id'), false);
-                 
-                    setTimeout(() => {
-                        $('#descricao').focus();
-                    }, 500);            
-                }
+            GetEmpresa(e.closest('tr').id,
+            function (data) {
+                hideLoadingModal();
+                dataEmpresa = data;
+                ResetDefaultEmpresa(function(response, status, xhr){
+                    if (!modalEmpresa.hasClass('show') && !modalEmpresa.is(':visible')) 
+                    {
+                        modalEmpresa.modal('show');                
+                        toggleModalBody('#'+modalEmpresa.attr('id'), false);
+                        setTimeout(() => {
+                            $('#descricao').focus();
+                        }, 500);            
+                    }
+                });
             });
         });
 }
@@ -214,14 +239,14 @@ function ExcluirEmpresaClick(e){
             zPergunta_Exclui(function(e){
                 e.preventDefault();
                 RestRequest('DELETE',
-                    $baseApiUrl+"Empresa/"+dataEmpresa.id,
+                    $baseApiUrl+resourceEmpresa+"/"+dataEmpresa.id,
                     null,
                     null,
                     function (data) {
                         hideLoadingModal();
                         setTimeout(() => {
                             CancelarEmpresaClick(e);
-                            $cadastroEmpresa.tabela.ajax.reload();
+                            cadastroEmpresa.tabela.ajax.reload();
                         }, 500);                     
                     });  
             });        
@@ -256,8 +281,8 @@ function SalvarEmpresaClick(e){
         dataEmpresa.itemServico = $('#itemServico').val();
         dataEmpresa.aliquota = StrToNumber($('#aliquota').val());
         dataEmpresa.codigoTributacao = extrairNumeros($('#codigoTributacao').val());
-        dataEmpresa.certificado = $('#certificado').val();
-        dataEmpresa.usuario = $('#usuario').val();
+        dataEmpresa.certificadoDigitalId = IntToValue(parseInt($('#CertificadoDigital').val()));
+        dataEmpresa.Empresa = $('#Empresa').val();
         dataEmpresa.senha = $('#senha').val();
         dataEmpresa.cscId = StrToNumber($('#cscId').val());
         dataEmpresa.csc = $('#csc').val();
@@ -271,8 +296,8 @@ function SalvarEmpresaClick(e){
                     dataEmpresa.id = response.id;
                 }                
                 hideLoadingModal();
-                $modalEmpresa.modal('hide');
-                $cadastroEmpresa.tabela.ajax.reload();
+                modalEmpresa.modal('hide');
+                cadastroEmpresa.tabela.ajax.reload();
             });  
     }    
 }
@@ -296,7 +321,7 @@ function ConsultaCnpjEmpresa(){
         function(data){
             hideLoadingModal();
             dataEmpresa.bairroId = data.bairro.id;
-            preencherFormularioCompleto(data, formEmpresa);
+            preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
             $('#descricao').focus();
         });
 }
@@ -315,7 +340,6 @@ function fileUploadEmpresa(e) {
     if ((dataEmpresa.logo === undefined) || (dataEmpresa.logo === null)){
         EnviarImagem($(this), 
         function (repo) {
-            console.log(repo);
             dataEmpresa.logo = repo;
             CarregarLogoEmpresa();
         });
@@ -351,39 +375,25 @@ function EmpresaNovoBairroClick(e){
 }
 
 function EmpresaBairroSuccess (response, textStatus, jqXHR){
-        dataEmpresa.bairroId = response.id;
-        dataEmpresa.bairro = response;    
-                                        
-        $('#bairro').val(response.descricao);
-        $('#municipio').val(response.municipio.descricao);
-        $('#uf').val(response.municipio.uf);                                              
-    }
+    dataEmpresa.bairroId = response.id;
+    dataEmpresa.bairro = response;    
+                                    
+    $('#bairro').val(response.descricao);
+    $('#municipio').val(response.municipio.descricao);
+    $('#uf').val(response.municipio.uf);                                              
+}
 
 
-/*carregarTemplateModal('templates/Empresa.html #divEmpresa', {
-    modalTitle: 'Cadastro de Empresa',
-    modalSize: 'modal-xl',
-    autocompleteCampo: '#pesquisaCrud',
-    autocompleteUrl: 'https://api.seiweb.com.br/WeatherForecast',
-    autocomplete: {
-        minLength: 3,
-        delay: 500,
-        extraParams: {
-            categoria: 'ativos'
+function GetEmpresa(id,onSuccessCallback){
+    RestRequest('GET',
+        $baseApiUrl+resourceEmpresa+"/"+id,
+        null,
+        function(xhr){
+            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
         },
-        create: function() {
-            $(this).data('ui-autocomplete')._renderItem = function(ul, item) {
-                return $('<li></li>')
-                .addClass("list-group-item list-group-item-action")
-                .append(item.summary)
-                .appendTo(ul);
-            };
-        },                            
-        onSelect: function(item) {
-            //$('#produtoId').val(item.value);
-            //$('#produtoPreco').val(item.data.preco);
-        }
-    }
-});*/       
-
-
+        function(response, status, xhr){
+            if (typeof onSuccessCallback === 'function') {
+                onSuccessCallback(response, status, xhr);
+            }            
+        });    
+}
