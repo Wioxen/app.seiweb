@@ -574,7 +574,7 @@ table.dataTable tbody tr.selected.shown td.details-control::before {
 }
 .strength-text {
     font-weight: bold;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
 }
 .very-weak { color: #dc3545; }
 .weak { color: #fd7e14; }
@@ -590,6 +590,7 @@ table.dataTable tbody tr.selected.shown td.details-control::before {
     width: 3rem;
     height: 3rem;
 }*/
+
 .alert-danger {
     margin-top: 20px;
 }

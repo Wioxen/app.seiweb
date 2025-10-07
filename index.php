@@ -265,21 +265,21 @@
 								</a>
 								<div class="dropdown-menu quick-actions animated fadeIn">
 									<div class="quick-actions-header">
-										<span class="title mb-1">Quick Actions</span>
-										<span class="subtitle op-7">Shortcuts</span>
+										<span class="title mb-1">Ações rápidas</span>
+										<span class="subtitle op-7">Atalhos</span>
 									</div>
 									<div class="quick-actions-scroll scrollbar-outer">
 										<div class="quick-actions-items">
 											<div class="row m-0">
-												<a class="col-6 col-md-4 p-0" href="#">
+												<a class="col-6 col-md-4 p-0" href="#" onclick="alunoClick(this);">
 													<div class="quick-actions-item">
-														<div class="avatar-item bg-danger rounded-circle">
-															<i class="far fa-calendar-alt"></i>
+														<div class="avatar-item bg-success rounded-circle">
+															<i class="fa-solid fa-user-graduate"></i>
 														</div>
-														<span class="text">Calendar</span>
+														<span class="text">Aluno</span>
 													</div>
 												</a>
-												<a class="col-6 col-md-4 p-0" href="#">
+												<!--<a class="col-6 col-md-4 p-0" href="#">
 													<div class="quick-actions-item">
 														<div class="avatar-item bg-warning rounded-circle">
 															<i class="fas fa-map"></i>
@@ -318,7 +318,7 @@
 														</div>
 														<span class="text">Payments</span>
 													</div>
-												</a>
+												</a>-->
 											</div>
 										</div>
 									</div>
@@ -352,7 +352,7 @@
 						</div>
 						<div class="ms-md-auto py-2 py-md-0">
 							<a href="#" class="btn btn-label-info btn-round me-2" onclick="UsuarioAcessoClick(this);"><i class="fa fa-user"></i> Visitante</a>
-							<a href="#" class="btn btn-primary btn-round" onclick="alunoClick(this);"><i class="fa fa-users"></i> Cadastro de aluno</a>
+							<a href="#" class="btn btn-primary btn-round" onclick="alunoClick(this);"><i class="fa-solid fa-user-graduate"></i> Cadastrar aluno</a>
 						</div>
 					</div>
 					<div class="row">
@@ -1079,6 +1079,7 @@
 	<script src="js/usuario.js"></script>
 	<script src="js/controleacesso.js"></script>
 	<script src="js/alterarsenha.js"></script>
+	<script src="js/meuperfil.js"></script>
 	<script src="js/configuracao.js"></script>
 	<script>
 	// Opcional: Adicionar também um listener para mudanças dinâmicas
@@ -1101,209 +1102,109 @@
 
 	$(document).ready(function() {
 		//setInterval(checkTurnstileStatus, 1000);
-				// Atualizar imediatamente e a cada segundo
-				atualizarDataHora();
-				setInterval(atualizarDataHora, 1000);	
-				
-		
+
+		// Atualizar imediatamente e a cada segundo
+		atualizarDataHora();
+		setInterval(atualizarDataHora, 1000);	
+
 		localStorage.setItem('login_url',$loginUrl+'index.php?access_token='+$('#accesstoken').val());
 		localStorage.setItem('token','Bearer '+$('#authkey').val());			
-	// Função para mostrar spinners e depois o conteúdo real após 3 segundos
-			function initializeProfileSpinners() {
-				// Container para a imagem do avatar
-				const avatarContainer = document.getElementById('avatar-container');
-				// Container para o nome de usuário
-				const usernameContainer = document.getElementById('username-container');
-				const dropdownuser = document.getElementById('dropdown_user');
-				
-				
-				// Salvar o conteúdo original
-				const originalAvatar = `
-					<img src="#" alt="..." class="avatar-img rounded-circle">
-				`;
-				const originalUsername = `
-					<span class="op-7">Olá,</span> <span id="first-name" class="fw-bold first-name">Igor</span>
-				`;
-				
-				const originalDropdownuser = `
-					<div class="dropdown-user-scroll scrollbar-outer">
-						<li>
-							<div class="user-box">
-								<div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
-								<div class="u-text">
-									<h4 class="first-name">Igor</h4>
-									<p class="text-muted"></p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Meu Perfil</a>
+
+		// Inicializar os spinners
+		initializeProfileSpinners();
+
+		// Restante do código para carregar o menu
+		function carregarMenu() {
+			$.ajax({
+				url: `${$baseApiUrl}Menu`,
+				method: 'GET',
+				dataType: 'json',
+				beforeSend: function (xhr) {
+					$('#dynamic-menu').html(`
+						<div class="loading-spinner">
+							<div class="text-center">
+								<div class="spinner-border text-primary" role="status">
+									<span class="visually-hidden">Carregando...</span>
 								</div>
+								<p class="mt-2 text-black">Carregando menu...</p>
 							</div>
-						</li>
-						<li>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#" onclick="AlterarSenhaClick(this);">Alterar Senha</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#" onclick="ConfiguracaoClick(this);">Configuração</a>
-							<div class="dropdown-divider"></div>
-							<a id="Logout" class="dropdown-item" href="#">Logout</a>
-						</li>
-					</div>
-				`;				
-				
-				// Restaurar conteúdo original após 3 segundos
-				$.ajax({
-					url: `${$baseApiUrl}Perfil`,
-					method: 'GET',
-					dataType: 'json',
-					beforeSend: function (xhr) {
-			            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-			
-						// Adicionar spinners
-						avatarContainer.innerHTML = `
-							<div class="spinner-container">
-								<div class="avatar-spinner"></div>
-							</div>
-						`;
-						usernameContainer.innerHTML = `
-							<div class="username-spinner"></div>
-						`;						
-					},
-					success: function(data) {
-						avatarContainer.innerHTML = originalAvatar;
-						usernameContainer.innerHTML = originalUsername;
-						dropdownuser.innerHTML = originalDropdownuser;
-
-						$('.first-name').text(data.firstname);
-						$('.u-text').find('p').text(data.email);
-						$('.avatar-img').attr('src',data.photo);
-						
-						$('#Logout').off('click').on('click', (e) => {
-							e.preventDefault();
-							swal({
-								title: 'Atenção?',
-								text: `${$('#first-name').text()}, deseja realmente sair do sistema?`,
-								type: 'warning',
-								buttons:{
-									confirm: {
-										text : 'Sim, desejo sair',
-										className : 'btn btn-success'
-									},
-									cancel: {
-										text:  'Não, desejo permanecer',
-										visible: true,
-										className: 'btn btn-danger'
-									}
-								}
-							}).then((Yes) => {
-								if (Yes) {
-									swal.close();
-									redirectToLogin();
-								} else {
-									swal.close();
-								}								
-							});							
-						});					
-					},
-					error: function(jqXHR, textStatus, errorThrown){
-						if (jqXHR.status === 401) {
-							redirectToLogin();
-						}
-					}
-				});
-			}
-			
-			// Inicializar os spinners
-			initializeProfileSpinners();
-
-			// Restante do código para carregar o menu
-			function carregarMenu() {
-				$.ajax({
-					url: `${$baseApiUrl}Menu`,
-					method: 'GET',
-					dataType: 'json',
-					beforeSend: function (xhr) {
-						$('#dynamic-menu').html(`
-							<div class="loading-spinner">
-								<div class="text-center">
-									<div class="spinner-border text-primary" role="status">
-										<span class="visually-hidden">Carregando...</span>
-									</div>
-									<p class="mt-2 text-black">Carregando menu...</p>
-								</div>
-							</div>
-						`);
-					},
-					success: function(data) {
-						construirMenu(data);
-
-						$.notify({
-							icon: 'icon-bell',
-							title: 'SEIWEB',
-							message: 'Sistema inicializado com sucesso.',
-						},{
-							type: 'secondary',
-							placement: {
-								from: "bottom",
-								align: "right"
-							},
-							time: 1000,
-						});						
-					},
-					error: function(xhr, status, error) {
-						console.error('Erro ao carregar o menu:', error);
-						$('#dynamic-menu').html('<li class="nav-item"><a href="#"><i class="fas fa-exclamation-triangle"></i><p>Erro ao carregar menu</p></a></li>');
-					}
-				});
-			}
-
-			// Restante das funções do menu
-			function construirMenu(menus) {
-				var menuHTML = `<li class="nav-section">
-								<span class="sidebar-mini-icon">
-									<i class="fa fa-ellipsis-h"></i>
-								</span>
-								<h4 class="text-section">MENU</h4>
-							</li>`;
-				
-				menus.forEach(function(menu) {
-					var menuId = 'menu-' + menu.id;
-					
-					menuHTML += `
-					<li class="nav-item modulo">
-						<a data-bs-toggle="collapse" href="#${menuId}" class="collapsed" aria-expanded="false">
-							<i class="${menu.icone}"></i>
-							<p class="">${menu.titulo}</p>
-							<span class="caret"></span>
-						</a>
-						<div class="collapse" id="${menuId}">
-							<ul class="nav nav-collapse pb-0 pt-0">`;
-					
-					if (menu.modulos && menu.modulos.length > 0) {
-						menu.modulos.forEach(function(modulo) {
-							menuHTML += `
-								<li class="">
-									<a href="#" id="${gerarHash(16)}" onclick="${modulo.elemento_id}Click(this);">
-										<span class="sub-item"> ${modulo.titulo} </span>
-									</a>
-								</li>`;
-						});
-					}
-					
-					menuHTML += `
-							</ul>
 						</div>
-					</li>`;
-				});
+					`);
+				},
+				success: function(data) {
+					construirMenu(data);
+
+					$.notify({
+						icon: 'icon-bell',
+						title: 'SEIWEB',
+						message: 'Sistema inicializado com sucesso.',
+					},{
+						type: 'secondary',
+						placement: {
+							from: "bottom",
+							align: "right"
+						},
+						time: 1000,
+					});						
+				},
+				error: function(xhr, status, error) {
+					console.error('Erro ao carregar o menu:', error);
+					$('#dynamic-menu').html('<li class="nav-item"><a href="#"><i class="fas fa-exclamation-triangle"></i><p>Erro ao carregar menu</p></a></li>');
+				}
+			});
+		}
+
+		// Restante das funções do menu
+		function construirMenu(menus) {
+			var menuHTML = `<li class="nav-section">
+							<span class="sidebar-mini-icon">
+								<i class="fa fa-ellipsis-h"></i>
+							</span>
+							<h4 class="text-section">MENU</h4>
+						</li>`;
+			
+			menus.forEach(function(menu) {
+				var menuId = 'menu-' + menu.id;
 				
-				$('#dynamic-menu').html(menuHTML);
-				inicializarMenu();
-			}
+				menuHTML += `
+				<li class="nav-item modulo">
+					<a data-bs-toggle="collapse" href="#${menuId}" class="collapsed" aria-expanded="false">
+						<i class="${menu.icone}"></i>
+						<p class="">${menu.titulo}</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="${menuId}">
+						<ul class="nav nav-collapse pb-0 pt-0">`;
+				
+				if (menu.modulos && menu.modulos.length > 0) {
+					menu.modulos.forEach(function(modulo) {
+						menuHTML += `
+							<li class="">
+								<a href="#" id="${gerarHash(16)}" onclick="${modulo.elemento_id}Click(this);">
+									<span class="sub-item"> ${modulo.titulo} </span>
+								</a>
+							</li>`;
+					});
+				}
+				
+				menuHTML += `
+						</ul>
+					</div>
+				</li>`;
+			});
 			
-			function inicializarMenu() {
-				console.log('Menu dinâmico carregado e inicializado');
-			}
-			
-			carregarMenu();
-			
-			
-			//$('#loadingModal').modal('show');
+			$('#dynamic-menu').html(menuHTML);
+			inicializarMenu();
+		}
+		
+		function inicializarMenu() {
+			console.log('Menu dinâmico carregado e inicializado');
+		}
+		
+		carregarMenu();
+		
+		
+		//$('#loadingModal').modal('show');
 	});
 	</script>		
 	<script>
