@@ -19,7 +19,7 @@ function DetailUsuario (d) {
         <div class="fw-bold">${d.email}</div>
         ${(d.verifiedAt === null) ? `<a onclick="ReenviarEmail(this);" data-email=${d.email} href="#" class="badge text-bg-primary text-decoration-none"><i class="fa fa-envelope"></i> Reenviar</a>`:``}
         </div>
-        ${(d.verifiedAt === null) ? '<span class="badge bg-warning text-dark rounded-pill"><i class="fa fa-refresh fa-spin"></i> Não Verificado</span>':`<span class="badge text-bg-success"><i class="fa fa-check"></i> Verificado</span>`}
+        ${(d.verifiedAt === null) ? '<span class="badge bg-warning text-dark rounded-pill"><i class="fa fa-refresh fa-spin"></i> Não Verificado</span>':`<small class="badge text-bg-success"><i class="fa fa-check"></i> Verificado</small>`}
     </li>
     </ul>
     </div>

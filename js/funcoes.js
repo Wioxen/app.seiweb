@@ -642,7 +642,7 @@ function createDynamicModal_01(title, size, modal_body, modal_footer = "", callb
     
     // Criar a estrutura do modal
     const modalHTML = `
-        <div class="modal fade" id="${modalId}" tabindex="-1">
+        <div class="modal fade" id="${modalId}"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
             <div class="modal-dialog modal-dialog-scrollable ${size}">
                 <div class="modal-content">
                     <div class="modal-header bg-primary" style="color: white;">
@@ -683,7 +683,7 @@ function createDynamicModal() {
     
     // Criar a estrutura do modal
     const modalHTML = `
-        <div class="modal fade" id="${modalId}" tabindex="-1">
+        <div class="modal fade" id="${modalId}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
@@ -1001,13 +1001,13 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
         if ( row.child.isShown() ) {
             // This row is already open - close it
             row.child.hide();
-            tr.removeClass('shown');          
+            tr.removeClass('shown');       
         }
         else {
             // Open this row
-            row.child( format(row.data()) ).show();
+            var childRow = row.child( format(row.data()) );
+            childRow.show();
             tr.addClass('shown');
-            //alert('x');
         }
     } );    
 

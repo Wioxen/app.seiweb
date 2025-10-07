@@ -595,3 +595,14 @@ table.dataTable tbody tr.selected.shown td.details-control::before {
     margin-top: 20px;
 }
 /**/
+
+/* Adicione este CSS */
+tr.child,
+tr[data-dt-row] {
+    padding: 0 !important;
+}
+
+tr.child td,
+tr[data-dt-row] td {
+    padding: 0 !important;
+}
