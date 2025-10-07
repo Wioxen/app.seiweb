@@ -35,6 +35,7 @@ function CertificadoDigitalClick(e){
             }
         });
 
+        $('#SenhaCert').val('');
         $('#frmCertificadoDigital').on('submit',CertificadoDigitalSubmit);
 
         modalCeritificadoDigital.modal('show');
