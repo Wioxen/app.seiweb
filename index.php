@@ -993,7 +993,7 @@
 		<!-- End Custom template -->
 
 	</div>
-	<div class="cf-turnstile" data-sitekey="0x4AAAAAAB3tLfTOmtvmAtT9"></div>
+	<!--<div class="cf-turnstile" data-sitekey="0x4AAAAAAB3tLfTOmtvmAtT9"></div>-->
 	<!--   Core JS Files   -->
 	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -1062,7 +1062,7 @@
 	</script>
 
 	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+	<!--<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>	
 	<script src="assets/js/jquery.tabbable.js"></script>
