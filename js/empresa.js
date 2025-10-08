@@ -48,7 +48,7 @@ function EmpresaClick(e) {
                 CarregaDataTable
                 (
                     'datatable?table=Empresa',
-                    'Cadastrar Empresa',
+                    'Empresa',
                     'modal-lg',
                     `<table id="EmpresaTb" class="row-border stripe hover" style="width:100%"></table>`,
                     `<div class="footer-buttons">
