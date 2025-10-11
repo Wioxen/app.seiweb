@@ -49,41 +49,43 @@ function carregarTemplateModal(modalId, templateUrl, configDinamico = {}) {
         $(config.autocompleteCampo).val('');
     }
 
-    // Carrega o template
-    $(modalId+' .modal-body').load(templateUrl, function(response, status, xhr) {
-        if (status === "error") {
-            console.error("Erro ao carregar template:", xhr.status, xhr.statusText);
-            $(modalId+' .modal-body').html('<div class="alert alert-danger">Erro ao carregar o formulário</div>');
-            return;
-        }
-
-        // Aplica máscaras nos inputs
-        aplicarMascaras(config.masks);
-
-        //
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))        
-        
-        // Configura autocomplete se especificado
-        if (config.autocompleteCampo && config.autocompleteUrl) {
-            configurarAutocomplete(config.autocompleteCampo, config.autocompleteUrl, config.autocomplete);
-        }
-
-        if (typeof config.onLoad === 'function') {
-            config.onLoad(response, status, xhr);
-        } else {        
-            if (!$(modalId).hasClass('show') && !$(modalId).is(':visible')) {
-                $(modalId).modal('show');
-                
-                setTimeout(() => {
-                    // Limpa campo de autocomplete após carregar
-                    if (config.autocompleteCampo) {
-                        $(config.autocompleteCampo).val('').focus();
-                    }            
-                }, 500);
+    setTimeout(() => {
+        // Carrega o template
+        $(modalId+' .modal-body').empty().load(templateUrl, function(response, status, xhr) {
+            if (status === "error") {
+                console.error("Erro ao carregar template:", xhr.status, xhr.statusText);
+                $(modalId+' .modal-body').html('<div class="alert alert-danger">Erro ao carregar o formulário</div>');
+                return;
             }
-        }
-    });
+
+            // Aplica máscaras nos inputs
+            aplicarMascaras(config.masks);
+
+            //
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))        
+            
+            // Configura autocomplete se especificado
+            if (config.autocompleteCampo && config.autocompleteUrl) {
+                configurarAutocomplete(config.autocompleteCampo, config.autocompleteUrl, config.autocomplete);
+            }
+
+            if (typeof config.onLoad === 'function') {
+                config.onLoad(response, status, xhr);
+            } else {        
+                if (!$(modalId).hasClass('show') && !$(modalId).is(':visible')) {
+                    $(modalId).modal('show');
+                    
+                    setTimeout(() => {
+                        // Limpa campo de autocomplete após carregar
+                        if (config.autocompleteCampo) {
+                            $(config.autocompleteCampo).val('').focus();
+                        }            
+                    }, 500);
+                }
+            }
+        });        
+    }, 500);
 }
 
 // Função para aplicar máscaras (mantida)
