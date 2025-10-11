@@ -149,7 +149,7 @@ function ResetDefaultUsuario(onLoadCallback){
                 $(`input[name="UsuarioRole"][value="${dataUsuario.role}"]`).prop('checked', true);
             }
 
-            carregaSelect2('ControleAcesso',modalUsuario,'#selectUsuarioAcesso','id',function(response, textStatus, jqXHR){
+            carregaSelect2('select2?table=ControleAcesso',modalUsuario,'#selectUsuarioAcesso',function(response, textStatus, jqXHR){
                 if ((dataUsuario !== undefined) && (dataUsuario != null) && (dataUsuario.controlaccessid !== 0))
                 {
                     var thisSelect = $('#'+$('#selectUsuarioAcesso').attr('data-control'));
@@ -168,24 +168,18 @@ function ResetDefaultUsuario(onLoadCallback){
 
 function NovoUsuarioClick(e){
     event.preventDefault();
-    RestRequest('GET',
-        `${$baseApiUrl}${resourceUsuario}/novo`,
-        null,
-        null,
-        function (data) {
-            dataUsuario = {id: 0, firstname: null };
-            ResetDefaultUsuario(
-            function(response, status, xhr){
-                if (!modalUsuario.hasClass('show') && !modalUsuario.is(':visible')) 
-                {
-                    modalUsuario.modal('show');                
-                    toggleModalBody('#'+modalUsuario.attr('id'), false);
-                    setTimeout(() => {
-                        $('#UsuarioFirstName').focus();
-                    }, 500);            
-                }          
-            });
-        });    
+    ResetDefaultUsuario(
+    function(response, status, xhr){
+        dataUsuario = {id: 0};
+        if (!modalUsuario.hasClass('show') && !modalUsuario.is(':visible')) 
+        {
+            modalUsuario.modal('show');                
+            toggleModalBody('#'+modalUsuario.attr('id'), false);
+            setTimeout(() => {
+                $('#UsuarioFirstName').focus();
+            }, 500);            
+        }          
+    });   
 }
 
 function CancelarUsuarioClick(e){

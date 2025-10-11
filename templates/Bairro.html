@@ -26,11 +26,16 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <label class="form-label">Município <a href="#" onclick="BairroNovoMunicipioClick(this);"><i class="fa fa-plus-circle"></i></a></label>
-                <div class="input-group input-group-sm">                                            
-                    <input id="BairroMunicipio" name="municipio[descricao]" class="form-control form-control-sm text-uppercase" type="text" />
-                    <button class="input-group-text" onclick="BairroEditarMunicipioClick(this);"><i class="fa fa-edit"></i></button>
-                </div>    
+                <label class="form-label d-flex justify-content-between align-items-center" for="municipio"> 
+                    <span class="required">Município <a href="#" onclick="BairroNovoMunicipioClick(this);"><i class="fas fa-plus-circle"></i></a></span>
+                    <span id="MunicipioUF"></span>                                    
+                </label>
+                <div id="selectBairroMunicipio" data-control="BairroMunicipio">
+                    <div class="loading-label w-100">
+                        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+                        Carregando registros, aguarde ...
+                    </div>
+                </div> 
             </div>
         </div>
     </div>

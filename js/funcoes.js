@@ -615,21 +615,19 @@ function preencherFormularioCompleto(payload, formSelector = 'form') {
     preencherRecursivo(payload);
 }
 
-function buscaCep(element, callbackSuccess, callbackError) {
-    console.log($(element).val());
-
+function buscaCep(_modulo, _cep, callbackSuccess, callbackError) {
     RestRequest('POST',
-        $baseApiUrl+'viacep',
-        {cep: $(element).val()},
+        $baseApiUrl+'apiservice/cep',
+        {modulo: _modulo, cep: _cep},
         null,
         callbackSuccess,
         callbackError);
 }
 
-function buscaCnpj(_cnpj, callbackSuccess, callbackError) {
+function buscaCnpj(_modulo,_cnpj, callbackSuccess, callbackError) {
     RestRequest('POST',
-        $baseApiUrl+'receitaws',
-        {cnpj: _cnpj},
+        $baseApiUrl+'apiservice/receitaWs',
+        {modulo: _modulo, cnpj: _cnpj},
         null,
         callbackSuccess,
         callbackError);
@@ -692,7 +690,7 @@ function createDynamicModal() {
                     </div>
                     <div class="modal-header modal-header-search border-0 pb-0">
                         <div class="input-group input-group-sm">
-                            <input id="Pesquisar${modalId}" type="text" class="form-control form-control-sm text-uppercase" placeholder="Digite 3 ou mais caracteres">
+                            <input id="${gerarHash(16)}" type="text" class="form-control form-control-sm text-uppercase search" placeholder="Digite 3 ou mais caracteres">
                             <span class="input-group-text"><i class="fa fa-search"></i></span>
                         </div>
                     </div>
@@ -760,9 +758,12 @@ function carregaSelect(resource, selectContainerId, fieldkey, concatenar = true,
         });    
 }
 
-function carregaSelect2(resource, _modal, selectContainerId, fieldkey, successCallback){
+function carregaSelect2(resource, _modal, selectContainerId, successCallback, 
+    customProperties = null, select2Callback = null, changeCallback = null,
+    openCallback = null, closeCallback = null, unselectCallback = null) { // Novos parâmetros
+    
     RestRequest('GET',
-        $baseApiUrl+'select2?table='+resource,
+        $baseApiUrl + resource,
         null,
         function(xhr){
             $(selectContainerId).html(`<div class="loading-label w-100">
@@ -775,26 +776,87 @@ function carregaSelect2(resource, _modal, selectContainerId, fieldkey, successCa
             $(selectContainerId)
             .html(`<select id="${$(selectContainerId).attr('data-control')}" class="form-select form-select-sm"></select>`); 
             
-            var thisSelect = $('#'+$(selectContainerId)
-            .attr('data-control'));
+            var thisSelect = $('#' + $(selectContainerId).attr('data-control'));
 
-            thisSelect
-            .append(`<option value="0"></option>`);
+            // Armazena a resposta para usar no change
+            var selectData = response;
 
-            $.each(response,function(index,value){
-                thisSelect
-                .append(`<option value="${value[fieldkey]}">${value.descricao}</option>`);
-            });
-
-            thisSelect
-            .select2({
-                placeholder: '',
+            thisSelect.select2({
                 theme: "bootstrap-5",
                 dropdownParent: _modal,
-                allowClear: true                
+                language: "pt-BR",
+                placeholder: '',
+                allowClear: true,
+                data: $.map(response, function (item) {
+                    var dataItem = {
+                        text: item.descricao,
+                        id: item.id
+                    };
+                    
+                    // Adiciona propriedades customizadas se fornecidas
+                    if (customProperties) {
+                        Object.keys(customProperties).forEach(function(key) {
+                            dataItem[key] = item[customProperties[key]];
+                        });
+                    }
+                    
+                    return dataItem;
+                })
+            });          
+            
+            // Implementação dos eventos com callbacks
+            thisSelect.on("select2:open", function (e) { 
+                //console.log("select2:open", e);
+                if (typeof openCallback === 'function') {
+                    openCallback(e, thisSelect);
+                }
             });
             
-            thisSelect.on("select2:select", function (e) { console.log("select2:select", e); });
+            thisSelect.on("select2:close", function (e) { 
+                //console.log("select2:close", e);
+                if (typeof closeCallback === 'function') {
+                    closeCallback(e, thisSelect);
+                }
+            });
+            
+            thisSelect.on("select2:unselect", function (e) { 
+                //console.log("select2:unselect", e);
+                if (typeof unselectCallback === 'function') {
+                    unselectCallback(e, thisSelect);
+                }
+            });
+
+            thisSelect.on("select2:select", function (e) { 
+                //console.log("select2:select", e);
+                var selectedData = e.params.data;
+                if (typeof select2Callback === 'function') {
+                    select2Callback(selectedData, thisSelect);
+                }            
+            });
+
+            thisSelect.on("change", function (e) { 
+                var selectedValue = $(this).val();
+                var selectedData = null;
+                
+                // Encontra os dados completos do item selecionado
+                if (selectedValue) {
+                    selectedData = selectData.find(function(item) {
+                        return item.id == selectedValue;
+                    });
+                    
+                    // Se não encontrou pelos dados originais, tenta pelos dados do Select2
+                    if (!selectedData) {
+                        var select2Data = $(this).select2('data');
+                        if (select2Data && select2Data.length > 0) {
+                            selectedData = select2Data[0];
+                        }
+                    }
+                }
+                
+                if (typeof changeCallback === 'function') {
+                    changeCallback(selectedData, selectedValue, thisSelect);
+                }                    
+            });          
 
             if (typeof successCallback === 'function') {
                 successCallback(response, textStatus, jqXHR);
@@ -1166,12 +1228,12 @@ function CarregarFoto(thisFoto,_photo,_size="140px")
 }
 
 
-function checkboxValue(checkbox, valorA, valorB) {
+function checkboxValue(checkbox) {
     // Verifica se o checkbox está marcado
     const estaChecado = $(checkbox).is(':checked');
     
     // Retorna valorA se estiver checado, valorB se não estiver
-    return estaChecado ? valorA : valorB;
+    return estaChecado ? true : false;
 }
 
 function ConvertToInt(_value)
@@ -1186,12 +1248,88 @@ function ConvertToInt(_value)
     return parseInt(_value);
 }
 
-function IntToValue(_value)
-{
-    if (_value === 0)
-    {
-        return null;
-    } else {
-        return _value;
+function IntToValue(_value) {
+    try {
+        console.log(_value);
+        if (_value === 0) {
+            return null;
+        } else {
+            return _value;
+        }
+    } catch (error) {
+        console.error('Erro na função IntToValue:', error);
+        return 0;
     }
+}
+
+function safeGet(objeto, campo, defaultValue = 0) {
+    // Verificação em etapas
+    if (!objeto) return defaultValue;
+    if (typeof objeto !== 'object') return defaultValue;
+    if (!(campo in objeto)) return defaultValue;
+    
+    return objeto[campo] ?? defaultValue;
+}
+
+function safeGetDeep(objeto, caminho, defaultValue = 0) {
+    try {
+        if (!objeto) return defaultValue;
+        
+        const campos = Array.isArray(caminho) ? caminho : caminho.split('.');
+        let resultado = objeto;
+        
+        for (const campo of campos) {
+            if (resultado === null || resultado === undefined || !(campo in resultado)) {
+                return defaultValue;
+            }
+            resultado = resultado[campo];
+        }
+        
+        return resultado ?? defaultValue;
+    } catch (error) {
+        console.error('Erro em safeGetDeep:', error);
+        return defaultValue;
+    }
+}
+
+function validarValor(valor, ehInteiro = false, soNumeros = false) {
+    // Se for undefined ou null
+    if (valor === undefined || valor === null) {
+        // Se for para tratar como inteiro, retorna 0
+        if (ehInteiro) {
+            return 0;
+        }
+        // Caso contrário, retorna null
+        return null;
+    }
+    
+    // Se for string vazia ou só espaços em branco, retorna null
+    if (typeof valor === 'string' && valor.trim() === '') {
+        return null;
+    }    
+
+    // Se for para tratar como inteiro
+    if (ehInteiro) {
+        // Converte para inteiro usando parseInt
+        const numero = parseInt(valor);
+        // Se for NaN, retorna null, senão retorna o número
+        return isNaN(numero) ? null : numero;
+    }    
+
+    // Se for número (incluindo 0), retorna o número
+    if (typeof valor === 'number') {
+        return valor;
+    }
+    
+    // Se for string não vazia, retorna a string
+    if (typeof valor === 'string') {
+        if (soNumeros){
+            return valor.replace(/\D/g, '');
+        } else {
+            return $.trim(valor);
+        }
+    }
+    
+    // Para qualquer outro tipo, retorna null
+    return null;
 }

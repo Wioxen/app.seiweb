@@ -72,6 +72,8 @@ function CertificadoDigitalSubmit(e)
             contentType: false,
             processData: false,
             headers: {
+                "meu_ip": localStorage.getItem('meu_ip'),
+                "user_agent": localStorage.getItem('user_agent'),
                 "Authorization": localStorage.getItem('token')
             },
             success: function(response, textStatus, jqXHR) {
@@ -79,7 +81,7 @@ function CertificadoDigitalSubmit(e)
                 
                 dataEmpresa.certificadoDigitalId = response.id;
 
-                carregaSelect2('CertificadoDigital',modalEmpresa,'#selectCertificado','id',function(response, textStatus, jqXHR){
+                carregaSelect2('select2?table=CertificadoDigital',modalEmpresa,'#selectCertificado','id',function(response, textStatus, jqXHR){
                     $('#CertificadoDigital')
                         .val(dataEmpresa.certificadoDigitalId)
                         .trigger('change');  

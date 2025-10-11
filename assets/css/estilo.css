@@ -216,7 +216,7 @@ table.dataTable tbody tr.selected.shown td.details-control::before {
     background: url('../img/details_close.png') no-repeat center center;
 }
 
-.required:after {
+.required::before {
     content: " *";
     color: red;
 }

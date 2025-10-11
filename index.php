@@ -1103,13 +1103,20 @@
 
 	$(document).ready(function() {
 		//setInterval(checkTurnstileStatus, 1000);
+		$.getJSON("https://api.ipify.org/?format=json", function(e) {
+			console.log(e.ip);
+			localStorage.setItem('meu_ip',e.ip);
+		}); 		
 
 		// Atualizar imediatamente e a cada segundo
 		atualizarDataHora();
 		setInterval(atualizarDataHora, 1000);	
 
 		localStorage.setItem('login_url',$loginUrl+'index.php?access_token='+$('#accesstoken').val());
-		localStorage.setItem('token','Bearer '+$('#authkey').val());			
+		localStorage.setItem('token','Bearer '+$('#authkey').val());		
+		
+		var userAgentString = navigator.userAgent;
+		localStorage.setItem('user_agent',userAgentString);		
 
 		// Inicializar os spinners
 		initializeProfileSpinners();

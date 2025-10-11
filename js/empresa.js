@@ -86,44 +86,6 @@ function ResetDefaultEmpresa(onLoadCallback){
             $('#apagarLogoEmpresa').off('click').on('click', apagarLogoEmpresa);
             $('#fileUploadEmpresa').off('change').on('change', fileUploadEmpresa);
 
-            configurarAutocomplete(
-                '#bairro',
-                $baseApiUrl+'AutoComplete?table=Bairro',
-                {
-                    minLength: 2,
-                    delay: 300,
-                    onResponse: function(event,ui) {
-                        if (!ui.content.length) {
-                            ui.content.push({id: 0, descricao: $('#bairro').val().toUpperCase()});
-                            ui.content.push({id: null, descricao: "Nenhum registro encontrado"});
-                        }
-                    },
-                    create: function() {
-                        $(this).data('ui-autocomplete')._renderItem = function(ul, item) {
-                            return $('<li></li>')
-                            .addClass((item.id === 0) ? "list-group-item list-group-item-action fw-bold fst-italic" : "list-group-item list-group-item-action")
-                            .append((item.id === 0) ? '<i class="fa fa-plus bg-transparent border-0 text-dark"></i> Adicionar "' + item.descricao + '"' : item.descricao)
-                            .appendTo(ul);
-                        };
-                    },                        
-                    onSelect: function(item) {
-                        if ((item.id === 0) || (item.id === undefined) || (item.id === null))
-                        {
-                            dataBairro = {id: 0, descricao: item.descricao};
-                            bairroClick(EmpresaBairroSuccess);
-                        }
-                        else 
-                        {
-                            GetBairro(item.id,function(response){
-                                dataEmpresa.bairro = response;
-                                dataEmpresa.bairroId = response.id;
-                                $('#bairro').val(response.descricao);                                                    
-                            });
-                        }
-                    }
-                }
-            );
-			
 			preencherFormularioCompleto(dataEmpresa, '#frm'+resourceEmpresa);
             
 			CarregarLogoEmpresa();
@@ -132,22 +94,38 @@ function ResetDefaultEmpresa(onLoadCallback){
 			$('#cep').trigger('input').trigger('change');
 			$('#telefone').trigger('input').trigger('change');
 			$('#celular').trigger('input').trigger('change');
-			$('#codigoTributacao').trigger('input').trigger('change');                                
-			$('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');			
-
+			$('#codigoTributacao').trigger('input').trigger('change');         
+            
+            if ((dataEmpresa !== undefined) && (dataEmpresa !== undefined) && (dataEmpresa.aliquota !== 0))
+            {
+			    $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');			
+            }                       
             modalEmpresa.find('.btn-cancelar').click(CancelarEmpresaClick);
             modalEmpresa.find('.btn-excluir').click(ExcluirEmpresaClick);    
             modalEmpresa.find('.btn-salvar').click(SalvarEmpresaClick);            
 
-            carregaSelect2('CertificadoDigital',modalEmpresa,'#selectCertificado','id',function(response, textStatus, jqXHR){
-                if ((dataEmpresa !== undefined) && (dataEmpresa != null) && (dataEmpresa.certificadoDigitalId !== 0))
-                {
-                    var thisSelect = $('#CertificadoDigital');
-                    thisSelect
-                        .val(dataEmpresa.certificadoDigitalId)
-                        .trigger('change');                    
+            CarregaEmpresaBairro();
+
+            carregaSelect2('CertificadoDigital',modalEmpresa,'#selectCertificado',function(response, textStatus, jqXHR){
+                $('#CertificadoDigital')
+                    .val(safeGet(dataEmpresa,'certificadoDigitalId'))
+                    .trigger('change');                    
+            },
+            {},
+            null,
+            function(data,value,element){
+                if ((data !== null) && (data !== undefined)){
+                    dataEmpresa.certificadoDigitalId = data.id;
+                    $('#DtValidadeCert').html(`<span class="badge ${data.badgeValidade}">Valido até ${data.dtValidade}</span>`);
                 }
-            });
+            },
+            function(e){
+            },
+            function(e){
+            },
+            function(e){
+                $('#DtValidadeCert').empty();
+            }); 
 
             carregaSelect('lista/naturezas','#selectNatureza','codigo',true,function(response, textStatus, jqXHR){
                 if ((dataEmpresa !== undefined) && (dataEmpresa != null) && (dataEmpresa.naturezaOperacao !== 0))
@@ -176,28 +154,57 @@ function ResetDefaultEmpresa(onLoadCallback){
     });                
 }
 
+function CarregaEmpresaBairro(){
+    carregaSelect2('Bairro',
+        modalEmpresa,
+        '#selectEmpresaBairro',
+        function(response, textStatus, jqXHR){
+            $('#EmpresaBairro')
+                .val(safeGet(dataEmpresa, 'bairroId'))
+                .trigger('change');
+        },
+        {municipio: 'municipio', uf: 'uf'},
+        null,
+        function(data, value, element){
+            if ((data !== null) && (data !== undefined)){
+                dataEmpresa.bairroId = data.id;
+                RestRequest('GET',
+                $baseApiUrl+'Municipio/'+data.municipioId,
+                null,
+                function(xhr){
+                    $('#EmpresaMunicipio').empty().html(`<span><i class="fa fa-spin fa-spinner"></i></span>`);
+                    xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
+                },
+                function(data){
+                    $('#EmpresaMunicipio').html(`<span class="badge text-bg-dark">${data.descricao}-${data.uf}</span>`);
+                });
+            }
+        },
+        function(e){
+        },
+        function(e){
+        },
+        function(e){
+            $('#EmpresaMunicipio').empty();
+        });    
+}
+
 
 function NovoEmpresaClick(e)
 {
     event.preventDefault();
-    RestRequest('GET',
-        `${$baseApiUrl}${resourceEmpresa}/novo`,
-        null,
-        null,
-        function (data) {
-            dataEmpresa = {id: 0, descricao: null };
-            ResetDefaultEmpresa(
-            function(response, status, xhr){
-                if (!modalEmpresa.hasClass('show') && !modalEmpresa.is(':visible')) 
-                {
-                    modalEmpresa.modal('show');                
-                    toggleModalBody('#'+modalEmpresa.attr('id'), false);
-                    setTimeout(() => {
-                        $('#descricao').focus();
-                    }, 500);            
-                }          
-            });
-        });  
+    ResetDefaultEmpresa(
+    function(response, status, xhr){
+        dataEmpresa = { id: 0 };
+        if (!modalEmpresa.hasClass('show') && !modalEmpresa.is(':visible')) 
+        {
+            modalEmpresa.modal('show');                
+            toggleModalBody('#'+modalEmpresa.attr('id'), false);
+            setTimeout(() => {
+                $('#descricao').focus();
+            }, 500);            
+        }          
+    });     
 }
 
 function CancelarEmpresaClick(e){
@@ -256,37 +263,35 @@ function ExcluirEmpresaClick(e){
 
 function SalvarEmpresaClick(e){
     e.preventDefault();
-
     if ((dataEmpresa !== undefined) && (dataEmpresa !== null)){
-        dataEmpresa.descricao = $('#descricao').val().trim() ? $('#descricao').val().toUpperCase() : null;
-        dataEmpresa.nomeFantasia = $('#nomeFantasia').val().trim() ? $('#nomeFantasia').val().toUpperCase() : null;
-        dataEmpresa.cep = $('#cep').val().trim() ? extrairNumeros($('#cep').val().toUpperCase()) : null;
-        dataEmpresa.endereco = $('#endereco').val().trim() ? $('#endereco').val().toUpperCase() : null;
-        dataEmpresa.numero = $('#numero').val().trim() ? $('#numero').val().toUpperCase() : null;
-        dataEmpresa.complemento = $('#complemento').val().trim() ? $('#complemento').val().toUpperCase() : null;
-        dataEmpresa.cnpj = $('#cnpj').val().trim() ? extrairNumeros($('#cnpj').val().toUpperCase()) : null;
-        dataEmpresa.im = $('#im').val().trim() ? $('#im').val().toUpperCase() : null;
-        dataEmpresa.ie = $('#ie').val().trim() ? $('#ie').val().toUpperCase() : null;
-        dataEmpresa.nis = $('#nis').val().trim() ? $('#nis').val().toUpperCase() : null;
-        dataEmpresa.url = $('#url').val().trim() ? $('#url').val().toUpperCase() : null;
-        dataEmpresa.email = $('#email').val().trim() ? $('#email').val().toLowerCase() : null;
-        dataEmpresa.telefone = $('#telefone').val().trim() ? extrairNumeros($('#telefone').val().toUpperCase()) : null;
-        dataEmpresa.celular = $('#celular').val().trim() ? extrairNumeros($('#celular').val().toUpperCase()) : null;
-        dataEmpresa.naturezaOperacao = StrToNumber($('#naturezaOperacao').val());
-        dataEmpresa.regimeTributacao = StrToNumber($('#regimeTributacao').val());
-        dataEmpresa.optanteSimples = CheckedToValue($('#optanteSimples'));
-        dataEmpresa.icentivoFiscal = CheckedToValue($('#icentivoFiscal'));
-        dataEmpresa.empresaConveniada = CheckedToValue($('#empresaConveniada'));
-        dataEmpresa.cnae = $('#cnae').val();
-        dataEmpresa.itemServico = $('#itemServico').val();
-        dataEmpresa.aliquota = StrToNumber($('#aliquota').val());
-        dataEmpresa.codigoTributacao = extrairNumeros($('#codigoTributacao').val());
-        dataEmpresa.certificadoDigitalId = IntToValue(parseInt($('#CertificadoDigital').val()));
-        dataEmpresa.Empresa = $('#Empresa').val();
-        dataEmpresa.senha = $('#senha').val();
-        dataEmpresa.cscId = StrToNumber($('#cscId').val());
-        dataEmpresa.csc = $('#csc').val();
-
+        dataEmpresa.descricao = validarValor($('#descricao').val());
+        dataEmpresa.nomeFantasia = validarValor($('#nomeFantasia').val());
+        dataEmpresa.cep = validarValor($('#cep').val(),false,true);
+        dataEmpresa.endereco = validarValor($('#endereco').val());
+        dataEmpresa.numero = validarValor($('#numero').val());
+        dataEmpresa.complemento = validarValor($('#complemento').val());
+        dataEmpresa.cnpj = validarValor($('#cnpj').val(),false,true);
+        dataEmpresa.im = validarValor($('#im').val());
+        dataEmpresa.ie = validarValor($('#ie').val());
+        dataEmpresa.nis = validarValor($('#nis').val());
+        dataEmpresa.url = validarValor($('#url').val());
+        dataEmpresa.email = validarValor($('#email').val());
+        dataEmpresa.telefone = validarValor($('#telefone').val(),false,true);
+        dataEmpresa.celular = validarValor($('#celular').val(),false,true);
+        dataEmpresa.naturezaOperacao = validarValor($('#naturezaOperacao').val(),true);
+        dataEmpresa.regimeTributacao = validarValor($('#regimeTributacao').val(),true);
+        dataEmpresa.optanteSimples = checkboxValue($('#optanteSimples'));
+        dataEmpresa.icentivoFiscal = checkboxValue($('#icentivoFiscal'));
+        dataEmpresa.empresaConveniada = checkboxValue($('#empresaConveniada'));
+        dataEmpresa.cnae = validarValor($('#cnae').val());
+        dataEmpresa.itemServico = validarValor($('#itemServico').val());
+        //dataEmpresa.aliquota = StrToNumber($('#aliquota').val());
+        dataEmpresa.codigoTributacao = validarValor($('#codigoTributacao').val(),false,true);
+        dataEmpresa.usuario = validarValor($('#usuario').val());
+        dataEmpresa.senha = validarValor($('#senha').val());
+        dataEmpresa.cscId = validarValor($('#cscId').val(),true);
+        dataEmpresa.csc = validarValor($('#csc').val());
+    
         RestRequest((dataEmpresa.id === 0 ? 'POST' : 'PUT'),
             $baseApiUrl+"Empresa"+(dataEmpresa.id === 0 ? '' : `/${dataEmpresa.id}`),
             dataEmpresa,
@@ -303,25 +308,27 @@ function SalvarEmpresaClick(e){
 }
 
 function ConsultaCepEmpresa(){
-    buscaCep($('#cep'),
+    buscaCep(resourceEmpresa,$('#cep').val(),
         function(data){
             hideLoadingModal();
-            dataEmpresa.bairroId = data.bairro.id;
-            $('#endereco').val(data.endereco);
-            $('#bairro').val(data.bairro.descricao);
-            $('#complemento').val(data.complemento);
-            $('#municipio').val(data.bairro.municipio.descricao);
-            $('#uf').val(data.bairro.municipio.uf);
+            dataEmpresa.bairroId = data.bairroId;
+            CarregaEmpresaBairro();            
+			preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
+            $('#numero').focus();
         });
 }
 
 
 function ConsultaCnpjEmpresa(){
-    buscaCnpj($.trim($('#cnpj').val()),
+    buscaCnpj(resourceEmpresa,$.trim($('#cnpj').val()),
         function(data){
             hideLoadingModal();
-            dataEmpresa.bairroId = data.bairro.id;
-            preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
+            
+            dataEmpresa.bairroId = data.bairroId;
+            CarregaEmpresaBairro();
+
+			preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
+
             $('#descricao').focus();
         });
 }
@@ -348,7 +355,7 @@ function fileUploadEmpresa(e) {
 
 function CarregarLogoEmpresa()
 {
-    if ((dataEmpresa.logo !== null) && (dataEmpresa.logo !== undefined) && (dataEmpresa.logo !== 0)){
+    if ((dataEmpresa !== null) && (dataEmpresa !== undefined) && (dataEmpresa.logo !== 0) && (dataEmpresa.logo != null)){
         RestRequest(
             'GET',
             $baseApiUrl+'Imagem?codigo=' + dataEmpresa.logo,
@@ -362,25 +369,14 @@ function CarregarLogoEmpresa()
     }
 }
 
-function EmpresaEditarBairroClick(e){
-    event.preventDefault();
-    dataBairro = dataEmpresa.bairro;
-    bairroClick(EmpresaBairroSuccess);
-}
-
 function EmpresaNovoBairroClick(e){
     event.preventDefault();
-    dataBairro = {id: 0,descricao:"",municipio:null};
     bairroClick(EmpresaBairroSuccess);
 }
 
 function EmpresaBairroSuccess (response, textStatus, jqXHR){
-    dataEmpresa.bairroId = response.id;
-    dataEmpresa.bairro = response;    
-                                    
-    $('#bairro').val(response.descricao);
-    $('#municipio').val(response.municipio.descricao);
-    $('#uf').val(response.municipio.uf);                                              
+    dataEmpresa.bairroId = dataBairro.id;
+    CarregaEmpresaBairro();
 }
 
 

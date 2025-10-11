@@ -1,131 +1,70 @@
 var dataMunicipio = undefined;
-var $modalMunicipio = undefined;
+var modalMunicipio = undefined;
 
 function MunicipioClick(onSuccessCallback)
 {
-    $modalMunicipio = createDynamicModal();
-    
-    configurarAutocomplete(
-        '#Pesquisar'+$modalMunicipio.attr('id'),
-        $baseApiUrl+'AutoComplete?table=Municipio',
-        {
-            minLength: 2,
-            delay: 300,
-            onSelect: function(item) {
-                toggleModalBody('#'+$modalMunicipio.attr('id'), false);
-                if ((item.id !== 0) && (item.id !== null))
-                {
-                    RestRequest('GET',
-                        $baseApiUrl+"Municipio/"+item.id,
-                        null,
-                        null,
-                        function (data) {
-                            dataMunicipio = data;
-                            hideLoadingModal();
-                            setTimeout(() => {
-                                $('#MunicipioDescricao').val(dataMunicipio.descricao).focus();
-                                $('#MunicipioUf').val(dataMunicipio.uf);
-                                $('#MunicipioIbge').val(dataMunicipio.ibge);
-                            }, 500);            
-                        });    
-                }
-            }
-        }
-    );    
+    modalMunicipio = createDynamicModal();       
 
-    $('#btnNovo'+$modalMunicipio.attr('id')).click(NovoMunicipioClick);
-    $('#btnCancelar'+$modalMunicipio.attr('id')).click(CancelarMunicipioClick);
-    $('#btnExcluir'+$modalMunicipio.attr('id')).click(ExcluirMunicipioClick);
-    $('#btnSalvar'+$modalMunicipio.attr('id')).click(e => {
+    modalMunicipio = createDynamicModal();
+    modalMunicipio.find('.modal-footer').html(`
+        <div class="me-auto">
+        <button id="${gerarHash(16)}" onclick="NovoMunicipioClick(this);" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Novo cadastro</button>
+        </div>
+        <div class="ms-auto">
+        <button id="${gerarHash(16)}" class="btn btn-success btn-salvar-municipio"><i class="fa fa-check"></i> Salvar</button>
+        </div>
+        `);
+
+    modalMunicipio.find('.btn-salvar-municipio').click(e => {
         e.preventDefault();
         SalvarMunicipio(onSuccessCallback);
     });
 
-    LoadMunicipio();
+    ResetDefaultMunicipio();
 }
 
 function NovoMunicipioClick(e){
-    e.preventDefault();
-    dataMunicipio = {id: 0};
-    LoadMunicipio(function(response, status, xhr){
-        toggleModalBody('#'+$modalMunicipio.attr('id'), false);
-        setTimeout(() => {
-            $('#MunicipioDescricao').focus();
-        }, 500);
-    });
-}
-
-function CancelarMunicipioClick(e){
-    e.preventDefault();
-    dataMunicipio = undefined;
-    $modalMunicipio.modal('hide');
-}
-
-function ExcluirMunicipioClick(e){
-    e.preventDefault();
-    if ((dataMunicipio !== undefined) && (dataMunicipio !== null)){
-        if (dataMunicipio.id !== 0){
-            zPergunta_Exclui(function(e){
-                e.preventDefault();
-                RestRequest('DELETE',
-                    $baseApiUrl+"Municipio/"+dataMunicipio.id,
-                    null,
-                    null,
-                    function (data) {
-                        hideLoadingModal();
-                        setTimeout(() => {
-                            CancelarMunicipioClick(e);
-                        }, 500);                     
-                    });  
-            });        
-        }
-    }
+    event.preventDefault();
+    ResetDefaultMunicipio();
 }
 
 function SalvarMunicipio(onSuccessCallback){
-    if ((dataMunicipio !== undefined) && (dataMunicipio !== null)){
-        dataMunicipio.descricao = $('#MunicipioDescricao').val().toUpperCase();
-        dataMunicipio.uf = ($('#MunicipioUf').val() !== null) ? ($('#MunicipioUf').val().trim() ? $('#MunicipioUf').val().toUpperCase() : null) : null;
-        dataMunicipio.ibge = $('#MunicipioIbge').val().toUpperCase();
-    
-        RestRequest((dataMunicipio.id === 0 ? 'POST' : 'PUT'),
-            $baseApiUrl+"Municipio"+(dataMunicipio.id === 0 ? '' : `/${dataMunicipio.id}`),
-            dataMunicipio,
-            null,
-            function (response, textStatus, jqXHR) {
-                if (jqXHR.status === 201){
-                    dataMunicipio.id = response.id;
-                }
-                RestRequest('GET',
-                    $baseApiUrl+'municipio/' + dataMunicipio.id,
-                    null,
-                    function (xhr) {
-                        xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-                    },
-                    function (response, textStatus, jqXHR) {
-                        hideLoadingModal();
+    dataMunicipio.descricao = validarValor($('#MunicipioDescricao').val());
+    dataMunicipio.uf = validarValor($('#MunicipioUf').val());
+    dataMunicipio.ibge = validarValor($('#MunicipioIbge').val());
 
-                        $modalMunicipio.modal('hide');
-                        
-                        if (typeof onSuccessCallback === 'function') {
-                            onSuccessCallback(response, textStatus, jqXHR);
-                        }                
-                    }); 
-            });  
-    }    
+    RestRequest((dataMunicipio.id === 0 ? 'POST' : 'PUT'),
+        $baseApiUrl+"Municipio"+(dataMunicipio.id === 0 ? '' : `/${dataMunicipio.id}`),
+        dataMunicipio,
+        null,
+        function (response, textStatus, jqXHR) {
+            if (jqXHR.status === 201){
+                dataMunicipio = response;
+            }
+
+            hideLoadingModal();
+
+            modalMunicipio.modal('hide');
+            
+            if (typeof onSuccessCallback === 'function') {
+                onSuccessCallback(response, textStatus, jqXHR);
+            }                   
+        });     
 }
 
-function LoadMunicipio(onLoadCallback)
+function ResetDefaultMunicipio(onLoadCallback)
 {
-    carregarTemplateModal('#'+$modalMunicipio.attr('id'),
+    dataMunicipio = {id: 0, descricao: null};
+
+    carregarTemplateModal('#'+modalMunicipio.attr('id'),
     'templates/Municipio.html #frmMunicipio', {
         modalTitle: 'Municipio',
-        modalSize: 'modal-dialog-centered modal-md animate__animated animate__backInDown',
+        modalSize: 'modal-md animate__animated animate__backInUp',
         autocompleteUrl: $baseApiUrl+'AutoComplete?table=Municipio',
-        autocompleteCampo: '#Pesquisar'+$modalMunicipio.attr('id'),
+        autocompleteCampo: '#'+modalMunicipio.find('.search').attr('id'),
         autocomplete: {
             onSelect: function(item) {
-                if (item.id != 0)
+                if ((item.id !== 0) && (item.id !== null) && (item !== undefined))
                 {
                     RestRequest('GET',
                         $baseApiUrl+"Municipio/"+item.id,
@@ -134,7 +73,7 @@ function LoadMunicipio(onLoadCallback)
                         function (data) {
                             dataMunicipio = data;
                             hideLoadingModal();
-                            toggleModalBody('#'+$modalMunicipio.attr('id'), false);
+                            toggleModalBody('#'+modalMunicipio.attr('id'), false);
                             setTimeout(() => {
                                 $('#MunicipioDescricao').val(dataMunicipio.descricao).focus();
                                 $('#MunicipioUf').val(dataMunicipio.uf).change();
@@ -149,13 +88,12 @@ function LoadMunicipio(onLoadCallback)
             carregaSelect('lista/estados','#selectMunicipioUf','uf');
 
             $('#btnIbge').off('click').on('click', BuscarCodigoIbge);
-
-            toggleModalBody('#'+$modalMunicipio.attr('id'), false);
+            
+            modalMunicipio.modal('show');
 
             setTimeout(() => {
-                $('#MunicipioDescricao').val((dataMunicipio === null || dataMunicipio === undefined)?"":dataMunicipio.descricao).focus();
-                $('#MunicipioUf').val((dataMunicipio === null || dataMunicipio === undefined)?"":dataMunicipio.uf);
-                $('#MunicipioIbge').val((dataMunicipio === null || dataMunicipio === undefined)?"":dataMunicipio.ibge);
+                toggleModalBody('#'+modalMunicipio.attr('id'), false);
+                $('#MunicipioDescricao').focus();
             }, 600);
 
            if (typeof onLoadCallback === 'function') {
@@ -169,24 +107,11 @@ function BuscarCodigoIbge(e){
     e.preventDefault();
 
     RestRequest('POST',
-        $baseApiUrl+'municipio/ibge',
-        {descricao: $('#MunicipioDescricao').val() , uf: $('#MunicipioUf').val() },
+        $baseApiUrl+'apiservice/ibge',
+        {modulo:"Municipio", descricao: $('#MunicipioDescricao').val() , uf: $('#MunicipioUf').val() },
         null,
         function(data){
             hideLoadingModal();
             $('#MunicipioIbge').val(data);
         });
-}
-
-function GetMunicipio(id, onSuccessCallback){
-    RestRequest('GET',
-                $baseApiUrl+'municipio/' + id,
-                null,
-                null,
-                function (response, textStatus, jqXHR) {
-                    hideLoadingModal();
-                    if (typeof onSuccessCallback === 'function') {
-                        onSuccessCallback(response, textStatus, jqXHR);
-                    }
-                });      
 }
