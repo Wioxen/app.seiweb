@@ -1103,9 +1103,9 @@
 
 	$(document).ready(function() {
 		//setInterval(checkTurnstileStatus, 1000);
-		$.getJSON("https://api.ipify.org/?format=json", function(e) {
+		$.getJSON("https://api.ipify.org/", function(e) {
 			console.log(e.ip);
-			localStorage.setItem('meu_ip',e.ip);
+			localStorage.setItem('meu_ip',e);
 		}); 		
 
 		// Atualizar imediatamente e a cada segundo
