@@ -335,8 +335,10 @@ function RestRequest(_type, resource, payload, beforeSendCallback, successCallba
             if (typeof beforeSendCallback === 'function') {
                 beforeSendCallback(xhr);
             } else {
+                xhr.setRequestHeader('meu_ip', localStorage.getItem('meu_ip'));
+                xhr.setRequestHeader('user_agent', localStorage.getItem('user_agent'));
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-                xhr.setRequestHeader('turnstile_token', $('[name="cf-turnstile-response"]').val());
+//                xhr.setRequestHeader('turnstile_token', $('[name="cf-turnstile-response"]').val());
                 if (!$('#loadingModal').hasClass('show') && !$('#loadingModal').is(':visible')) {
                     showLoadingModal();       
                 }
