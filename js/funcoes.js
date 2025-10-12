@@ -677,7 +677,7 @@ function createDynamicModal_01(title, size, modal_body, modal_footer = "", callb
 }
 
 // Função para criar e abrir o modal dinâmico
-function createDynamicModal() {
+function createDynamicModal(callbackOnClose) {
     // Gerar um ID único para o modal
     const modalId = 'dynamicModal-02-' + new Date().getTime();
     
@@ -723,9 +723,9 @@ function createDynamicModal() {
     $modal.on('hidden.bs.modal', function () {
         $(this).remove();
         console.log('Modal destruído');
-        /*if (typeof callbackOnClose === 'function') {
+        if (typeof callbackOnClose === 'function') {
             callbackOnClose();
-        }*/
+        }
     });
 
     return $modal;

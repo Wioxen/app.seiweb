@@ -101,7 +101,7 @@ function UsuarioClick(e) {
                     'modal-lg',
                     `<table id="${resourceUsuario}Tb" class="row-border stripe hover" style="width:100%"></table>`,
                     `<div class="footer-buttons">
-                        <button id="K2Od4nfzY03Xpqki" type="button" class="btn btn-success" onclick="Novo${resourceUsuario}Click(this);">
+                        <button id="${gerarHash(16)}" type="button" class="btn btn-success" onclick="Novo${resourceUsuario}Click(this);">
                             <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
                         </button>
                     </div>`,
@@ -120,7 +120,9 @@ function UsuarioClick(e) {
 function ResetDefaultUsuario(onLoadCallback){
     hideLoadingModal();
 
-    modalUsuario = createDynamicModal();
+    modalUsuario = createDynamicModal(function(){
+        dataUsuario = null;
+    });
     modalUsuario.find('.modal-header-search').hide();
 
     carregarTemplateModal('#'+modalUsuario.attr('id'),

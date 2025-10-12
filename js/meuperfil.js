@@ -148,6 +148,8 @@ function initializeProfileSpinners() {
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" onclick="ConfiguracaoClick(this);">Configuração</a>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="LogDeAtividadeClick(this);">Log de atividades</a>
+                <div class="dropdown-divider"></div>
                 <a id="Logout" class="dropdown-item" href="#">Logout</a>
             </li>
         </div>
@@ -199,8 +201,15 @@ function initializeProfileSpinners() {
                     }
                 }).then((Yes) => {
                     if (Yes) {
-                        swal.close();
-                        redirectToLogin();
+                        RestRequest('POST',
+                            $baseApiUrl+"Logout",
+                            null,
+                            null,
+                            function (response, textStatus, jqXHR) {
+                                hideLoadingModal();
+                                swal.close();
+                                redirectToLogin();
+                            });                          
                     } else {
                         swal.close();
                     }								

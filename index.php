@@ -1082,6 +1082,7 @@
 	<script src="js/alterarsenha.js"></script>
 	<script src="js/meuperfil.js"></script>
 	<script src="js/configuracao.js"></script>
+	<script src="js/logdeatividade.js"></script>
 	<script>
 	// Opcional: Adicionar também um listener para mudanças dinâmicas
 	$(document).on('show.bs.collapse', function(e) {

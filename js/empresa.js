@@ -67,7 +67,10 @@ function EmpresaClick(e) {
 function ResetDefaultEmpresa(onLoadCallback){
     hideLoadingModal();
 
-    modalEmpresa = createDynamicModal();        
+    modalEmpresa = createDynamicModal(function(){
+        dataEmpresa = null;
+    });        
+
     modalEmpresa.find('.modal-header-search').hide();
 
     carregarTemplateModal('#'+modalEmpresa.attr('id'),
@@ -86,20 +89,23 @@ function ResetDefaultEmpresa(onLoadCallback){
             $('#apagarLogoEmpresa').off('click').on('click', apagarLogoEmpresa);
             $('#fileUploadEmpresa').off('change').on('change', fileUploadEmpresa);
 
-			preencherFormularioCompleto(dataEmpresa, '#frm'+resourceEmpresa);
-            
-			CarregarLogoEmpresa();
-
 			$('#cnpj').trigger('input').trigger('change');
 			$('#cep').trigger('input').trigger('change');
 			$('#telefone').trigger('input').trigger('change');
 			$('#celular').trigger('input').trigger('change');
 			$('#codigoTributacao').trigger('input').trigger('change');         
             
-            if ((dataEmpresa !== undefined) && (dataEmpresa !== undefined) && (dataEmpresa.aliquota !== 0))
+            if ((dataEmpresa !== undefined) && (dataEmpresa !== null))
             {
-			    $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');			
-            }                       
+			    preencherFormularioCompleto(dataEmpresa, '#frm'+resourceEmpresa);    
+
+    			CarregarLogoEmpresa();
+
+                if (dataEmpresa.aliquota !== 0){
+			        $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');			
+                }
+            }   
+
             modalEmpresa.find('.btn-cancelar').click(CancelarEmpresaClick);
             modalEmpresa.find('.btn-excluir').click(ExcluirEmpresaClick);    
             modalEmpresa.find('.btn-salvar').click(SalvarEmpresaClick);            
