@@ -933,7 +933,7 @@ function EnviarImagem($this, successCallback, errorCallback) {
 
         $.ajax({
             type: 'POST',
-            url: $baseApiUrl + 'imagem',
+            url: $baseApiUrl + 'uploads/images',
             data: fdata,
             cache: false,
             contentType: false,
@@ -1015,7 +1015,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             },
             "error": function(xhr, error, thrown){
-                alert('x');
+                
             }            
         },          
         select: (_select === true) ? {style: 'os', selector: (_formatFunction === null) ? 'td:nth-child(1)':'td:nth-child(2)'} : false,

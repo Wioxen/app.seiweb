@@ -99,8 +99,8 @@ function ResetDefaultEmpresa(onLoadCallback){
             {
 			    preencherFormularioCompleto(dataEmpresa, '#frm'+resourceEmpresa);    
 
-    			CarregarLogoEmpresa();
-
+    			$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);
+                
                 if (dataEmpresa.aliquota !== 0){
 			        $('#aliquota').maskMoney('mask', dataEmpresa.aliquota).trigger('input').trigger('change');			
                 }
@@ -346,33 +346,15 @@ function uploadLogoEmpresa(e) {
 
 function apagarLogoEmpresa() {
     dataEmpresa.logo = null;
-    $('#logo').attr('src', '#');
+    $('#LogoEmpresa').attr('src', '#');
 }
 
 function fileUploadEmpresa(e) {
-    if ((dataEmpresa.logo === undefined) || (dataEmpresa.logo === null)){
-        EnviarImagem($(this), 
-        function (repo) {
-            dataEmpresa.logo = repo;
-            CarregarLogoEmpresa();
-        });
-    }
-}
-
-function CarregarLogoEmpresa()
-{
-    if ((dataEmpresa !== null) && (dataEmpresa !== undefined) && (dataEmpresa.logo !== 0) && (dataEmpresa.logo != null)){
-        RestRequest(
-            'GET',
-            $baseApiUrl+'Imagem?codigo=' + dataEmpresa.logo,
-            null,
-            function (xhr) {
-                xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-            },
-            function (response, textStatus, jqXHR) {
-                $('#LogoEmpresa').attr('src', response);      
-            });    
-    }
+    EnviarImagem($(this), 
+    function (repo) {
+        dataEmpresa.logo = repo;
+        $('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);
+    });
 }
 
 function EmpresaNovoBairroClick(e){
