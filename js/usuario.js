@@ -57,7 +57,7 @@ function UsuarioClick(e) {
                     orderable: false,
                     "width": "6%",
                     "render": function(data, type, row) {
-                        return `<span id="img-${resourceUsuario}-${row.id}" data-foto="${data}" class="photo"><i class="fa fa-spin fa-spinner fa-2x"></i></span>`
+                        return `<img class="avatar-img rounded-circle" src="${$imageUrl}${data}" style="width: 39px; height: 39px;" />`
                     }
                 },
                 { 
@@ -109,7 +109,7 @@ function UsuarioClick(e) {
                     defaultColumns,
                     function(settings)
                     {
-                        CarregarFotoLista('.photo');
+                        //
                     },
                     false,
                     DetailUsuario
@@ -143,7 +143,7 @@ function ResetDefaultUsuario(onLoadCallback){
             {
                 preencherFormularioCompleto(dataUsuario, '#frm'+resourceUsuario);
 
-                CarregarFoto($('#Foto'+resourceUsuario), dataUsuario.photo);
+                $('#Foto'+resourceUsuario).attr('src',dataUsuario.photo);
 
                 $('#UsuarioPhone').trigger('input').trigger('change');
                 $('#UsuarioPhoneWhats').prop('checked',(dataUsuario.phoneWhats === 1));
@@ -279,7 +279,7 @@ function fileUploadUsuario(e) {
     EnviarImagem($(this), 
     function (repo) {
         dataUsuario.photo = repo;
-        CarregarFoto($('#FotoUsuario'), repo);
+        $('#FotoUsuario').attr('src',$imageUrl+dataUsuario.photo);
     });
 }
 

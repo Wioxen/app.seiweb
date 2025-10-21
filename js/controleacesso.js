@@ -2,12 +2,12 @@ var dataControleAcesso = undefined;
 var cadastroControleAcesso = undefined;
 var modalControleAcesso = undefined;
 
-function controleacessoClick(e){
+function ControleAcessoClick(e){
     var thisControleAcesso = $(e);
     
-    RestRequest('POST',
-        $baseApiUrl+"usuariomodulo",
-        {modulo : thisControleAcesso.attr('data-modulo')+"4"},
+    RestRequest('GET',
+        `${$baseApiUrl}${resourceEmpresa}`,
+        null,
         null,
         function (data) {
             hideLoadingModal();
@@ -57,9 +57,11 @@ function controleacessoClick(e){
 function ResetDefaultControleAcesso(onLoadCallback){
     hideLoadingModal();
     
-    modalControleAcesso = createDynamicModal("",null,false);
+    modalControleAcesso = createDynamicModal(function(){
+        dataControleAcesso = null;
+    });        
 
-    //modalControleAcesso.find('.modal-body').addClass('body_background');
+    modalControleAcesso.find('.modal-header-search').hide();
 
     carregarTemplateModal('#'+modalControleAcesso.attr('id'),
         'templates/ControleAcesso.html #frmControleAcesso', {
@@ -69,10 +71,10 @@ function ResetDefaultControleAcesso(onLoadCallback){
         {            
             preencherFormularioCompleto(dataControleAcesso, '#frmControleAcesso');
 
-            $('#btnCancelar'+modalControleAcesso.attr('id')).click(CancelarControleAcessoClick);
-            $('#btnExcluir'+modalControleAcesso.attr('id')).click(ExcluirControleAcessoClick);    
-            $('#btnSalvar'+modalControleAcesso.attr('id')).click(SalvarControleAcessoClick);            
-
+            modalControleAcesso.find('.btn-cancelar').click(CancelarControleAcessoClick);
+            modalControleAcesso.find('.btn-excluir').click(ExcluirControleAcessoClick);    
+            modalControleAcesso.find('.btn-salvar').click(SalvarControleAcessoClick);             
+            
             if (typeof onLoadCallback === 'function') {
                 onLoadCallback(response, status, xhr);
             }

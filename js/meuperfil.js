@@ -33,7 +33,7 @@ function MeuPerfilClick(e){
                 $('.celular').mask('(00) 00000-0000');
 
                 dataMeuPerfil.photo = response.photo;
-                CarregarFoto($('#FotoMeuPerfil'), dataMeuPerfil.photo);                
+                $('#FotoMeuPerfil').attr('src',$imageUrl+dataMeuPerfil.photo);                
 
                 $('#MeuPerfilFirstName').val(response.firstname);
                 $('#MeuPerfilLastName').val(response.lastname);
@@ -110,7 +110,7 @@ function fileUploadMeuPerfil(e) {
     EnviarImagem($(this), 
     function (repo) {
         dataMeuPerfil.photo = repo;
-        CarregarFoto($('#FotoMeuPerfil'), repo);
+        $('#FotoMeuPerfil').attr('src',$imageUrl+dataMeuPerfil.photo);
     });
 }
 
@@ -180,7 +180,7 @@ function initializeProfileSpinners() {
 
             $('.first-name').text(data.firstname);
             $('.u-text').find('p').text(data.email);
-            $('.avatar-img').attr('src',data.photoBase64);
+            $('.avatar-img').attr('src',$imageUrl+data.photo);
             
             $('#Logout').off('click').on('click', (e) => {
                 e.preventDefault();
