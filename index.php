@@ -42,9 +42,9 @@
 	<link href="https://fonts.cdnfonts.com/css/poppins" rel="stylesheet">                
 </head>
 <body>
-	<input type="hidden" id="accesstoken" value="<?php echo isset($_GET['access_token']) ? $_GET['access_token'] : ''; ?>" />
-	<input type="hidden" id="authkey" value="<?php echo isset($_GET['auth_key']) ? $_GET['auth_key'] : ''; ?>" />
-	<input type="hidden" id="accesskey" value="" />
+	<input type="hidden" id="token" value="<?php echo isset($_GET['token']) ? $_GET['token'] : ''; ?>" />
+	<input type="hidden" id="key" value="<?php echo isset($_POST['authKey']) ? $_POST['authKey'] : ''; ?>" />
+	<input type="hidden" id="port" value="<?php echo isset($_GET['port']) ? $_GET['port'] : ''; ?>" />	
 	<div class="wrapper">
 		<!-- Sidebar -->
 		<div class="sidebar" data-background-color="dark">
@@ -70,11 +70,8 @@
 				</div>
 				<!-- End Logo Header -->	
 			</div>	
-			<div class="sidebar-wrapper scrollbar scrollbar-inner">
-				<div class="sidebar-content">
-					<ul class="nav nav-secondary" id="dynamic-menu">
-					</ul>
-				</div>
+			<div id="sidebar" class="sidebar-wrapper scrollbar scrollbar-inner">
+				<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
 			</div>			
 		</div>
 		<!-- End Sidebar -->
@@ -133,209 +130,24 @@
 							</li>
 							<li class="nav-item topbar-icon dropdown hidden-caret">
 								<a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<i class="fa fa-envelope"></i>
-								</a>
-								<ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
-									<li>
-										<div class="dropdown-title d-flex justify-content-between align-items-center">
-											Messages 									
-											<a href="#" class="small">Mark all as read</a>
-										</div>
-									</li>
-									<li>
-										<div class="message-notif-scroll scrollbar-outer">
-											<div class="notif-center">
-												<a href="#">
-													<div class="notif-img"> 
-														<img src="assets/img/jm_denis.jpg" alt="Img Profile">
-													</div>
-													<div class="notif-content">
-														<span class="subject">Jimmy Denis</span>
-														<span class="block">
-															How are you ?
-														</span>
-														<span class="time">5 minutes ago</span> 
-													</div>
-												</a>
-												<a href="#">
-													<div class="notif-img"> 
-														<img src="assets/img/chadengle.jpg" alt="Img Profile">
-													</div>
-													<div class="notif-content">
-														<span class="subject">Chad</span>
-														<span class="block">
-															Ok, Thanks !
-														</span>
-														<span class="time">12 minutes ago</span> 
-													</div>
-												</a>
-												<a href="#">
-													<div class="notif-img"> 
-														<img src="assets/img/mlane.jpg" alt="Img Profile">
-													</div>
-													<div class="notif-content">
-														<span class="subject">Jhon Doe</span>
-														<span class="block">
-															Ready for the meeting today...
-														</span>
-														<span class="time">12 minutes ago</span> 
-													</div>
-												</a>
-												<a href="#">
-													<div class="notif-img"> 
-														<img src="assets/img/talha.jpg" alt="Img Profile">
-													</div>
-													<div class="notif-content">
-														<span class="subject">Talha</span>
-														<span class="block">
-															Hi, Apa Kabar ?
-														</span>
-														<span class="time">17 minutes ago</span> 
-													</div>
-												</a>
-											</div>
-										</div>
-									</li>
-									<li>
-										<a class="see-all" href="javascript:void(0);">See all messages<i class="fa fa-angle-right"></i> </a>
-									</li>
-								</ul>
+									<i class="fa fa-spin fa-spinner"></i>
+								</a>								
 							</li>
 							<li class="nav-item topbar-icon dropdown hidden-caret">
 								<a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<i class="fa fa-bell"></i>
-									<span class="notification">4</span>
-								</a>
-								<ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
-									<li>
-										<div class="dropdown-title">You have 4 new notification</div>
-									</li>
-									<li>
-										<div class="notif-scroll scrollbar-outer">
-											<div class="notif-center">
-												<a href="#">
-													<div class="notif-icon notif-primary"> <i class="fa fa-user-plus"></i> </div>
-													<div class="notif-content">
-														<span class="block">
-															New user registered
-														</span>
-														<span class="time">5 minutes ago</span> 
-													</div>
-												</a>
-												<a href="#">
-													<div class="notif-icon notif-success"> <i class="fa fa-comment"></i> </div>
-													<div class="notif-content">
-														<span class="block">
-															Rahmad commented on Admin
-														</span>
-														<span class="time">12 minutes ago</span> 
-													</div>
-												</a>
-												<a href="#">
-													<div class="notif-img"> 
-														<img src="assets/img/profile2.jpg" alt="Img Profile">
-													</div>
-													<div class="notif-content">
-														<span class="block">
-															Reza send messages to you
-														</span>
-														<span class="time">12 minutes ago</span> 
-													</div>
-												</a>
-												<a href="#">
-													<div class="notif-icon notif-danger"> <i class="fa fa-heart"></i> </div>
-													<div class="notif-content">
-														<span class="block">
-															Farrah liked Admin
-														</span>
-														<span class="time">17 minutes ago</span> 
-													</div>
-												</a>
-											</div>
-										</div>
-									</li>
-									<li>
-										<a class="see-all" href="javascript:void(0);">See all notifications<i class="fa fa-angle-right"></i> </a>
-									</li>
-								</ul>
+									<i class="fa fa-spin fa-spinner"></i>
+								</a>								
 							</li>
 							<li class="nav-item topbar-icon dropdown hidden-caret">
-								<a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-									<i class="fas fa-layer-group"></i>
-								</a>
-								<div class="dropdown-menu quick-actions animated fadeIn">
-									<div class="quick-actions-header">
-										<span class="title mb-1">Ações rápidas</span>
-										<span class="subtitle op-7">Atalhos</span>
-									</div>
-									<div class="quick-actions-scroll scrollbar-outer">
-										<div class="quick-actions-items">
-											<div class="row m-0">
-												<a class="col-6 col-md-4 p-0" href="#" onclick="alunoClick(this);">
-													<div class="quick-actions-item">
-														<div class="avatar-item bg-success rounded-circle">
-															<i class="fa-solid fa-user-graduate"></i>
-														</div>
-														<span class="text">Aluno</span>
-													</div>
-												</a>
-												<!--<a class="col-6 col-md-4 p-0" href="#">
-													<div class="quick-actions-item">
-														<div class="avatar-item bg-warning rounded-circle">
-															<i class="fas fa-map"></i>
-														</div>
-														<span class="text">Maps</span>
-													</div>
-												</a>
-												<a class="col-6 col-md-4 p-0" href="#">
-													<div class="quick-actions-item">
-														<div class="avatar-item bg-info rounded-circle">
-															<i class="fas fa-file-excel"></i>
-														</div>
-														<span class="text">Reports</span>
-													</div>
-												</a>
-												<a class="col-6 col-md-4 p-0" href="#">
-													<div class="quick-actions-item">
-														<div class="avatar-item bg-success rounded-circle">
-															<i class="fas fa-envelope"></i>
-														</div>
-														<span class="text">Emails</span>
-													</div>
-												</a>
-												<a class="col-6 col-md-4 p-0" href="#">
-													<div class="quick-actions-item">
-														<div class="avatar-item bg-primary rounded-circle">
-															<i class="fas fa-file-invoice-dollar"></i>
-														</div>
-														<span class="text">Invoice</span>
-													</div>
-												</a>
-												<a class="col-6 col-md-4 p-0" href="#">
-													<div class="quick-actions-item">
-														<div class="avatar-item bg-secondary rounded-circle">
-															<i class="fas fa-credit-card"></i>
-														</div>
-														<span class="text">Payments</span>
-													</div>
-												</a>-->
-											</div>
-										</div>
-									</div>
-								</div>
+								<a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false" id="shortCut">
+									<i class="fa fa-spin fa-spinner"></i>
+								</a>								
 							</li>
 							
 							<li class="nav-item topbar-user dropdown hidden-caret">
-								<a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-									<div class="avatar-sm" id="avatar-container">
-										<!--<img src="#" alt="" class="avatar-img rounded-circle">-->
-									</div>
-									<span class="profile-username" id="username-container">
-										<!--<span class="op-7"></span> <span class="fw-bold"></span>-->
-									</span>
-								</a>
-								<ul id="dropdown_user" class="dropdown-menu dropdown-user animated fadeIn">
-								</ul>
+								<a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false" id="profile-pic">
+									<i class="fa fa-spin fa-spinner"></i>									
+								</a>								
 							</li>
 						</ul>
 					</div>
@@ -1068,6 +880,8 @@
 	<script src="assets/js/jquery.tabbable.js"></script>
 	<script src="assets/js/jquery.mask.js"></script>
 	<script src="assets/js/carregar-template.js"></script>
+	<script src="js/eventos.js"></script>
+	<script src="js/init.js"></script>
 	<script src="js/global.js"></script>
 	<script src="js/funcoes.js"></script>
 	<script src="js/municipio.js"></script>
@@ -1102,121 +916,7 @@
 		}
 	});				
 
-	$(document).ready(function() {
-		//setInterval(checkTurnstileStatus, 1000);
-		$.getJSON("https://api.ipify.org/?format=json", function(e) {
-			console.log(e.ip);
-			localStorage.setItem('meu_ip',e.ip);
-		}); 		
-
-		// Atualizar imediatamente e a cada segundo
-		atualizarDataHora();
-		setInterval(atualizarDataHora, 1000);	
-
-		localStorage.setItem('login_url',$loginUrl+'index.php?access_token='+$('#accesstoken').val());
-		localStorage.setItem('token','Bearer '+$('#authkey').val());		
-		
-		var userAgentString = navigator.userAgent;
-		localStorage.setItem('user_agent',userAgentString);		
-
-		// Inicializar os spinners
-		initializeProfileSpinners();
-
-		// Restante do código para carregar o menu
-		function carregarMenu() {
-			$.ajax({
-				url: `${$baseApiUrl}Menu`,
-				method: 'GET',
-				dataType: 'json',
-				beforeSend: function (xhr) {
-					$('#dynamic-menu').html(`
-						<div class="loading-spinner">
-							<div class="text-center">
-								<div class="spinner-border text-primary" role="status">
-									<span class="visually-hidden">Carregando...</span>
-								</div>
-								<p class="mt-2 text-black">Carregando menu...</p>
-							</div>
-						</div>
-					`);
-				},
-				success: function(data) {
-					construirMenu(data);
-
-					$.notify({
-						icon: 'icon-bell',
-						title: 'SEIWEB',
-						message: 'Sistema inicializado com sucesso.',
-					},{
-						type: 'secondary',
-						placement: {
-							from: "bottom",
-							align: "right"
-						},
-						time: 1000,
-					});						
-				},
-				error: function(xhr, status, error) {
-					console.error('Erro ao carregar o menu:', error);
-					$('#dynamic-menu').html('<li class="nav-item"><a href="#"><i class="fas fa-exclamation-triangle"></i><p>Erro ao carregar menu</p></a></li>');
-				}
-			});
-		}
-
-		// Restante das funções do menu
-		function construirMenu(menus) {
-			var menuHTML = `<li class="nav-section">
-							<span class="sidebar-mini-icon">
-								<i class="fa fa-ellipsis-h"></i>
-							</span>
-							<h4 class="text-section">MENU</h4>
-						</li>`;
-			
-			menus.forEach(function(menu) {
-				var menuId = 'menu-' + menu.id;
-				
-				menuHTML += `
-				<li class="nav-item modulo">
-					<a data-bs-toggle="collapse" href="#${menuId}" class="collapsed" aria-expanded="false">
-						<i class="${menu.icone}"></i>
-						<p class="">${menu.titulo}</p>
-						<span class="caret"></span>
-					</a>
-					<div class="collapse" id="${menuId}">
-						<ul class="nav nav-collapse pb-0 pt-0">`;
-				
-				if (menu.modulos && menu.modulos.length > 0) {
-					menu.modulos.forEach(function(modulo) {
-						menuHTML += `
-							<li class="">
-								<a href="#" id="${gerarHash(16)}" onclick="${modulo.elemento_id}Click(this);">
-									<span class="sub-item"> ${modulo.titulo} </span>
-								</a>
-							</li>`;
-					});
-				}
-				
-				menuHTML += `
-						</ul>
-					</div>
-				</li>`;
-			});
-			
-			$('#dynamic-menu').html(menuHTML);
-
-			inicializarMenu();
-		}
-		
-		function inicializarMenu() {
-			console.log('Menu dinâmico carregado e inicializado');
-		}
-		
-		carregarMenu();				
-		//$('#loadingModal').modal('show');
-	});
+	$(document).ready(initializeReady);
 	</script>		
-	<script>
-		
-	</script>	
 </body>
 </html>
