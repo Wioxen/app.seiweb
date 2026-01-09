@@ -258,7 +258,7 @@ function profile_pic()
 												<div class="avatar-lg"><img src="${$imageUrl+data.photo}" alt="image profile" class="avatar-img rounded"></div>
 												<div class="u-text">
 													<h4>${data.firstname}</h4>
-													<p class="text-muted">${data.email}</p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Ver Perfil</a>
+													<p class="text-muted">${data.email}</p><a href="#" class="btn btn-xs btn-secondary btn-sm" onclick="MeuPerfilClick(this);">Ver Perfil</a>
 												</div>
 											</div>
 										</li>
