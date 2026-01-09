@@ -50,7 +50,7 @@
 		<div class="sidebar" data-background-color="dark">
 			<div class="sidebar-logo">
 				<!-- Logo Header -->
-				<div class="logo-header" data-background-color="dark">
+				<div class="logo-header" data-background-color="white">
 
 					<a href="#" class="logo">
 						<img src="assets/img/logo.png" alt="navbar brand" class="navbar-brand" height="50">

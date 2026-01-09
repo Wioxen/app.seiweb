@@ -329,7 +329,7 @@ function construirMenu(menus) {
 					<span class="sidebar-mini-icon">
 						<i class="fa fa-ellipsis-h"></i>
 					</span>
-					<h4 class="text-section">MENU</h4>
+					<h4 class="text-section">MENU PRINCIPAL</h4>
 				</li>`;
 	
 	menus.forEach(function(menu) {
