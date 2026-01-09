@@ -44,6 +44,7 @@ function MeuPerfilClick(e){
                 $('#uploadFotoMeuPerfil').off('click').on('click', uploadFotoMeuPerfil);
                 $('#apagarFotoMeuPerfil').off('click').on('click', apagarFotoMeuPerfil);
                 $('#fileUploadMeuPerfil').off('change').on('change', fileUploadMeuPerfil);
+				
                 $('#frmMeuPerfil').on('submit', submitPerfil);
 
                 modalMeuPerfil.modal('show');
@@ -88,12 +89,11 @@ function submitPerfil(e) {
                 icon: "success"
             });                    
 
-            initializeProfileSpinners();
+            profile_pic();
         },
         error: exibeerror
     });
 }
-
 
 function uploadFotoMeuPerfil(e) {
     e.preventDefault();
@@ -111,115 +111,5 @@ function fileUploadMeuPerfil(e) {
     function (repo) {
         dataMeuPerfil.photo = repo;
         $('#FotoMeuPerfil').attr('src',$imageUrl+dataMeuPerfil.photo);
-    });
-}
-
-// Função para mostrar spinners e depois o conteúdo real após 3 segundos
-function initializeProfileSpinners() {
-    // Container para a imagem do avatar
-    const avatarContainer = document.getElementById('avatar-container');
-    // Container para o nome de usuário
-    const usernameContainer = document.getElementById('username-container');
-    const dropdownuser = document.getElementById('dropdown_user');
-    
-    
-    // Salvar o conteúdo original
-    const originalAvatar = `
-        <img src="#" alt="..." class="avatar-img rounded-circle">
-    `;
-    const originalUsername = `
-        <span class="op-7">Olá,</span> <span id="first-name" class="fw-bold first-name">Igor</span>
-    `;
-    
-    const originalDropdownuser = `
-        <div class="dropdown-user-scroll scrollbar-outer">
-            <li>
-                <div class="user-box">
-                    <div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
-                    <div class="u-text">
-                        <h4 class="first-name">Igor</h4>
-                        <p class="text-muted"></p><a href="#" class="btn btn-xs btn-secondary btn-sm" onclick="MeuPerfilClick(this);">Meu Perfil</a>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" onclick="AlterarSenhaClick(this);">Alterar Senha</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" onclick="ConfiguracaoClick(this);">Configuração</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" onclick="LogDeAtividadeClick(this);">Log de atividades</a>
-                <div class="dropdown-divider"></div>
-                <a id="Logout" class="dropdown-item" href="#">Logout</a>
-            </li>
-        </div>
-    `;				
-    
-    // Restaurar conteúdo original após 3 segundos
-    $.ajax({
-        url: `${$baseApiUrl}Perfil`,
-        method: 'GET',
-        dataType: 'json',
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-
-            // Adicionar spinners
-            avatarContainer.innerHTML = `
-                <div class="spinner-container">
-                    <div class="avatar-spinner"></div>
-                </div>
-            `;
-            usernameContainer.innerHTML = `
-                <div class="username-spinner"></div>
-            `;						
-        },
-        success: function(data) {
-            avatarContainer.innerHTML = originalAvatar;
-            usernameContainer.innerHTML = originalUsername;
-            dropdownuser.innerHTML = originalDropdownuser;
-
-            $('.first-name').text(data.firstname);
-            $('.u-text').find('p').text(data.email);
-            $('.avatar-img').attr('src',$imageUrl+data.photo);
-            
-            $('#Logout').off('click').on('click', (e) => {
-                e.preventDefault();
-                swal({
-                    title: 'Atenção?',
-                    text: `${$('#first-name').text()}, deseja realmente sair do sistema?`,
-                    type: 'warning',
-                    buttons:{
-                        confirm: {
-                            text : 'Sim, desejo sair',
-                            className : 'btn btn-success'
-                        },
-                        cancel: {
-                            text:  'Não, desejo permanecer',
-                            visible: true,
-                            className: 'btn btn-danger'
-                        }
-                    }
-                }).then((Yes) => {
-                    if (Yes) {
-                        RestRequest('POST',
-                            $baseApiUrl+"Logout",
-                            null,
-                            null,
-                            function (response, textStatus, jqXHR) {
-                                hideLoadingModal();
-                                swal.close();
-                                redirectToLogin();
-                            });                          
-                    } else {
-                        swal.close();
-                    }								
-                });							
-            });					
-        },
-        error: function(jqXHR, textStatus, errorThrown){
-            if (jqXHR.status === 401) {
-                redirectToLogin();
-            }
-        }
     });
 }
