@@ -91,7 +91,7 @@ function submitPerfil(e) {
 			
 			setTimeout(function(){
 				profile_pic();
-			}.500);
+			},500);
         },
         error: exibeerror
     });
