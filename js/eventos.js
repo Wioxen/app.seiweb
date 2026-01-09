@@ -245,17 +245,17 @@ function profile_pic()
         },
         success: function(data) {
 			$('#profile-pic').html(`<div class="avatar-sm" id="avatar-container">
-										<img src="${$imageUrl+data.photo}" alt="" class="avatar-img rounded-circle">
+										<img src="#" alt="" class="avatar-img rounded-circle">
 									</div>
 									<span class="profile-username">
 										<span class="op-7">Olá,</span> <span class="fw-bold">${data.firstname}</span>
 									</span>`);
 									
-		$('#profile-pic').parent().append(`<ul class="dropdown-menu dropdown-user animated fadeIn">
+			$('#profile-pic').parent().append(`<ul class="dropdown-menu dropdown-user animated fadeIn">
 									<div class="dropdown-user-scroll scrollbar-outer">
 										<li>
 											<div class="user-box">
-												<div class="avatar-lg"><img src="${$imageUrl+data.photo}" alt="image profile" class="avatar-img rounded"></div>
+												<div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
 												<div class="u-text">
 													<h4>${data.firstname}</h4>
 													<p class="text-muted">${data.email}</p><a href="#" class="btn btn-xs btn-secondary btn-sm" onclick="MeuPerfilClick(this);">Ver Perfil</a>
@@ -273,8 +273,11 @@ function profile_pic()
 											<a id="Logout" class="dropdown-item" href="#">Logout</a>
 										</li>
 									</div>
-								</ul>`);									
-									
+								</ul>`);						
+
+								
+			$('.avatar-img').attr('src',$imageUrl+data.photo);
+			
             $('#Logout').off('click').on('click', LogOutClick);					
         },
         error: function(jqXHR, textStatus, errorThrown){
