@@ -77,7 +77,7 @@ function submitPerfil(e) {
         dataType: 'json',
         contentType: 'application/json',
         data: JSON.stringify(dataMeuPerfil),
-        timeout: 30000,
+        //timeout: 30000,
         success: function() {
             hideLoadingModal();
 
@@ -88,8 +88,10 @@ function submitPerfil(e) {
                 text: "Seu perfil foi atualizado com sucesso!",
                 icon: "success"
             });                    
-
-            profile_pic();
+			
+			setTimeout(function(){
+				profile_pic();
+			}.500);
         },
         error: exibeerror
     });
