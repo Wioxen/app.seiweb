@@ -1109,7 +1109,7 @@ function CarregarFotoLista(_class){
         } else {
             RestRequest(
                 'GET',
-                $baseApiUrl+'Imagem?codigo=' + $this.data('foto'),
+                $imageUrl+$this.data('foto'),
                 null,
                 function (xhr) {
                     xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
@@ -1207,7 +1207,7 @@ function CarregarFoto(thisFoto,_photo,_size="140px")
     if ((_photo !== null) && (_photo !== undefined)){
         RestRequest(
             'GET',
-            $baseApiUrl+'Imagem?codigo=' + _photo,
+            $imageUrl+_photo,
             null,
             function (xhr) {
                 thisFoto.html('<i class="fa fa-spin fa-spinner fa-3x"></i>');
