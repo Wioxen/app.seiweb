@@ -13,14 +13,26 @@ function initializeReady()
 		localStorage.setItem('remoteip',e.ip);
 	}); 		
 
-	// Atualizar imediatamente e a cada segundo
-	atualizarDataHora();
-	setInterval(atualizarDataHora, 1000);	
-	
+	startDataHora();
 	messageDropdown();
 	notifDropdown();
 	shortCut();
 	profile_pic();
 	
 	carregarMenu();
+	
+	//$('.logo').attr('href',$baseApiUrl+'index.php?token='+$('#token').val()+'&p=');
+	
+	$.notify({
+		icon: 'icon-bell',
+		title: 'SEIWEB',
+		message: 'Sistema inicializado com sucesso.',
+	},{
+		type: 'secondary',
+		placement: {
+			from: "bottom",
+			align: "right"
+		},
+		time: 1000,
+	});		
 }

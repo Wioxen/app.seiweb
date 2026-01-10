@@ -123,7 +123,11 @@ function ResetDefaultUsuario(onLoadCallback){
     modalUsuario = createDynamicModal(function(){
         dataUsuario = null;
     });
+	
     modalUsuario.find('.modal-header-search').hide();
+    /*modalUsuario.find('.modal-footer').append(`<button id="direitosUsuario" class="btn btn-dark">
+        <i class="fas fa-users-cog"></i> Direitos
+    </button>`);*/
 
     carregarTemplateModal('#'+modalUsuario.attr('id'),
         'templates/'+resourceUsuario+'.html #frm'+resourceUsuario, {
@@ -143,19 +147,19 @@ function ResetDefaultUsuario(onLoadCallback){
             {
                 preencherFormularioCompleto(dataUsuario, '#frm'+resourceUsuario);
 
-                $('#Foto'+resourceUsuario).attr('src',dataUsuario.photo);
+                $('#Foto'+resourceUsuario).attr('src',$imageUrl+dataUsuario.photo);
 
                 $('#UsuarioPhone').trigger('input').trigger('change');
-                $('#UsuarioPhoneWhats').prop('checked',(dataUsuario.phoneWhats === 1));
-                $('#UsuarioStatus').prop('checked',(dataUsuario.status === 1));
+                $('#UsuarioPhoneWhats').prop('checked',(dataUsuario.phoneWhats === true));
+                $('#UsuarioStatus').prop('checked',(dataUsuario.status === true));
                 $(`input[name="UsuarioRole"][value="${dataUsuario.role}"]`).prop('checked', true);
             }
 
-            carregaSelect2('select2?table=ControleAcesso',modalUsuario,'#selectUsuarioAcesso',function(response, textStatus, jqXHR){
-                if ((dataUsuario !== undefined) && (dataUsuario != null) && (dataUsuario.controlaccessid !== 0))
+            carregaSelect2('select2?table=Role',modalUsuario,'#selectUsuarioAcesso',function(response, textStatus, jqXHR){
+                if ((dataUsuario !== undefined) && (dataUsuario != null) && (dataUsuario.roleId !== 0))
                 {
                     var thisSelect = $('#'+$('#selectUsuarioAcesso').attr('data-control'));
-                    thisSelect.val(dataUsuario.controlaccessid);
+                    thisSelect.val(dataUsuario.roleId);
                     thisSelect.trigger('change');                    
                 }
             });
@@ -228,7 +232,8 @@ function SalvarUsuarioClick(e){
         dataUsuario.phonewhats = checkboxValue($('#UsuarioPhoneWhats'),1,0);
         dataUsuario.role = $('input[name="UsuarioRole"]:checked').val();
         dataUsuario.status = checkboxValue($('#UsuarioStatus'),1,0);
-        dataUsuario.controlaccessid = IntToValue(parseInt($('#UsuarioAcesso').val()));
+        dataUsuario.roleId = IntToValue(parseInt($('#UsuarioAcesso').val()));
+        dataUsuario.level = IntToValue(parseInt($('#UsuarioNivel').val()));
 
         RestRequest((dataUsuario.id === 0 ? 'POST' : 'PUT'),
             $baseApiUrl+"Usuario"+(dataUsuario.id === 0 ? '' : `/${dataUsuario.id}`),

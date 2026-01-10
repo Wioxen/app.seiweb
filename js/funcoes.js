@@ -709,7 +709,7 @@ function createDynamicModal(callbackOnClose) {
                             <button id="${gerarHash(16)}" class="btn btn-warning btn-cancelar"><i class="fa fa-ban"></i> Cancelar</button>
                             <button id="${gerarHash(16)}" class="btn btn-danger btn-excluir"><i class="fa fa-trash"></i> Excluir</button>
                             <button id="${gerarHash(16)}" class="btn btn-success btn-salvar"><i class="fa fa-check"></i> Salvar</button>
-                        </div>	
+                        </div>							
                     </div>
                 </div>
             </div>
@@ -933,7 +933,7 @@ function EnviarImagem($this, successCallback, errorCallback) {
 
         $.ajax({
             type: 'POST',
-            url: $baseApiUrl + 'uploads/images',
+            url: 'https://api.seiweb.com.br/uploads/images',
             data: fdata,
             cache: false,
             contentType: false,
@@ -1147,12 +1147,6 @@ function formatarDataHora() {
     const segundos = data.getSeconds().toString().padStart(2, '0');
     
     return `${diaSemana}, ${dia} de ${mes} de ${ano}, ${hora}h ${minutos}min ${segundos}s`;
-}
-
-// Função para atualizar o display em tempo real
-function atualizarDataHora() {
-    const dataHoraFormatada = formatarDataHora();
-    $('#data-hora').text(dataHoraFormatada);
 }
 
 function StrToValue(_value)

@@ -71,7 +71,7 @@
 				<!-- End Logo Header -->	
 			</div>	
 			<div id="sidebar" class="sidebar-wrapper scrollbar scrollbar-inner">
-				<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+				<div class="text-center mt-5"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
 			</div>			
 		</div>
 		<!-- End Sidebar -->
@@ -160,7 +160,7 @@
 					<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
 						<div>
 							<h3 class="fw-bold mb-3">Colégio DEMO</h3>
-							<h6 id="data-hora" class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
+							<small id="data-hora" class="op-7 mb-2"></small>
 						</div>
 						<div class="ms-md-auto py-2 py-md-0">
 							<a href="#" class="btn btn-label-info btn-round me-2" onclick="UsuarioAcessoClick(this);"><i class="fa fa-user"></i> Visitante</a>
@@ -890,9 +890,8 @@
 	<script src="js/empresa.js"></script>
 	<script src="js/saidadoaluno.js"></script>
 	<script src="js/aluno.js"></script>
-	<script src="js/modulo.js"></script>
 	<script src="js/usuario.js"></script>
-	<script src="js/controleacesso.js"></script>
+	<script src="js/direitos.js"></script>
 	<script src="js/alterarsenha.js"></script>
 	<script src="js/meuperfil.js"></script>
 	<script src="js/configuracao.js"></script>

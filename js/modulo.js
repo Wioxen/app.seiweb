@@ -1,7 +1,7 @@
 function GetModuloAcessos(onSuccessCallback)
 {
     RestRequest('GET',
-        $baseApiUrl+"modulo",
+        $baseApiUrl+"DireitosUsuario",
         null,
         function(xhr){
             xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
@@ -9,7 +9,7 @@ function GetModuloAcessos(onSuccessCallback)
         function(response, status, xhr){
             $('#modulesList').empty();
             $('#moduleacessos').empty();
-
+			
             $.each(response,function(i,v){
                 $('#modulesList').append(`<li class="list-group-item p-0">
                             <a href="#" id="modulo${v.id}" data-id="${v.id}" class="list-group-item list-group-item-module border-0 list-group-item-action d-flex justify-content-between align-items-center">
@@ -84,6 +84,6 @@ function GetModuloAcessos(onSuccessCallback)
 
             if (typeof onSuccessCallback === 'function') {
                 onSuccessCallback(response, status, xhr);
-            }            
+            }           
         });       
 }

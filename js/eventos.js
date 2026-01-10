@@ -74,7 +74,7 @@ function notifDropdown(){
 		$('#notifDropdown').html('<i class="fa fa-spin fa-spinner"></i>');
 	setTimeout(function(){
 		$('#notifDropdown').html(`<i class="fa fa-bell"></i>
-									<span class="notification">4</span>`);
+									<span class="notification bg-danger">4</span>`);
 									
 		$('#notifDropdown').parent().append(`<ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
 									<li>
@@ -257,7 +257,10 @@ function profile_pic()
 											<div class="user-box">
 												<div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
 												<div class="u-text">
-													<h4>${data.firstname}</h4>
+													<div class="d-flex justify-content-between">
+														<h4>${data.firstname}</h4>
+														<span class="badge badge-success">Gerente</span>
+													</div>
 													<p class="text-muted">${data.email}</p><a href="#" class="btn btn-xs btn-secondary btn-sm" onclick="MeuPerfilClick(this);">Ver Perfil</a>
 												</div>
 											</div>
@@ -295,26 +298,18 @@ function carregarMenu() {
 		method: 'GET',
 		dataType: 'json',
 		beforeSend: function (xhr) {
-			$('#sidebar').html(`<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>`);
+			$('#sidebar').html(`<div class="text-center mt-5"><i class="fas fa-spinner fa-spin fa-2x"></i></div>`);
 		},
 		success: function(data) {
-			$('#sidebar').html(`<ul class="nav nav-secondary" id="dynamic-menu"></ul>
-								<div class="sidebar-content"></div>`);
+			$('#sidebar').html(`<div class="sidebar-content"><ul class="nav nav-secondary" id="dynamic-menu"><li class="nav-section">
+							<span class="sidebar-mini-icon">
+								<i class="fa fa-ellipsis-h"></i>
+							</span>
+							<h4 class="text-section">Menu Principal	</h4>
+						</li></ul>
+								</div>`);
 			
-			construirMenu(data);
-
-			$.notify({
-				icon: 'icon-bell',
-				title: 'SEIWEB',
-				message: 'Sistema inicializado com sucesso.',
-			},{
-				type: 'secondary',
-				placement: {
-					from: "bottom",
-					align: "right"
-				},
-				time: 1000,
-			});						
+			$('#dynamic-menu').append(renderMenu(data));					
 		},
 		error: function(xhr, status, error) {
 			console.error('Erro ao carregar o menu:', error);
@@ -324,43 +319,45 @@ function carregarMenu() {
 }
 
 // Restante das funções do menu
-function construirMenu(menus) {
-	var menuHTML = `<li class="nav-section">
-					<span class="sidebar-mini-icon">
-						<i class="fa fa-ellipsis-h"></i>
-					</span>
-					<h4 class="text-section">MENU PRINCIPAL</h4>
-				</li>`;
-	
-	menus.forEach(function(menu) {
-		var menuId = 'menu-' + menu.id;
-		
-		menuHTML += `
-		<li class="nav-item modulo">
-			<a data-bs-toggle="collapse" href="#${menuId}" class="collapsed" aria-expanded="false">
-				<i class="${menu.icone}"></i>
-				<p class="">${menu.titulo}</p>
-				<span class="caret"></span>
-			</a>
-			<div class="collapse" id="${menuId}">
-				<ul class="nav nav-collapse pb-0 pt-0">`;
-		
-		if (menu.modulos && menu.modulos.length > 0) {
-			menu.modulos.forEach(function(modulo) {
-				menuHTML += `
-					<li class="">
-						<a href="#" id="${gerarHash(16)}" onclick="${modulo.elemento_id}Click(this);">
-							<span class="sub-item"> ${modulo.titulo} </span>
-						</a>
-					</li>`;
-			});
-		}
-		
-		menuHTML += `
-				</ul>
-			</div>
-		</li>`;
-	});
-	
-	$('#dynamic-menu').html(menuHTML);
+function renderMenu(items) {
+    let html = '';
+
+    items.forEach(item => {
+        if (item.children.length > 0) {
+            html += `
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#${item.collapseId}">
+                    <i class="${item.icon}"></i>
+                    <p>${item.title}</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="${item.collapseId}">
+                    <ul class="nav nav-collapse p-0">
+                        ${renderMenu(item.children)}
+                    </ul>
+                </div>
+            </li>`;
+        } else {
+            html += `
+            <li>
+                <a href="${item.url}" onclick="${item.clickEvent}">
+                    <span class="sub-item">${item.title}</span>
+                </a>
+            </li>`;
+        }
+    });
+
+    return html;
+}
+
+// Função para atualizar o display em tempo real
+function atualizarDataHora() {
+    const dataHoraFormatada = formatarDataHora();
+    $('#data-hora').text(dataHoraFormatada);
+}
+
+function startDataHora() {
+	// Atualizar imediatamente e a cada segundo
+	atualizarDataHora();
+	setInterval(atualizarDataHora, 1000);		
 }
