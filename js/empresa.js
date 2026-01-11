@@ -53,7 +53,7 @@ function EmpresaClick(e) {
                     `<table id="EmpresaTb" class="row-border stripe hover" style="width:100%"></table>`,
                     `<div class="footer-buttons">
                         <button id="btnNovoEmpresa" type="button" class="btn btn-success" onclick="NovoEmpresaClick(this);">
-                            <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
+                            <i class="icon-plus me-2"></i>Novo Cadastro
                         </button>
                     </div>`,
                     null,
@@ -213,8 +213,7 @@ function NovoEmpresaClick(e)
     });     
 }
 
-function CancelarEmpresaClick(e){
-    e.preventDefault();
+function CancelarEmpresaClick(){
     dataEmpresa = undefined;
     modalEmpresa.modal('hide');
 }
@@ -222,47 +221,34 @@ function CancelarEmpresaClick(e){
 function EditarEmpresaClick(e){
     event.preventDefault();
 
-    RestRequest('GET',
-        `${$baseApiUrl}${resourceEmpresa}`,
-        null,
-        null,
-        function (data) {
-            GetEmpresa(e.closest('tr').id,
-            function (data) {
-                hideLoadingModal();
-                dataEmpresa = data;
-                ResetDefaultEmpresa(function(response, status, xhr){
-                    if (!modalEmpresa.hasClass('show') && !modalEmpresa.is(':visible')) 
-                    {
-                        modalEmpresa.modal('show');                
-                        toggleModalBody('#'+modalEmpresa.attr('id'), false);
-                        setTimeout(() => {
-                            $('#descricao').focus();
-                        }, 500);            
-                    }
-                });
-            });
-        });
+	GetEmpresa(e.closest('tr').id,	
+	function (data) {
+		hideLoadingModal();
+		dataEmpresa = data;
+		ResetDefaultEmpresa(function(response, status, xhr){
+			if (!modalEmpresa.hasClass('show') && !modalEmpresa.is(':visible')) 
+			{
+				modalEmpresa.modal('show');                
+				toggleModalBody('#'+modalEmpresa.attr('id'), false);
+				setTimeout(() => {
+					$('#descricao').focus();
+				}, 500);            
+			}
+		});
+	});
 }
 
 function ExcluirEmpresaClick(e){
     e.preventDefault();
     if ((dataEmpresa !== undefined) && (dataEmpresa !== null)){
         if (dataEmpresa.id !== 0){
-            zPergunta_Exclui(function(e){
-                e.preventDefault();
-                RestRequest('DELETE',
-                    $baseApiUrl+resourceEmpresa+"/"+dataEmpresa.id,
-                    null,
-                    null,
-                    function (data) {
-                        hideLoadingModal();
-                        setTimeout(() => {
-                            CancelarEmpresaClick(e);
-                            cadastroEmpresa.tabela.ajax.reload();
-                        }, 500);                     
-                    });  
-            });        
+            zPergunta_Exclui($baseApiUrl+resourceEmpresa+"/"+dataEmpresa.id,
+			function(){
+				setTimeout(() => {
+					CancelarEmpresaClick();
+					cadastroEmpresa.tabela.ajax.reload();
+				}, 500);                     
+            });       
         }
     }
 }
@@ -372,9 +358,7 @@ function GetEmpresa(id,onSuccessCallback){
     RestRequest('GET',
         $baseApiUrl+resourceEmpresa+"/"+id,
         null,
-        function(xhr){
-            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-        },
+		null,
         function(response, status, xhr){
             if (typeof onSuccessCallback === 'function') {
                 onSuccessCallback(response, status, xhr);
