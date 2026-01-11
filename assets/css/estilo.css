@@ -610,3 +610,8 @@ tr.child td,
 tr[data-dt-row] td {
     padding: 0 !important;
 }
+
+.btn-sm-x {
+  font-size: 11px;
+  padding: 0px 4px;
+}
