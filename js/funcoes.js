@@ -335,7 +335,7 @@ function RestRequest(_type, resource, payload, beforeSendCallback, successCallba
             if (typeof beforeSendCallback === 'function') {
                 beforeSendCallback(xhr);
             } else {
-                xhr.setRequestHeader('meu_ip', localStorage.getItem('meu_ip'));
+                xhr.setRequestHeader('remoteip', localStorage.getItem('remoteip'));
                 xhr.setRequestHeader('user_agent', localStorage.getItem('user_agent'));
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
 //                xhr.setRequestHeader('turnstile_token', $('[name="cf-turnstile-response"]').val());
@@ -414,96 +414,64 @@ function toggleModalBody(modalId, desabilitar) {
     }
 }
 
-function zPergunta(texto, OkCallback) {
-    /*$('#alertModal .modal-body').html(texto);
-    $('#alertModal .modal-footer').find('button').first().off('click').on('click', function(e){
-        OkCallback(e);
-    });
-    $('#alertModal').modal('show');
-    setTimeout(adjustModalZIndex, 100); // Ajusta após a abertura*/
-
-    // Gerar um ID único para o modal
-    const modalId = 'dynamicModal-p01-' + new Date().getTime();
-    
-    // Criar a estrutura do modal
-    const modalHTML = `
-        <div class="modal fade" id="${modalId}" tabindex="-1">
-            <div class="modal-dialog animate__animated animate__backInLeft" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h6 class="modal-title"><i class="fa fa-question-circle"></i> Responda</h6>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                    ${texto}
-                    </div>
-                    <div class="modal-footer">
-                        <button id="btn${modalId}" class="btn btn-primary btn-sm">Sim</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Não</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    $('body').append(modalHTML);
-
-    const $modal = $('#' + modalId);
-
-    $('#btn'+modalId).off('click').on('click', function(e){
-        $modal.modal('hide');
-        OkCallback(e);
-    });
-    
-    $modal.on('hidden.bs.modal', function () {
-        $(this).remove();
-        console.log('Modal destruído');
-    });
-    
-    $modal.modal('show');
-    
-    return $modal;    
+function zPergunta(texto, yesCallback) {
+    swal({
+        title: 'Responda',
+        text: `${texto}`,
+        type: 'warning',
+        buttons:{
+            confirm: {
+                text : 'Sim, desejo excluir',
+                className : 'btn btn-success'
+            },
+            cancel: {
+                text:  'Não',
+                visible: true,
+                className: 'btn btn-danger'
+            }
+        }
+    }).then((Yes) => {
+        if (Yes) {
+            if (yesCallback && typeof yesCallback === 'function') {
+                yesCallback();
+            }
+        } else {
+            swal.close();
+        }								
+    });		
 }
 
-function zPergunta_Exclui(OkCallback){
-    zPergunta("Confirma a exclusão deste registro ?", OkCallback);
+function zPergunta_Exclui(resource,successCallback){
+	zPergunta("Confirma a exclusão deste registro ?", function(){
+		RestRequest('DELETE',
+			resource,
+			null,
+			null,
+			function (response, textStatus, jqXHR) {
+				zAlerta('Registro excluído com sucesso');						
+				
+				hideLoadingModal();
+
+				if (typeof successCallback === 'function') {
+					successCallback(response, textStatus, jqXHR);
+				}				
+			});  	
+	});
 }
 
-function zAlerta(texto) {
-    // Gerar um ID único para o modal
-    const modalId = 'dynamicModal-p01-' + new Date().getTime();
-    
-    // Criar a estrutura do modal
-    const modalHTML = `
-        <div class="modal fade" id="${modalId}" tabindex="-1">
-            <div class="modal-dialog animate__animated animate__backInLeft" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h6 class="modal-title"><i class="fa fa-question-circle"></i> alerta</h6>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                    ${texto}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Sair</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    $('body').append(modalHTML);
-
-    const $modal = $('#' + modalId);
-
-    $modal.on('hidden.bs.modal', function () {
-        $(this).remove();
-    });
-    
-    $modal.modal('show');
-    
-    return $modal;    
+function zAlerta(_message) {
+	$.notify({
+		icon: 'icon-bell',
+		title: 'alerta',
+		message: _message,
+	},{
+		type: 'success',
+		placement: {
+			from: "top",
+			align: "center"
+		},
+		time: 1000,
+	});  
 }
 
 /*function checkTurnstileStatus() {
@@ -516,6 +484,7 @@ function zAlerta(texto) {
         }
     }
 }*/
+
 function preencherCampo($campo, valor) {
     const tipo = $campo.attr('type');
     const tagName = $campo.prop('tagName').toLowerCase();
@@ -706,9 +675,9 @@ function createDynamicModal(callbackOnClose) {
                     </div>
                     <div class="modal-footer">
                         <div class="me-auto">
-                            <button id="${gerarHash(16)}" class="btn btn-warning btn-cancelar"><i class="fa fa-ban"></i> Cancelar</button>
-                            <button id="${gerarHash(16)}" class="btn btn-danger btn-excluir"><i class="fa fa-trash"></i> Excluir</button>
-                            <button id="${gerarHash(16)}" class="btn btn-success btn-salvar"><i class="fa fa-check"></i> Salvar</button>
+                            <button id="${gerarHash(16)}" class="btn btn-warning btn-cancelar"><i class="icon-close"></i> Cancelar</button>
+                            <button id="${gerarHash(16)}" class="btn btn-danger btn-excluir"><i class="icon-trash"></i> Excluir</button>
+                            <button id="${gerarHash(16)}" class="btn btn-success btn-salvar"><i class="icon-note"></i> Salvar</button>
                         </div>							
                     </div>
                 </div>
@@ -1103,7 +1072,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
 function CarregarFotoLista(_class){
     $(_class).each(function(){
         var $this = $(this);
-        if ($this.data('foto') === "")
+        if ($this.data('foto') !== "")
         {
             $this.html(`<img class="avatar-img rounded-circle" src="assets/img/semfoto.png" style="width: 39px; height: 39px;" />`);      
         } else {

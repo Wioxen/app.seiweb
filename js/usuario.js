@@ -57,7 +57,8 @@ function UsuarioClick(e) {
                     orderable: false,
                     "width": "6%",
                     "render": function(data, type, row) {
-                        return `<img class="avatar-img rounded-circle" src="${$imageUrl}${data}" style="width: 39px; height: 39px;" />`
+						var _data = (data === '') ? 'assets/img/semfoto.png':$imageUrl+data;
+                        return `<img class="avatar-img rounded-circle" src="${_data}" style="width: 39px; height: 39px;" />`
                     }
                 },
                 { 
@@ -102,7 +103,7 @@ function UsuarioClick(e) {
                     `<table id="${resourceUsuario}Tb" class="row-border stripe hover" style="width:100%"></table>`,
                     `<div class="footer-buttons">
                         <button id="${gerarHash(16)}" type="button" class="btn btn-success" onclick="Novo${resourceUsuario}Click(this);">
-                            <i class="fa fa-plus-circle me-2"></i>Novo Cadastro
+                            <i class="icon-plus me-2"></i>Novo Cadastro
                         </button>
                     </div>`,
                     null,
@@ -147,7 +148,10 @@ function ResetDefaultUsuario(onLoadCallback){
             {
                 preencherFormularioCompleto(dataUsuario, '#frm'+resourceUsuario);
 
-                $('#Foto'+resourceUsuario).attr('src',$imageUrl+dataUsuario.photo);
+				if (dataUsuario.photo != null)
+				{					
+					$('#Foto'+resourceUsuario).attr('src',$imageUrl+dataUsuario.photo);
+				}
 
                 $('#UsuarioPhone').trigger('input').trigger('change');
                 $('#UsuarioPhoneWhats').prop('checked',(dataUsuario.phoneWhats === true));
@@ -188,8 +192,7 @@ function NovoUsuarioClick(e){
     });   
 }
 
-function CancelarUsuarioClick(e){
-    e.preventDefault();
+function CancelarUsuarioClick(){
     dataUsuario = undefined;
     modalUsuario.modal('hide');
 }
@@ -197,27 +200,21 @@ function CancelarUsuarioClick(e){
 function EditarUsuarioClick(e){
     event.preventDefault();
 
-    RestRequest('GET',
-        `${$baseApiUrl}${resourceUsuario}`,
-        null,
-        null,
-        function (data) {
-            GetUsuario(e.closest('tr').id,
-            function (data) {
-                hideLoadingModal();
-                dataUsuario = data;
-                ResetDefaultUsuario(function(response, status, xhr){
-                    if (!modalUsuario.hasClass('show') && !modalUsuario.is(':visible')) 
-                    {
-                        modalUsuario.modal('show');                
-                        toggleModalBody('#'+modalUsuario.attr('id'), false);
-                        setTimeout(() => {
-                            $('#UsuarioFirstName').focus();
-                        }, 500);            
-                    }
-                });
-            });
-        });
+	GetUsuario(e.closest('tr').id,
+	function (data) {
+		hideLoadingModal();
+		dataUsuario = data;
+		ResetDefaultUsuario(function(response, status, xhr){
+			if (!modalUsuario.hasClass('show') && !modalUsuario.is(':visible')) 
+			{
+				modalUsuario.modal('show');                
+				toggleModalBody('#'+modalUsuario.attr('id'), false);
+				setTimeout(() => {
+					$('#UsuarioFirstName').focus();
+				}, 500);            
+			}
+		});
+	});
 }
 
 function SalvarUsuarioClick(e){
@@ -251,19 +248,12 @@ function ExcluirUsuarioClick(e){
     e.preventDefault();
     if ((dataUsuario !== undefined) && (dataUsuario !== null)){
         if (dataUsuario.id !== 0){
-            zPergunta_Exclui(function(e){
-                e.preventDefault();
-                RestRequest('DELETE',
-                    $baseApiUrl+resourceUsuario+"/"+dataUsuario.id,
-                    null,
-                    null,
-                    function (data) {
-                        hideLoadingModal();
-                        setTimeout(() => {
-                            CancelarUsuarioClick(e);
-                            cadastroUsuario.tabela.ajax.reload();
-                        }, 500);                     
-                    });  
+            zPergunta_Exclui($baseApiUrl+resourceUsuario+"/"+dataUsuario.id,
+			function(){
+				setTimeout(() => {
+					CancelarUsuarioClick();
+					cadastroUsuario.tabela.ajax.reload();
+				}, 500);                     
             });        
         }
     }
@@ -277,7 +267,7 @@ function uploadFotoUsuario(e) {
 function apagarFotoUsuario() {
     dataUsuario.photo = null;
     $('#fileUploadUsuario').val('');
-    $('#FotoUsuario').find('img').attr('src', '#');
+	$('#Foto'+resourceUsuario).attr('src','#');
 }
 
 function fileUploadUsuario(e) {
@@ -292,9 +282,7 @@ function GetUsuario(id,onSuccessCallback){
     RestRequest('GET',
         $baseApiUrl+resourceUsuario+"/"+id,
         null,
-        function(xhr){
-            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-        },
+        null,
         function(response, status, xhr){
             if (typeof onSuccessCallback === 'function') {
                 onSuccessCallback(response, status, xhr);
