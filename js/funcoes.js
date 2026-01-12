@@ -139,10 +139,6 @@ function hideLoadingModal() {
     Swal.close();
 }
 
-function $Loading(status) {
-    $('#loadingModal').modal(status);
-}
-
 function redirectToLogin() {
     localStorage.setItem('token', null);
     window.location.replace(localStorage.getItem('login_url'));
@@ -183,7 +179,7 @@ function processErrorData(errorData, errorList) {
         `);
     }
 	
-	console.log(errorData);
+	/*console.log(errorData);
 	
 	if (errorData.status === 403){
 		errorList.append(`
@@ -191,7 +187,7 @@ function processErrorData(errorData, errorList) {
 				${$('#first-name').text()}, você não tem permissão para acessar este modulo!
 			</div>
 		`);
-	}	
+	}*/	
 }
 
 function showErrors(errorResponse) {
@@ -939,7 +935,9 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
             "url" :$baseApiUrl+resource,
             "type": "GET", // Or POST, PUT, etc.
             "beforeSend": function (xhr) {
-				showLoadingModal();
+                if (!modalOpened) {
+					showLoadingModal();
+				}
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             },
             "dataSrc": function (json) {
