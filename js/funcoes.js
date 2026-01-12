@@ -935,9 +935,9 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
             "url" :$baseApiUrl+resource,
             "type": "GET", // Or POST, PUT, etc.
             "beforeSend": function (xhr) {
-                if (!modalOpened) {
+                /*if (!modalOpened) {
 					showLoadingModal();
-				}
+				}*/
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             },
             "dataSrc": function (json) {

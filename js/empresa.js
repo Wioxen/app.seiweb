@@ -3,66 +3,56 @@ var modalEmpresa = undefined;
 var cadastroEmpresa = undefined;
 var resourceEmpresa = "Empresa";
 
-function meuFormatoPersonalizado(d) {
-    return `
-        <div class="row-details">
-            <h5>Detalhes do Registro #${d.id}</h5>
-            <p><strong>Nome:</strong> ${d.id}</p>
-            <p><strong>Email:</strong> ${d.id}</p>
-        </div>
-    `;
+function exibeEmpresa(data) {
+	//hideLoadingModal();
+	const defaultColumns  = [
+		{ 
+			//title: 'Descrição',
+			data: 'descricao',    
+			orderable: false,
+		},
+		{
+			data: null,
+			orderable: false,
+			"width": "8%",
+			"render": function(data, type, row) {
+				return `<div class="dropdown">
+						<button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="fa fa-ellipsis-h"></i>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+						<li><a class="dropdown-item" href="#" onclick="EditarEmpresaClick(this);"><i class="fas fa-edit"></i> Editar</a></li>					
+						</ul>
+						</div>`                        
+			}
+		},
+	];
+	
+	cadastroEmpresa = 
+		CarregaDataTable
+		(
+			'Empresa/datatable',
+			'Empresa',
+			'modal-lg',
+			`<table id="EmpresaTb" class="row-border stripe hover" style="width:100%"></table>`,
+			`<div class="footer-buttons">
+				<button id="btnNovoEmpresa" type="button" class="btn btn-success" onclick="NovoEmpresaClick(this);">
+					<i class="icon-plus me-2"></i>Novo Cadastro
+				</button>
+			</div>`,
+			null,
+			defaultColumns,
+			null,
+			false
+		);                       
 }
 
-function EmpresaClick(e) {
+function EmpresaClick(e) {	
     RestRequest('GET',
-        `${$baseApiUrl}${resourceEmpresa}/acesso`,
-        null,
-        null,
-        function (data) {
-            hideLoadingModal();
-
-            const defaultColumns  = [
-                { 
-                    //title: 'Descrição',
-                    data: 'descricao',    
-                    orderable: false,
-                },
-                {
-                    data: null,
-                    orderable: false,
-                    "width": "8%",
-                    "render": function(data, type, row) {
-                        return `<div class="dropdown">
-                                <button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-ellipsis-h"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-                                <li><a class="dropdown-item" href="#" onclick="EditarEmpresaClick(this);"><i class="fas fa-edit"></i> Editar</a></li>					
-                                </ul>
-                                </div>`                        
-                    }
-                },
-            ];
-
-
-            cadastroEmpresa = 
-                CarregaDataTable
-                (
-                    'Empresa/datatable',
-                    'Empresa',
-                    'modal-lg',
-                    `<table id="EmpresaTb" class="row-border stripe hover" style="width:100%"></table>`,
-                    `<div class="footer-buttons">
-                        <button id="btnNovoEmpresa" type="button" class="btn btn-success" onclick="NovoEmpresaClick(this);">
-                            <i class="icon-plus me-2"></i>Novo Cadastro
-                        </button>
-                    </div>`,
-                    null,
-                    defaultColumns,
-                    null,
-                    false
-                );                       
-        });           
+				`${$baseApiUrl}${resourceEmpresa}/acesso`,
+				null,
+				null,
+				exibeEmpresa);           
 }
 
 function ResetDefaultEmpresa(onLoadCallback){
