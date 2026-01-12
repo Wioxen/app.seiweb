@@ -217,55 +217,27 @@ function processErrorData(errorData, errorList) {
             </div>
         `);
     }
+	
+	console.log(errorData);
+	
+	if (errorData.status === 403){
+		errorList.append(`
+			<div class="list-group-item list-group-item-danger text-start">
+				${$('#first-name').text()}, você não tem permissão para acessar este modulo!
+			</div>
+		`);
+	}	
 }
 
 function showErrors(errorResponse) {
     try 
     {
-        const modalId = 'dynamicModal-e01-' + new Date().getTime();
-    
-        // Criar a estrutura do modal
-        const modalHTML = `
-        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-            <div class="modal-dialog animate__animated animate__backInUp">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Erros de Validação</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="list-group" id="errorList">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>	    
-        `;
-        
-        $('body').append(modalHTML);
-        
-        const $modal = $('#' + modalId);
-    
-        $modal.on('hidden.bs.modal', function () {
-            $(this).remove();
-            console.log('Modal destruído');
-        });
-
-        const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-        errorModalLabel.innerText = "Ocorreram um ou mais erros de validação.";
-
-        if (errorResponse.status === 403){
-            $('#errorModalLabel').text("Acesso negado");
-        }
-
         if (errorResponse.status === 401){
-            //$('#errorModalLabel').text("Acesso não autorizado");
             redirectToLogin();
         }
-
+		
+		var errorModalLabel = "Ops!";
+		
         const errorList = $('#errorList');
         
         // Limpa a lista de erros anterior
@@ -291,17 +263,32 @@ function showErrors(errorResponse) {
         }
         // Se não houver nenhum dos anteriores, mostra a mensagem genérica
         else {
-            errorList.append(`
-                <div class="list-group-item list-group-item-danger text-start">
-                    ${typeof errorResponse === 'string' ? errorResponse : 'Ocorreu um erro desconhecido.'}
-                </div>
-            `);
+			if (errorResponse.status === 403){
+				errorList.append(`
+					<div class="list-group-item list-group-item-danger text-start">
+						${$('#first-name').text()}, você não tem permissão para acessar este modulo!
+					</div>
+				`);
+			}	else {			
+				errorList.append(`
+					<div class="list-group-item list-group-item-danger text-start">
+						${typeof errorResponse === 'string' ? errorResponse : 'Ocorreu um erro desconhecido.'}
+					</div>
+				`);
+			}
         }
-        
-        // Mostra o modal    
-        errorModal.show();
+		
+		Swal.fire({
+		  title: errorModalLabel,
+		  icon: 'error',
+		  html: errorList,
+		  scrollbarPadding: true,
+		  customClass: {
+			confirmButton: "btn btn-success"
+			},
+		});
     } catch (e) {
-        console.error('Erro ao processar mensagem de erro:', e);
+        console.log('Erro ao processar mensagem de erro:', e);
         $('#errorContainer').removeClass('d-none').html(
             typeof errorResponse === 'string' ? errorResponse : 'Erro ao processar mensagem de erro.'
         );
@@ -309,7 +296,7 @@ function showErrors(errorResponse) {
 }
 
 function handleDefaultError(jqXHR, textStatus, errorThrown) {
-    console.log(jqXHR);
+    hideLoadingModal();
 
     if (jqXHR.responseText || (jqXHR.status && jqXHR.status >= 400)) {
         showErrors(jqXHR);
@@ -415,30 +402,26 @@ function toggleModalBody(modalId, desabilitar) {
 }
 
 function zPergunta(texto, yesCallback) {
-    swal({
-        title: 'Responda',
-        text: `${texto}`,
-        type: 'warning',
-        buttons:{
-            confirm: {
-                text : 'Sim, desejo excluir',
-                className : 'btn btn-success'
-            },
-            cancel: {
-                text:  'Não',
-                visible: true,
-                className: 'btn btn-danger'
-            }
-        }
-    }).then((Yes) => {
-        if (Yes) {
-            if (yesCallback && typeof yesCallback === 'function') {
-                yesCallback();
-            }
-        } else {
-            swal.close();
-        }								
-    });		
+	Swal.fire({
+	  title: 'Responda',
+	  text: `${texto}`,
+	  icon: "question",
+	  showCancelButton: true,
+	  customClass: {
+		confirmButton: "btn btn-success",
+		cancelButton: "btn btn-danger"
+	  },
+	  confirmButtonText: "Sim, eu confirmo",
+	  cancelButtonText: "Não",	  
+	}).then((result) => {
+		if (result.isConfirmed) {
+			if (yesCallback && typeof yesCallback === 'function') {
+				yesCallback();
+			}
+		} else {
+			swal.close();
+		}								
+	});	
 }
 
 function zPergunta_Exclui(resource,successCallback){
@@ -470,7 +453,7 @@ function zAlerta(_message) {
 			from: "top",
 			align: "center"
 		},
-		time: 1000,
+		time: 500,
 	});  
 }
 
@@ -961,6 +944,16 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
     var $modal = createDynamicModal_01(title_modal,size_modal,body_modal,footer_modal);
     var tableId = $modal.find('table').attr('id');
 
+    var modalOpened = false;
+	
+    var $tableElement = $(`#${tableId}`);
+
+	if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
+		var existingTable = $tableElement.DataTable();
+		existingTable.destroy();
+		$tableElement.empty();
+	}
+	
     var $tabela = $(`#${tableId}`)
     .DataTable({
         "order": [[0, '']], // Sets an initial sort order (optional)      
@@ -981,11 +974,35 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
             "url" :$baseApiUrl+resource,
             "type": "GET", // Or POST, PUT, etc.
             "beforeSend": function (xhr) {
+				showLoadingModal();
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             },
-            "error": function(xhr, error, thrown){
+            "dataSrc": function (json) {
+				hideLoadingModal();
+                // Esta função é chamada quando os dados são carregados
+                if (!modalOpened) {
+                    modalOpened = true;
+                    
+                    // Aguarda um momento para garantir que o DOM esteja pronto
+                    setTimeout(() => {
+                        if (!$modal.hasClass('show') && !$modal.is(':visible')) {
+                            $modal.on('shown.bs.modal', function () {
+                                $('#dt-search-0').focus();
+                                
+                                if (typeof showModalCallback === 'function') {
+                                    showModalCallback();
+                                }
+                            });
+                            
+                            $modal.modal('show');
+                        }
+                    }, 50);
+                }
                 
-            }            
+                // Retorna os dados para o DataTable processar
+                return json.data || json;
+            },	
+            "error": handleDefaultError    
         },          
         select: (_select === true) ? {style: 'os', selector: (_formatFunction === null) ? 'td:nth-child(1)':'td:nth-child(2)'} : false,
         processing: true,
@@ -1049,7 +1066,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
         }
     } );    
 
-    if (!$modal.hasClass('show') && !$modal.is(':visible')) {        
+    /*if (!$modal.hasClass('show') && !$modal.is(':visible')) {        
         $modal.on('shown.bs.modal', function () {
             $tabela.draw();
 
@@ -1061,7 +1078,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
         });
     
         $modal.modal('show');
-    }
+    }*/
 
     return {
         tabela: $tabela,

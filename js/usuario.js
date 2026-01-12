@@ -38,84 +38,78 @@ function ReenviarEmail(e){
         });
 }
 
-function UsuarioClick(e) {
-    RestRequest('GET',
-        `${$baseApiUrl}${resourceUsuario}`,
-        null,
-        null,
-        function (data) {
-            hideLoadingModal();
-            const defaultColumns = [
-                /*{
-                    class: 'warning-Usuario', orderable: false, searchable: false, data: null, defaultContent: '', "width": "2%",
-                    "render": function(data, type, row) {
-                        return `<span><i class="fa fa-exclamation-triangle text-warning"></i></span>`
-                    } 
-                },*/
-                {
-                    data: 'foto',
-                    orderable: false,
-                    "width": "6%",
-                    "render": function(data, type, row) {
-						var _data = (data === '') ? 'assets/img/semfoto.png':$imageUrl+data;
-                        return `<img class="avatar-img rounded-circle" src="${_data}" style="width: 39px; height: 39px;" />`
-                    }
-                },
-                { 
-                    data: null,              
-                    orderable: false,
-                    "width": "80%",
-                    "render": function(data, type, row) {
-                        return `<span>${row.firstName} ${row.lastName}</span>`
-                    }                    
-                },
-                { 
-                    data: null,              
-                    orderable: false,
-                    "width": "5%",
-                    "render": function(data, type, row) {
-                        return `<span class="badge text-bg-${(row.role === "gerente") ? 'dark':'primary'}">${row.role}</span>`
-                    }                    
-                },
-                {
-                    data: 'id',
-                    orderable: false,
-                    "width": "8%",
-                    "render": function(data, type, row) {
-                        return `<div class="dropdown">
-                                <button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-ellipsis-h"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-                                <li><a class="dropdown-item" href="#" onclick="Editar${resourceUsuario}Click(this);"><i class="fas fa-edit"></i> Editar</a></li>					
-                                </ul>
-                                </div>`                        
-                    }
-                }
-            ];
 
-            cadastroUsuario = 
-                CarregaDataTable
-                (
-                    'datatable/'+resourceUsuario,
-                    'Usuários',
-                    'modal-lg',
-                    `<table id="${resourceUsuario}Tb" class="row-border stripe hover" style="width:100%"></table>`,
-                    `<div class="footer-buttons">
-                        <button id="${gerarHash(16)}" type="button" class="btn btn-success" onclick="Novo${resourceUsuario}Click(this);">
-                            <i class="icon-plus me-2"></i>Novo Cadastro
-                        </button>
-                    </div>`,
-                    null,
-                    defaultColumns,
-                    function(settings)
-                    {
-                        //
-                    },
-                    false,
-                    DetailUsuario
-                );                         
-        });      
+function UsuarioClick(e) {
+	const defaultColumns = [
+		/*{
+			class: 'warning-Usuario', orderable: false, searchable: false, data: null, defaultContent: '', "width": "2%",
+			"render": function(data, type, row) {
+				return `<span><i class="fa fa-exclamation-triangle text-warning"></i></span>`
+			} 
+		},*/
+		{
+			data: 'foto',
+			orderable: false,
+			"width": "6%",
+			"render": function(data, type, row) {
+				var _data = (data === '') ? 'assets/img/semfoto.png':$imageUrl+data;
+				return `<img class="avatar-img rounded-circle" src="${_data}" style="width: 39px; height: 39px;" />`
+			}
+		},
+		{ 
+			data: null,              
+			orderable: false,
+			"width": "80%",
+			"render": function(data, type, row) {
+				return `<span>${row.firstName} ${row.lastName}</span>`
+			}                    
+		},
+		{ 
+			data: null,              
+			orderable: false,
+			"width": "5%",
+			"render": function(data, type, row) {
+				return `<span class="badge text-bg-${(row.role === "gerente") ? 'dark':'primary'}">${row.role}</span>`
+			}                    
+		},
+		{
+			data: 'id',
+			orderable: false,
+			"width": "8%",
+			"render": function(data, type, row) {
+				return `<div class="dropdown">
+						<button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="fa fa-ellipsis-h"></i>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+						<li><a class="dropdown-item" href="#" onclick="Editar${resourceUsuario}Click(this);"><i class="fas fa-edit"></i> Editar</a></li>					
+						</ul>
+						</div>`                        
+			}
+		}
+	];
+
+	cadastroUsuario = 
+		CarregaDataTable
+		(
+			resourceUsuario+'/datatable',
+			'Usuários',
+			'modal-lg',
+			`<table id="${resourceUsuario}Tb" class="row-border stripe hover" style="width:100%"></table>`,
+			`<div class="footer-buttons">
+				<button id="${gerarHash(16)}" type="button" class="btn btn-success" onclick="Novo${resourceUsuario}Click(this);">
+					<i class="icon-plus me-2"></i>Novo Cadastro
+				</button>
+			</div>`,
+			null,
+			defaultColumns,
+			function(settings)
+			{
+				//
+			},
+			false,
+			DetailUsuario
+		);                         	
 }
 
 function ResetDefaultUsuario(onLoadCallback){

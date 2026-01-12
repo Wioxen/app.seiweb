@@ -805,6 +805,7 @@
 		<!-- End Custom template -->
 
 	</div>
+	<div class="list-group" id="errorList"></div>
 	<!--<div class="cf-turnstile" data-sitekey="0x4AAAAAAB3tLfTOmtvmAtT9"></div>-->
 	<!--   Core JS Files   -->
 	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -835,8 +836,9 @@
 	<script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
 	<script src="assets/js/plugin/jsvectormap/world.js"></script>
 
-	<!-- Sweet Alert -->
-	<script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+	<!-- Sweet Alert
+	<script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>-->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<!-- Kaiadmin JS -->
 	<script src="assets/js/kaiadmin.min.js"></script>

@@ -201,36 +201,40 @@ function shortCut(){
 
 function LogOutClick(e){
 	e.preventDefault();
-	swal({
-		title: 'Atenção?',
-		text: `${$('#first-name').text()}, deseja realmente sair do sistema?`,
-		type: 'warning',
-		buttons:{
-			confirm: {
-				text : 'Sim, desejo sair',
-				className : 'btn btn-success'
-			},
-			cancel: {
-				text:  'Não, desejo permanecer',
-				visible: true,
-				className: 'btn btn-danger'
-			}
-		}
-	}).then((Yes) => {
-		if (Yes) {
-			RestRequest('POST',
-				$baseApiUrl+"Logout",
-				null,
-				null,
-				function (response, textStatus, jqXHR) {
-					hideLoadingModal();
-					swal.close();
-					redirectToLogin();
-				});                          
-		} else {
-			swal.close();
-		}								
-	});		
+	zPergunta(`${$('#first-name').text()}, deseja realmente sair do sistema?`,function(){
+		RestRequest('POST',
+			$baseApiUrl+"Logout",
+			null,
+			null,
+			function (response, textStatus, jqXHR) {
+				hideLoadingModal();
+				redirectToLogin();
+			});                          
+	});
+	/*Swal.fire({
+	  title: 'Responda',
+	  text: `${$('#first-name').text()}, deseja realmente sair do sistema?`,
+	  icon: "question",
+	  showCancelButton: true,
+	  customClass: {
+		confirmButton: "btn btn-success",
+		cancelButton: "btn btn-danger"
+	  },
+	  confirmButtonText: "Sim, eu confirmo",
+	  cancelButtonText: "Não",	  
+	}).then((result) => {
+	  if (result.isConfirmed) {
+		RestRequest('POST',
+			$baseApiUrl+"Logout",
+			null,
+			null,
+			function (response, textStatus, jqXHR) {
+				hideLoadingModal();
+				swal.close();
+				redirectToLogin();
+			});                          
+	  }
+	});*/	
 }
 
 function profile_pic()
@@ -258,7 +262,7 @@ function profile_pic()
 												<div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
 												<div class="u-text">
 													<div class="d-flex justify-content-between">
-														<h4>${data.firstname}</h4>
+														<h4 id="first-name">${data.firstname}</h4>
 														<span class="badge badge-success">Gerente</span>
 													</div>
 													<p class="text-muted">${data.email}</p><a href="#" class="btn btn-xs btn-secondary btn-sm" onclick="MeuPerfilClick(this);">Ver Perfil</a>
