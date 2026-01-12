@@ -44,6 +44,7 @@ function EmpresaClick(e) {
                 },
             ];
 
+
             cadastroEmpresa = 
                 CarregaDataTable
                 (
