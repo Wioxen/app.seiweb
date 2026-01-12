@@ -114,64 +114,29 @@ document.addEventListener('DOMContentLoaded', adjustModalZIndex);*/
 
 // Funções para controlar o loadingModal (mantidas como estão)
 function showLoadingModal() {
-    const modalHTML = `
-    <div class="modal fade loading-modal" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    <div class="spinner-border loading-spinner text-primary" style="width: 4rem; height: 4rem;"  role="status">
-                        <span class="visually-hidden">Carregando...</span>
-                    </div>
-                    <p class="mt-3 text-white">Processando ...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    `;
-    
-    $('body').append(modalHTML);      
-    
-    const loadingModal = document.getElementById('loadingModal');
-
-    if (!loadingModal) return;
-
-    const $modal = $('#loadingModal');
-
-    $modal.on('hidden.bs.modal', function () {
-        $(this).remove();
-        console.log('Modal destruído');
-    });
-
-    loadingModal.classList.add('show');
-    loadingModal.style.display = 'block';
-    
-    // Criar backdrop manualmente se não existir
-    if (!document.querySelector('.modal-backdrop[data-bs-target="#loadingModal"]')) {
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop fade show';
-        backdrop.setAttribute('data-bs-target', '#loadingModal');
-        document.body.appendChild(backdrop);
-    }
-    
-    adjustLoadingModalZIndex();
+	Swal.fire({
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		showConfirmButton: false,
+		background: 'transparent',
+		backdrop: 'rgba(0,0,0,0.4)', // ou 'transparent' para totalmente transparente
+		didOpen: () => {
+			Swal.showLoading();					
+			/*setTimeout(() => {
+				const loader = document.querySelector('.swal2-loader');
+				if (loader) {
+					loader.style.width = '70px';
+					loader.style.height = '70px';
+					loader.style.borderWidth = '6px';
+					loader.style.borderTopColor = '#3498db';
+				}
+			}, 10); */
+		}
+	});	
 }
 
 function hideLoadingModal() {
-    const loadingModal = document.getElementById('loadingModal');
-    
-    if (!loadingModal) return;
-    
-    loadingModal.classList.remove('show');
-    loadingModal.style.display = 'none';
-    
-    // Remover backdrop do loadingModal
-    const loadingBackdrop = document.querySelector('.modal-backdrop[data-bs-target="#loadingModal"]');
-    
-    if (loadingBackdrop) {
-        loadingBackdrop.remove();
-    }
-    
-    //adjustModalZIndex();
+    Swal.close();
 }
 
 function $Loading(status) {
@@ -979,6 +944,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
             },
             "dataSrc": function (json) {
 				hideLoadingModal();
+
                 // Esta função é chamada quando os dados são carregados
                 if (!modalOpened) {
                     modalOpened = true;
