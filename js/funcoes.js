@@ -1048,3 +1048,43 @@ function validarInput($input) {
             return valor;
     }
 }
+
+function ConsultaCep(configDinamico = {}){
+	const configFixo = {
+	};
+    
+	const config = { ...configFixo, ...configDinamico };
+
+    RestRequest({
+		method: 'POST',
+        url: $baseApiUrl+'apiservice/cep',
+        data: {modulo: config.resource, cep: $('#cep').val()},
+        success: function(response, textStatus, jqXHR){
+            hideLoadingModal();
+
+            if (typeof config.success === 'function') {
+                config.success(response, textStatus, jqXHR);
+            }   
+        }
+	});	
+}
+
+function ConsultaCnpj(configDinamico = {}){
+	const configFixo = {
+	};
+    
+	const config = { ...configFixo, ...configDinamico };
+
+    RestRequest({
+		method: 'POST',
+        url: $baseApiUrl+'apiservice/receitaWs',
+        data: {modulo: config.resource, cnpj: $.trim($('#cnpj').val())},
+        success: function(response, textStatus, jqXHR){
+            hideLoadingModal();
+
+            if (typeof config.success === 'function') {
+                config.success(response, textStatus, jqXHR);
+            }   
+        }
+	});	
+}

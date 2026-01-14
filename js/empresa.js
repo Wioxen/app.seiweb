@@ -310,38 +310,30 @@ function SalvarEmpresaClick(e){
 }
 
 function ConsultaCepEmpresa(){
-    RestRequest({
-		method: 'POST',
-        url: $baseApiUrl+'apiservice/cep',
-        data: {modulo: resourceEmpresa, cep: $('#cep').val()},
-        success: function(data){
-            hideLoadingModal();
-            dataEmpresa.bairroId = data.bairroId;
+	ConsultaCep({
+		resource: 'Empresa',
+		success: function(response, textStatus, jqXHR){
+			preencherFormularioCompleto(response, '#frmEmpresa');
+            dataEmpresa.bairroId = response.bairroId;
+            dataEmpresa.municipioId = response.municipioId;
 			CarregaEmpresaSelect('Bairro','bairroId');
 			CarregaEmpresaSelect('Municipio','municipioId');
-			preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
-            $('#numero').focus();
-        }
+            $('#numero').focus();			
+		}
 	});
 }
 
 function ConsultaCnpjEmpresa(){
-    RestRequest({
-		method: 'POST',
-        url: $baseApiUrl+'apiservice/receitaWs',
-        data: {modulo: resourceEmpresa, cnpj: $.trim($('#cnpj').val())},
-        success: function(data){
-            hideLoadingModal();
-            
-            dataEmpresa.bairroId = data.bairroId;
-
+	ConsultaCnpj({
+		resource: 'Empresa',
+		success: function(response, textStatus, jqXHR){
+			preencherFormularioCompleto(response, '#frmEmpresa');
+            dataEmpresa.bairroId = response.bairroId;
+            dataEmpresa.municipioId = response.municipioId;
 			CarregaEmpresaSelect('Bairro','bairroId');
-			CarregaEmpresaSelect('Municipio','municipioId');
-			
-			preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
-
-            $('#descricao').focus();
-        }
+			CarregaEmpresaSelect('Municipio','municipioId');			
+            $('#descricao').focus();		
+		}
 	});
 }
 
