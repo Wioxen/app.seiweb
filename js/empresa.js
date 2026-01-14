@@ -95,35 +95,17 @@ function exibeLoadEmpresa(response, status, xhr)
 		}
 	}   
 
-	CarregaEmpresaBairro();
-
-    carregaSelect2({
-		url: $baseApiUrl+'CertificadoDigital',
-		container: '#selectCertificado',
-        modal: modalEmpresa,
-        success: function(response, textStatus, jqXHR){
-            $('#selectCertificado')
-				.find('select')
-                .val(safeGet(dataEmpresa, 'certificadoDigitalId'))
-                .trigger('change');
-        },
-        change: function(data, value, element){
-			if ((data !== null) && (data !== undefined)){
-				dataEmpresa.certificadoDigitalId = data.id;
-				$('#DtValidadeCert').html(`<span class="badge ${data.badgeValidade}">Valido até ${data.dtValidade}</span>`);
-			}
-        },
-        unselect: function(e){
-			$('#DtValidadeCert').empty();
-		}	
-	});  
+	CarregaEmpresaSelect('Bairro','bairroId');
+	CarregaEmpresaSelect('Municipio','municipioId');
+	
+	CarregaEmpresaCertificado();
 
     carregaSelect2({
 		url: $baseApiUrl+'lista/naturezas',
 		container: '#selectNatureza',
         modal: modalEmpresa,
         success: function(response, textStatus, jqXHR){
-			if ((dataEmpresa !== undefined) && (dataEmpresa != null) && (dataEmpresa.naturezaOperacao !== 0))
+			if ((dataEmpresa !== undefined) && (dataEmpresa != null))
 			{
 				$('#selectNatureza')
 					.find('select')
@@ -146,7 +128,7 @@ function exibeLoadEmpresa(response, status, xhr)
 		container: '#selectRegime',
         modal: modalEmpresa,
         success: function(response, textStatus, jqXHR){
-			if ((dataEmpresa !== undefined) && (dataEmpresa != null) && (dataEmpresa.naturezaOperacao !== 0))
+			if ((dataEmpresa !== undefined) && (dataEmpresa != null))
 			{
 				$('#selectRegime')
 					.find('select')
@@ -166,7 +148,7 @@ function exibeLoadEmpresa(response, status, xhr)
 }
 
 
-function ResetDefaultEmpresa(onAfterModalCallback){
+function ResetDefaultEmpresa(onModalCallback){
     hideLoadingModal();
 
 	/*Create modal*/
@@ -188,43 +170,53 @@ function ResetDefaultEmpresa(onAfterModalCallback){
         modal: modalEmpresa,       
         template: 'templates/'+resourceEmpresa+'.html #frm'+resourceEmpresa,
 		onLoad: exibeLoadEmpresa,
-		afterModal: onAfterModalCallback
+		onModal: onModalCallback
 	});                
 }
 
-function CarregaEmpresaBairro(){
+function CarregaEmpresaSelect(resource, field){
     carregaSelect2({
-		url: $baseApiUrl+'Bairro',
-		container: '#selectEmpresaBairro',
+		url: $baseApiUrl+resource,
+		container: '#selectEmpresa'+resource,
         modal: modalEmpresa,
         success: function(response, textStatus, jqXHR){
-            $('#selectEmpresaBairro')
+            $('#selectEmpresa'+resource)
 				.find('select')
-                .val(safeGet(dataEmpresa, 'bairroId'))
+                .val(safeGet(dataEmpresa, field))
                 .trigger('change');
         },
         change: function(data, value, element){
             if ((data !== null) && (data !== undefined)){
-                dataEmpresa.bairroId = data.id;
-                
-				RestRequest({
-					method: 'GET',
-					url: $baseApiUrl+'Municipio/'+data.municipioId,
-					beforeSend: function(xhr){
-						$('#EmpresaMunicipio').empty().html(`<span><i class="fa fa-spin fa-spinner"></i></span>`);
-						xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-					},
-					success: function(data){
-						$('#EmpresaMunicipio').html(`<span class="badge text-bg-dark">${data.descricao}-${data.uf}</span>`);
-					}
-				});
+                dataEmpresa[field] = data.id;
             }
         },
         unselect: function(e){
-			dataEmpresa.bairroId = null;
-            $('#EmpresaMunicipio').empty();
+			dataEmpresa[field] = null;
 		}	
 	});    
+}
+
+function CarregaEmpresaCertificado(){
+    carregaSelect2({
+		url: $baseApiUrl+'CertificadoDigital',
+		container: '#selectEmpresaCertificadoDigital',
+        modal: modalEmpresa,
+        success: function(response, textStatus, jqXHR){
+            $('#selectEmpresaCertificadoDigital')
+				.find('select')
+                .val(safeGet(dataEmpresa, 'certificadoDigitalId'))
+                .trigger('change');
+        },
+        change: function(data, value, element){
+			if ((data !== null) && (data !== undefined)){
+				dataEmpresa.certificadoDigitalId = data.id;
+				$('#DtValidadeCert').html(`<span class="badge ${data.badgeValidade}">Valido até ${data.dtValidade}</span>`);
+			}
+        },
+        unselect: function(e){
+			$('#DtValidadeCert').empty();
+		}	
+	});  	
 }
 
 function NovoEmpresaClick(e)
@@ -325,7 +317,8 @@ function ConsultaCepEmpresa(){
         success: function(data){
             hideLoadingModal();
             dataEmpresa.bairroId = data.bairroId;
-            CarregaEmpresaBairro();            
+			CarregaEmpresaSelect('Bairro','bairroId');
+			CarregaEmpresaSelect('Municipio','municipioId');
 			preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
             $('#numero').focus();
         }
@@ -342,8 +335,9 @@ function ConsultaCnpjEmpresa(){
             
             dataEmpresa.bairroId = data.bairroId;
 
-            CarregaEmpresaBairro();
-
+			CarregaEmpresaSelect('Bairro','bairroId');
+			CarregaEmpresaSelect('Municipio','municipioId');
+			
 			preencherFormularioCompleto(data, '#frm'+resourceEmpresa);
 
             $('#descricao').focus();
@@ -352,42 +346,59 @@ function ConsultaCnpjEmpresa(){
 }
 
 async function uploadLogoEmpresa(event) {
-		const { value: file } = await Swal.fire({
-		  title: "Selecione uma imagem",
-		  input: "file",
-		  inputAttributes: {
-			"accept": "image/*",
-			"aria-label": "Carregue sua imagem"
-		  },
-		  showCancelButton: true,
-		  confirmButtonText: "Enviar",
-		  cancelButtonText: "Sair",
-		  showLoaderOnConfirm: true,
-		  allowOutsideClick: () => !Swal.isLoading()
-		});
-		
-		UploadSingleImage({
-			file: file,
-			success: function(response, textStatus, jqXHR){
-				dataEmpresa.logo = response;
-				$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);				
-			}
-		});
-	}
+	const { value: file } = await Swal.fire({
+	  title: "Selecione uma imagem",
+	  input: "file",
+	  inputAttributes: {
+		"accept": "image/*",
+		"aria-label": "Carregue sua imagem"
+	  },
+	  showCancelButton: true,
+	  confirmButtonText: "Enviar",
+	  cancelButtonText: "Sair",
+	  showLoaderOnConfirm: true,
+	  allowOutsideClick: () => !Swal.isLoading()
+	});
+	
+	UploadSingleImage({
+		file: file,
+		success: function(response, textStatus, jqXHR){
+			dataEmpresa.logo = response;
+			$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);				
+		}
+	});
+}
 
 function apagarLogoEmpresa() {
     dataEmpresa.logo = null;
     $('#LogoEmpresa').attr('src', '#');
 }
 
-function EmpresaNovoBairroClick(e){
-    event.preventDefault();
-    bairroClick(EmpresaBairroSuccess);
+function EmpresaBasico(title,resource,fieldName){
+	event.preventDefault();
+	
+	BasicoClick({
+		title: title,
+		url: $baseApiUrl+resource,
+		success: function(response, textStatus, jqXHR){
+			dataEmpresa[fieldName] = dataBasico.id;
+			CarregaEmpresaSelect(resource,fieldName);
+		}
+	});
 }
 
-function EmpresaBairroSuccess (response, textStatus, jqXHR){
-    dataEmpresa.bairroId = dataBairro.id;
-    CarregaEmpresaBairro();
+function EmpresaBairroClick(e){
+	event.preventDefault();	
+	EmpresaBasico('Adicionar Bairro','Bairro','bairroId');
 }
 
-
+function EmpresaMunicipioClick(e){
+	event.preventDefault();
+	
+	MunicipioClick({
+		success: function(response, textStatus, jqXHR){
+			dataEmpresa.municipioId = response.id;
+			CarregaEmpresaSelect('Municipio','municipioId');
+		}
+	});
+}

@@ -34,12 +34,19 @@ function carregaSelect2(configDinamico = {}) { // Novos parâmetros
 						id: item.id
 					};
 
-					// Adiciona propriedades customizadas
-					if (config.customProperties) {
-						Object.keys(config.customProperties).forEach(function (key) {
-							dataItem[key] = item[config.customProperties[key]];
-						});
-					}
+                    // CORREÇÃO: Adiciona propriedades customizadas corretamente
+                    if (config.customProperties) {
+                        Object.keys(config.customProperties).forEach(function (propName) {
+                            var apiFieldName = config.customProperties[propName];
+                            // Verifica se o campo existe no item antes de adicionar
+                            if (item.hasOwnProperty(apiFieldName)) {
+                                dataItem[propName] = item[apiFieldName];
+                            } else {
+                                console.warn(`Campo "${apiFieldName}" não encontrado no item:`, item);
+                                dataItem[propName] = null;
+                            }
+                        });
+                    }
 
 					arrData.push(dataItem);
 				});

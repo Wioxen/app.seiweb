@@ -95,25 +95,35 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <label class="form-label d-flex justify-content-between align-items-center"> 
                                             <span class="required">Bairro 
-												<a class="btn btn-secondary btn-sm-x" href="#" onclick="EmpresaNovoBairroClick(this);">
+												<a class="btn btn-info btn-sm-x" href="#" onclick="EmpresaBairroClick(this);">
 													<i class="fa fa-plus"></i>
 												</a>
 											</span>
-                                            <span id="EmpresaMunicipio"></span>                                    
                                         </label>
-                                        <div id="selectEmpresaBairro" data-control="EmpresaBairro">
+                                        <div id="selectEmpresaBairro">
                                             <div class="loading-label w-100">
                                                 <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
                                                 Carregando registros, aguarde ...
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Número</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="numero" />
+                                    <div class="col-md-6">
+                                        <label class="form-label d-flex justify-content-between align-items-center"> 
+                                            <span class="required">Município 
+												<a class="btn btn-info btn-sm-x" href="#" onclick="EmpresaMunicipioClick(this);">
+													<i class="fa fa-plus"></i>
+												</a>
+											</span>
+                                        </label>
+                                        <div id="selectEmpresaMunicipio">
+                                            <div class="loading-label w-100">
+                                                <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+                                                Carregando registros, aguarde ...
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -121,30 +131,42 @@
 
                         <div class="row mb-1">
                             <div class="col-md-6">
-                                <label class="form-label">Complemento</label>
-                                <input type="text" class="form-control form-control-sm text-uppercase" id="complemento" />
+								<div class="row">
+									<div class="col-md-3">
+										<label class="form-label">Número</label>
+										<input type="text" class="form-control form-control-sm text-uppercase" id="numero" />
+									</div>
+									<div class="col-md-9">
+										<label class="form-label">Complemento</label>
+										<input type="text" class="form-control form-control-sm text-uppercase" id="complemento" />
+									</div>									
+								</div>
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label d-flex justify-content-between align-items-center" for="im">Inscrição Municipal</label>
                                         <input type="text" class="form-control form-control-sm text-uppercase" id="im" placeholder="" />
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label d-flex justify-content-between align-items-center" for="ie">Inscrição Estadual</label>
                                         <input type="text" class="form-control form-control-sm text-uppercase" id="ie" placeholder="" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label" for="nis">NIS</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="nis" placeholder="" />
                                     </div>
                                 </div>                                 
                             </div>
                         </div>
                         <div class="row mb-1">
                             <div class="col-md-6">
-                                <label class="form-label" for="url">URL</label>
-                                <input type="url" class="form-control form-control-sm" id="url" placeholder="" />
+								<div class="row">
+                                    <div class="col-md-3">
+                                        <label class="form-label" for="nis">NIS</label>
+                                        <input type="text" class="form-control form-control-sm text-uppercase" id="nis" placeholder="" />
+                                    </div>
+                                    <div class="col-md-9">
+										<label class="form-label" for="url">URL</label>
+										<input type="url" class="form-control form-control-sm" id="url" placeholder="" />
+                                    </div>								
+								</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="email">E-mail</label>
@@ -170,10 +192,10 @@
                         <div class="row mb-1">
                             <div class="col-md-12">
                                 <label class="form-label d-flex justify-content-between align-items-center" for="CertificadoDigital">
-                                    <span>Certificado <a href="#" class="btn btn-secondary btn-sm-x" onclick="CertificadoDigitalClick(this);"><i class="fa fa-plus"></i></a></span>
+                                    <span>Certificado <a href="#" class="btn btn-info btn-sm-x" onclick="CertificadoDigitalClick(this);"><i class="fa fa-plus"></i></a></span>
                                     <span id="DtValidadeCert"></span>                                
                                 </label>
-                                <div id="selectCertificado" data-control="CertificadoDigital">
+                                <div id="selectEmpresaCertificadoDigital">
                                     <div class="loading-label w-100">
                                         <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
                                         Carregando registros, aguarde ...

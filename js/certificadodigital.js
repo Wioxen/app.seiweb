@@ -3,51 +3,51 @@ var dataCertificadDigital = null;
 
 function CertificadoDigitalClick(e){
     event.preventDefault();
+	
     var $this = $(e);
-
+	
     modalCeritificadoDigital = createDynamicModal();
     modalCeritificadoDigital.find('.modal-title').html('<i class="fa-solid fa-certificate"></i> Certificado Digital');
-    modalCeritificadoDigital.find('.modal-header-search').remove();
     modalCeritificadoDigital.find('.modal-dialog').addClass('modal-dialog-centered');
-    modalCeritificadoDigital.find('.me-auto').removeClass();
-    modalCeritificadoDigital.find('.btn-cancelar').remove();
-    modalCeritificadoDigital.find('.btn-excluir').remove();
-    modalCeritificadoDigital.find('.btn-salvar')
+	modalCeritificadoDigital.find('.modal-footer')
+		.html(`<button id="${gerarHash()}" class="btn btn-success"><i class="icon-note"></i> Salvar</button>`)
         .click(function(){
             $('#frmCertificadoDigital').submit();
         });
-
-    modalCeritificadoDigital.find('.modal-body').load('templates/CertificadoDigital.html #frmCertificadoDigital', function(response, status, xhr) {
-        const $togglePassword = $('#togglePassword');
-        const $passwordInput = $('#SenhaCert');
-        const $eyeIcon = $togglePassword.find('i');
-        
-        $togglePassword.on('click', function() {
-            // Alterna entre tipo password e text
-            const type = $passwordInput.attr('type') === 'password' ? 'text' : 'password';
-            $passwordInput.attr('type', type);
-            
-            // Alterna o ícone do olho
-            if (type === 'text') {
-                $eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
-            } else {
-                $eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
-            }
-        });
-
-        $('#SenhaCert').val('');
-        $('#frmCertificadoDigital').on('submit',CertificadoDigitalSubmit);
-
-        modalCeritificadoDigital.modal('show');
-    });
+		
+    modalCeritificadoDigital.find('.modal-body').load('templates/CertificadoDigital.html #frmCertificadoDigital', exibeLoadCertificado);
 }
 
+function exibeLoadCertificado(response, status, xhr) {
+	const $togglePassword = $('#togglePassword');
+	const $passwordInput = $('#SenhaCert');
+	const $eyeIcon = $togglePassword.find('i');
+	
+	$togglePassword.on('click', TogglePasswordClick);
+	
+	$('#SenhaCert').val('');
+	$('#frmCertificadoDigital').on('submit',CertificadoDigitalSubmit);
+	
+	modalCeritificadoDigital.modal('show');
+}
+
+function TogglePasswordClick(){
+	// Alterna entre tipo password e text
+	const type = $passwordInput.attr('type') === 'password' ? 'text' : 'password';
+	$passwordInput.attr('type', type);
+
+	// Alterna o ícone do olho
+	if (type === 'text') {
+		$eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+	} else {
+		$eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+	}
+}
 
 function CertificadoDigitalSubmit(e)
 {
     e.preventDefault();
     
-    showLoadingModal();       
 
     var $this = $('#FileCert');
     var fdata = new FormData();
@@ -59,6 +59,8 @@ function CertificadoDigitalSubmit(e)
     }
 
     fdata.append("file", file);
+
+    showLoadingModal();       
 
     var reader = new FileReader();
     reader.readAsBinaryString(file);
@@ -72,7 +74,7 @@ function CertificadoDigitalSubmit(e)
             contentType: false,
             processData: false,
             headers: {
-                "meu_ip": localStorage.getItem('meu_ip'),
+                "remoteip": localStorage.getItem('remoteip'),
                 "user_agent": localStorage.getItem('user_agent'),
                 "Authorization": localStorage.getItem('token')
             },
@@ -80,18 +82,14 @@ function CertificadoDigitalSubmit(e)
                 hideLoadingModal();
                 
                 dataEmpresa.certificadoDigitalId = response.id;
-
-                carregaSelect2('select2?table=CertificadoDigital',modalEmpresa,'#selectCertificado','id',function(response, textStatus, jqXHR){
-                    $('#CertificadoDigital')
-                        .val(dataEmpresa.certificadoDigitalId)
-                        .trigger('change');  
-                });    
-
+				
+                CarregaEmpresaCertificado();   
+				
                 modalCeritificadoDigital.modal('hide');
 
                 $.notify({
                     icon: 'icon-bell',
-                    title: 'SEIWEB',
+                    title: 'Mensagem',
                     message: 'Certificado enviado com sucesso.',
                 },{
                     type: 'success',

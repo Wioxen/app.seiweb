@@ -304,7 +304,7 @@ function zPergunta_Exclui(configDinamico = {}){
 							
 				$.notify({
 					icon: 'icon-bell',
-					title: 'alerta',
+					title: 'Mensagem',
 					message: "Registro excluído com sucesso.",
 				},{
 					type: 'success',
@@ -638,11 +638,15 @@ function UploadSingleImage(configDinamico = {}) {
 				  imageUrl: e.target.result,
 				  imageAlt: "Image"
 				});				
-            }
+            },
+            error: handleDefaultError
         });
     };
 	
-	reader.readAsDataURL(config.file);
+	if ((config.file !== null) && (config.file !== undefined))
+	{
+		reader.readAsDataURL(config.file);
+	}
 
     reader.onerror = function () {
         console.log('there are some problems');

@@ -888,7 +888,7 @@
 	<script src="js/funcoes.js"></script>
 	<script src="js/select.js"></script>
 	<script src="js/municipio.js"></script>
-	<script src="js/bairro.js"></script>
+	<script src="js/basico.js"></script>
 	<script src="js/certificadodigital.js"></script>
 	<script src="js/empresa.js"></script>
 	<script src="js/saidadoaluno.js"></script>

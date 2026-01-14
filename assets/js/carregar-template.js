@@ -47,7 +47,7 @@ function carregarTemplateModal(configDinamico = {}) {
     config.modal.find('.modal-body').empty().load(config.template, function(response, status, xhr) {
         if (status === "error") {
             console.error("Erro ao carregar template:", xhr.status, xhr.statusText);
-            config.modal.find$('.modal-body').html('<div class="alert alert-danger">Erro ao carregar o formulário</div>');
+            config.modal.find('.modal-body').html('<div class="alert alert-danger">Erro ao carregar o formulário</div>');
             return;
         }
 
@@ -79,7 +79,7 @@ function carregarTemplateModal(configDinamico = {}) {
 				}            
 			}, 500);*/
 			
-			setTimeout(config.afterModal, 500);			
+			setTimeout(config.onModal, 500);			
 		}		
     });
 }
