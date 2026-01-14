@@ -169,6 +169,8 @@ function showErrors(errorResponse) {
 			confirmButton: "btn btn-success"
 			},
 		});
+		
+		errorList.empty();
     } catch (e) {
         console.log('Erro ao processar mensagem de erro:', e);
         $('#errorContainer').removeClass('d-none').html(
