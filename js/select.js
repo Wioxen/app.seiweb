@@ -27,7 +27,7 @@ function carregaSelect2(configDinamico = {}) { // Novos parâmetros
 			
 			var arrData = [];
 
-			if (Array.isArray(response)) {
+			if (Array.isArray(response)) {				
 				response.forEach(function (item) {
 					var dataItem = {
 						text: item.descricao,
