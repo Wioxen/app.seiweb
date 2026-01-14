@@ -255,32 +255,46 @@ function profile_pic()
 										<span class="op-7">Olá,</span> <span class="fw-bold">${data.firstname}</span>
 									</span>`);
 									
-			$('#profile-pic').parent().append(`<ul class="dropdown-menu dropdown-user animated fadeIn">
-									<div class="dropdown-user-scroll scrollbar-outer">
-										<li>
-											<div class="user-box">
-												<div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
-												<div class="u-text">
-													<div class="d-flex justify-content-between">
-														<h4 id="first-name">${data.firstname}</h4>
-														<span class="badge badge-success">Gerente</span>
-													</div>
-													<p class="text-muted">${data.email}</p><a href="#" class="btn btn-xs btn-secondary btn-sm" onclick="MeuPerfilClick(this);">Ver Perfil</a>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="dropdown-divider"></div>
-											<a class="dropdown-item" href="#" onclick="AlterarSenhaClick(this);">Alterar Senha</a>
-											<div class="dropdown-divider"></div>
-											<a class="dropdown-item" href="#" onclick="ConfiguracaoClick(this);">Configuração</a>
-											<div class="dropdown-divider"></div>
-											<a class="dropdown-item" href="#" onclick="LogDeAtividadeClick(this);">Log de atividades</a>
-											<div class="dropdown-divider"></div>
-											<a id="Logout" class="dropdown-item" href="#">Logout</a>
-										</li>
+			// Criar a estrutura base do dropdown
+			let dropdownContent = `
+				<ul class="dropdown-menu dropdown-user animated fadeIn">
+					<div class="dropdown-user-scroll scrollbar-outer">
+						<li>
+							<div class="user-box">
+								<div class="avatar-lg"><img src="#" alt="image profile" class="avatar-img rounded"></div>
+								<div class="u-text">
+									<div class="d-flex justify-content-between">
+										<h4 id="first-name">${data.firstname}</h4>
+										<span class="badge badge-success">${data.roleType}</span>
 									</div>
-								</ul>`);						
+									<p class="text-muted">${data.email}</p>
+									<a href="#" class="btn btn-secondary btn-sm" onclick="MeuPerfilClick(this);"><i class="icon-user"></i> Meu Perfil</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#" onclick="AlterarSenhaClick(this);">Alterar Senha</a>`;
+
+			// Verificar se NÃO é usuário para adicionar Configuração e Log
+			if (data.roleType.toLowerCase() !== "usuario") {
+				dropdownContent += `
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#" onclick="ConfiguracaoClick(this);">Configuração</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#" onclick="LogDeAtividadeClick(this);">Log de atividades</a>`;
+			}
+
+			// Adicionar a parte final (Logout)
+			dropdownContent += `
+							<div class="dropdown-divider"></div>
+							<a id="Logout" class="dropdown-item" href="#">Logout</a>
+						</li>
+					</div>
+				</ul>`;
+
+			// Adicionar ao DOM
+			$('#profile-pic').parent().append(dropdownContent);						
 
 								
 			$('.avatar-img').attr('src',$imageUrl+data.photo);

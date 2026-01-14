@@ -886,6 +886,7 @@
 	<script src="js/init.js"></script>
 	<script src="js/global.js"></script>
 	<script src="js/funcoes.js"></script>
+	<script src="js/select.js"></script>
 	<script src="js/municipio.js"></script>
 	<script src="js/bairro.js"></script>
 	<script src="js/certificadodigital.js"></script>

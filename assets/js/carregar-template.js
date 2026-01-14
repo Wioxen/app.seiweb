@@ -1,8 +1,6 @@
-function carregarTemplateModal(modalId, templateUrl, configDinamico = {}) {    
+function carregarTemplateModal(configDinamico = {}) {    
     // Configurações fixas
     const configFixo = {
-        modalTitle: 'CRUD',
-        modalSize: 'modal-lg',
         masks: {
             '.telefone': '(00) 0000-0000',
             '.celular': '(00) 00000-0000',
@@ -37,22 +35,19 @@ function carregarTemplateModal(modalId, templateUrl, configDinamico = {}) {
             config.callbackOnClose();
         });
     }*/
-
+	
     // Configura título e tamanho do modal
-    $(modalId+' .modal-title').text(config.modalTitle);
-    $(modalId+' .modal-dialog').removeClass('modal-sm modal-md modal-lg modal-xl').addClass(config.modalSize);
-
-    toggleModalBody(modalId, true);
+    toggleModalBody(config.modal, true);
 
     // Limpa campo de autocomplete antes de carregar
     if (config.autocompleteCampo) {
         $(config.autocompleteCampo).val('');
     }
 
-    $(modalId+' .modal-body').empty().load(templateUrl, function(response, status, xhr) {
+    config.modal.find('.modal-body').empty().load(config.template, function(response, status, xhr) {
         if (status === "error") {
             console.error("Erro ao carregar template:", xhr.status, xhr.statusText);
-            $(modalId+' .modal-body').html('<div class="alert alert-danger">Erro ao carregar o formulário</div>');
+            config.modal.find$('.modal-body').html('<div class="alert alert-danger">Erro ao carregar o formulário</div>');
             return;
         }
 
@@ -70,18 +65,22 @@ function carregarTemplateModal(modalId, templateUrl, configDinamico = {}) {
 
         if (typeof config.onLoad === 'function') {
             config.onLoad(response, status, xhr);
-        } else {        
-            if (!$(modalId).hasClass('show') && !$(modalId).is(':visible')) {
-                $(modalId).modal('show');
-                
-                setTimeout(() => {
-                    // Limpa campo de autocomplete após carregar
-                    if (config.autocompleteCampo) {
-                        $(config.autocompleteCampo).val('').focus();
-                    }            
-                }, 500);
-            }
-        }
+        } 
+		
+		if (!config.modal.hasClass('show') && !config.modal.is(':visible')) {			
+			toggleModalBody(config.modal, false);
+			
+			config.modal.modal('show');
+			
+			/*setTimeout(() => {
+				// Limpa campo de autocomplete após carregar
+				if (config.autocompleteCampo) {
+					$(config.autocompleteCampo).val('').focus();
+				}            
+			}, 500);*/
+			
+			setTimeout(config.afterModal, 500);			
+		}		
     });
 }
 
@@ -183,4 +182,35 @@ function configurarAutocomplete(campo, url, options) {
 
     const finalOptions = { ...defaultOptions, ...options };
     $(campo).autocomplete(finalOptions);
+}
+
+function toggleModalBody(modal, desabilitar) {
+	var $modalBody = modal.find('.modal-body');
+	
+    if (desabilitar) {
+        // Desabilitar o modal
+        $modalBody
+            .css('opacity', '0.6')
+            .css('pointer-events', 'none')
+            .find('input, button, textarea, select, a')
+            .prop('disabled', true);
+        
+        // Adicionar overlay visual se não existir
+        if (!$modalBody.find('.overlay-disabled').length) {
+            $modalBody.prepend(
+                '<div class="overlay-disabled" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:1050; display:flex; align-items:center; justify-content:center;">' +
+                '<span class="spinner-border text-primary"></span>' +
+                '</div>'
+            );
+        }        
+    } else {
+        // Habilitar o modal
+        $modalBody
+            .css('opacity', '1')
+            .css('pointer-events', 'auto')
+            .find('input, button, textarea, select, a')
+            .prop('disabled', false);
+        
+            $modalBody.find('.overlay-disabled').remove();
+    }
 }

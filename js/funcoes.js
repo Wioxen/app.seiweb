@@ -1,33 +1,3 @@
-// Função para ajustar z-index dos modais
-/*function adjustModalZIndex() {
-    const modals = document.querySelectorAll('.modal.show');
-    const backdrops = document.querySelectorAll('.modal-backdrop');
-    
-    // Resetar todos os z-index primeiro
-    modals.forEach(modal => {
-        if (modal.id !== 'loadingModal') {
-            modal.style.zIndex = '';
-        }
-    });
-    
-    backdrops.forEach(backdrop => {
-        backdrop.style.zIndex = '';
-    });
-
-    // Agora aplicar z-index na ordem correta
-    backdrops.forEach((backdrop, index) => {
-        backdrop.style.zIndex = 1040 + (index * 10);
-    });
-    
-    modals.forEach((modal, index) => {
-        if (modal.id !== 'loadingModal') {
-            modal.style.zIndex = 1050 + (index * 10);
-        }
-    });
-    
-    // Ajustar o loadingModal para ficar acima de tudo
-    adjustLoadingModalZIndex();
-}*/
 var zIndex = 0;
 
 $(document).on({
@@ -62,55 +32,6 @@ $(document).on({
     }
 }, '.modal');
 
-// Função específica para o loadingModal
-function adjustLoadingModalZIndex() {
-    const loadingModal = document.getElementById('loadingModal');
-    if (!loadingModal || !loadingModal.classList.contains('show')) return;
-    
-    // Encontrar o maior z-index entre os modais
-    let maxZIndex = 1050;
-    document.querySelectorAll('.modal.show').forEach(modal => {
-        if (modal.id !== 'loadingModal') {
-            const zIndex = parseInt(modal.style.zIndex) || 1050;
-            if (zIndex > maxZIndex) maxZIndex = zIndex;
-        }
-    });
-    
-    // Encontrar o maior z-index entre os backdrops
-    let maxBackdropZIndex = 1040;
-    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-        const zIndex = parseInt(backdrop.style.zIndex) || 1040;
-        if (zIndex > maxBackdropZIndex) maxBackdropZIndex = zIndex;
-    });
-    
-    // Aplicar z-index acima do maior encontrado
-    loadingModal.style.zIndex = maxZIndex + 100;
-    
-    // Ajustar o backdrop do loadingModal
-    const loadingBackdrop = document.querySelector('.modal-backdrop[data-bs-target="#loadingModal"]');
-    if (loadingBackdrop) {
-        loadingBackdrop.style.zIndex = maxBackdropZIndex + 100;
-    }
-}
-
-// Sobrescrever a função padrão do Bootstrap para abrir modais
-/*const originalModal = $.fn.modal;
-$.fn.modal = function(options) {
-    // Chamar a função original
-    const result = originalModal.apply(this, arguments);
-    
-    // Ajustar z-index após um pequeno delay
-    setTimeout(adjustModalZIndex, 100);
-    
-    return result;
-};
-
-// Ouvir eventos de modais
-document.addEventListener('show.bs.modal', adjustModalZIndex);
-document.addEventListener('shown.bs.modal', adjustModalZIndex);
-document.addEventListener('hidden.bs.modal', adjustModalZIndex);
-
-document.addEventListener('DOMContentLoaded', adjustModalZIndex);*/
 
 // Funções para controlar o loadingModal (mantidas como estão)
 function showLoadingModal() {
@@ -274,51 +195,59 @@ function handleDefaultError(jqXHR, textStatus, errorThrown) {
     }					
 }
 
-function RestRequest(_type, resource, payload, beforeSendCallback, successCallback, errorCallback) 
+function RestRequest(configDinamico = {})
 {
-    var ajaxConfig = 
-    {
-        url: resource,
+	const configFixo = {
+		method: 'GET'
+	};
+    
+	const config = { ...configFixo, ...configDinamico };
+	
+	var ajaxConfig =
+	{
+		url: config.url,
         beforeSend: function(xhr){
-            if (typeof beforeSendCallback === 'function') {
-                beforeSendCallback(xhr);
+            if (typeof config.beforeSend === 'function')
+			{
+                config.beforeSend(xhr);
             } else {
                 xhr.setRequestHeader('remoteip', localStorage.getItem('remoteip'));
                 xhr.setRequestHeader('user_agent', localStorage.getItem('user_agent'));
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-//                xhr.setRequestHeader('turnstile_token', $('[name="cf-turnstile-response"]').val());
-                if (!$('#loadingModal').hasClass('show') && !$('#loadingModal').is(':visible')) {
-                    showLoadingModal();       
-                }
+				showLoadingModal();       
             }            
         },
+		type: config.method,
         datatype: 'json',
-        contentType: 'application/json',
-        type: _type
-    };
-
-    // Adiciona data apenas se payload não for null
-    if (payload !== null) {
-        ajaxConfig.data = JSON.stringify(payload);
+        contentType: 'application/json'
+	};	
+	
+    if ((config.data !== null) && (config.data !== undefined)) {
+        ajaxConfig.data = JSON.stringify(config.data);
         console.log(ajaxConfig.data);
-    }
-    
-    $.ajax(ajaxConfig)    
-    .done(function(response, textStatus, jqXHR) {
-        if (typeof successCallback === 'function') {
-            successCallback(response, textStatus, jqXHR);
+    }	
+	
+	$.ajax(ajaxConfig)
+	.done(function(response, textStatus, jqXHR) {
+        if (typeof config.success === 'function') {
+            config.success(response, textStatus, jqXHR);
         } else {
             console.log('Operação concluída com sucesso');
         }
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        if (typeof errorCallback === 'function') {
-            errorCallback(jqXHR, textStatus, errorThrown);
+	})
+	.fail(function(jqXHR, textStatus, errorThrown) {
+        if (typeof config.error === 'function') {
+            config.error(jqXHR, textStatus, errorThrown);
         } else {
             hideLoadingModal();
             handleDefaultError(jqXHR, textStatus, errorThrown);
         }
-    });
+	})
+	.always(function() {
+        if (typeof config.always === 'function') {
+            config.always();
+		}
+	});	 
 }
 
 function exibeerror(xhr, status, error) {
@@ -327,39 +256,6 @@ function exibeerror(xhr, status, error) {
     console.log(status);
     console.log(error);
     handleDefaultError(xhr, status, error);
-}
-
-function toggleModalBody(modalId, desabilitar) {
-    var $modalBody = $(modalId).find('.modal-body');
-    
-    if (desabilitar) {
-        // Desabilitar o modal
-        $modalBody
-            .css('opacity', '0.6')
-            .css('pointer-events', 'none')
-            .find('input, button, textarea, select, a')
-            .prop('disabled', true);
-        
-        // Adicionar overlay visual se não existir
-        if (!$modalBody.find('.overlay-disabled').length) {
-            $modalBody.prepend(
-                '<div class="overlay-disabled" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:1050; display:flex; align-items:center; justify-content:center;">' +
-                '<span class="spinner-border text-primary"></span>' +
-                '</div>'
-            );
-        }
-        
-        console.log('Body do modal ' + modalId + ' desabilitado');
-    } else {
-        // Habilitar o modal
-        $modalBody
-            .css('opacity', '1')
-            .css('pointer-events', 'auto')
-            .find('input, button, textarea, select, a')
-            .prop('disabled', false);
-        
-            $modalBody.find('.overlay-disabled').remove();
-    }
 }
 
 function zPergunta(texto, yesCallback) {
@@ -385,21 +281,43 @@ function zPergunta(texto, yesCallback) {
 	});	
 }
 
-function zPergunta_Exclui(resource,successCallback){
+function zPergunta_Exclui(configDinamico = {}){
+	const configFixo = {
+	};
+    
+	const config = { ...configFixo, ...configDinamico };
+	
 	zPergunta("Confirma a exclusão deste registro ?", function(){
-		RestRequest('DELETE',
-			resource,
-			null,
-			null,
-			function (response, textStatus, jqXHR) {
-				zAlerta('Registro excluído com sucesso');						
-				
+		RestRequest({
+			method: 'DELETE',
+			url: config.url,
+			success: function (response, textStatus, jqXHR) {
 				hideLoadingModal();
+				
+				/*Swal.fire({
+				  title: "Excluído!",
+				  text: "Registro excluído com sucesso.",
+				  icon: "success"
+				});*/
+							
+				$.notify({
+					icon: 'icon-bell',
+					title: 'alerta',
+					message: "Registro excluído com sucesso.",
+				},{
+					type: 'success',
+					placement: {
+						from: "bottom",
+						align: "center"
+					},
+					time: 300,
+				});  				
 
-				if (typeof successCallback === 'function') {
-					successCallback(response, textStatus, jqXHR);
+				if (typeof config.success === 'function') {
+					config.success(response, textStatus, jqXHR);
 				}				
-			});  	
+			}
+		});  	
 	});
 }
 
@@ -530,43 +448,22 @@ function preencherFormularioCompleto(payload, formSelector = 'form') {
     preencherRecursivo(payload);
 }
 
-function buscaCep(_modulo, _cep, callbackSuccess, callbackError) {
-    RestRequest('POST',
-        $baseApiUrl+'apiservice/cep',
-        {modulo: _modulo, cep: _cep},
-        null,
-        callbackSuccess,
-        callbackError);
-}
-
-function buscaCnpj(_modulo,_cnpj, callbackSuccess, callbackError) {
-    RestRequest('POST',
-        $baseApiUrl+'apiservice/receitaWs',
-        {modulo: _modulo, cnpj: _cnpj},
-        null,
-        callbackSuccess,
-        callbackError);
-}
-
-// Função para criar e abrir o modal dinâmico
-function createDynamicModal_01(title, size, modal_body, modal_footer = "", callbackOnClose = null) {
+function createDynamicModal(callbackOnClose = null) {
     // Gerar um ID único para o modal
-    const modalId = 'dynamicModal-01-' + new Date().getTime();
+    const modalId = gerarHash(32);
     
     // Criar a estrutura do modal
     const modalHTML = `
         <div class="modal fade" id="${modalId}"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-            <div class="modal-dialog modal-dialog-scrollable ${size}">
+            <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header bg-primary" style="color: white;">
-                        <h5 class="modal-title">${title}</h5>
+                        <h5 class="modal-title"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        ${modal_body}
                     </div>
-                    <div class="modal-footer x-modal-footer">
-                        ${modal_footer}					
+                    <div class="modal-footer">
                     </div>
                 </div>
             </div>
@@ -587,200 +484,6 @@ function createDynamicModal_01(title, size, modal_body, modal_footer = "", callb
     });
 
     return $modal;
-}
-
-// Função para criar e abrir o modal dinâmico
-function createDynamicModal(callbackOnClose) {
-    // Gerar um ID único para o modal
-    const modalId = 'dynamicModal-02-' + new Date().getTime();
-    
-    // Criar a estrutura do modal
-    const modalHTML = `
-        <div class="modal fade" id="${modalId}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-header modal-header-search border-0 pb-0">
-                        <div class="input-group input-group-sm">
-                            <input id="${gerarHash(16)}" type="text" class="form-control form-control-sm text-uppercase search" placeholder="Digite 3 ou mais caracteres">
-                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Carregando...</span>
-                            </div>
-                            <p>Carregando conteúdo...</p>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="me-auto">
-                            <button id="${gerarHash(16)}" class="btn btn-warning btn-cancelar"><i class="icon-close"></i> Cancelar</button>
-                            <button id="${gerarHash(16)}" class="btn btn-danger btn-excluir"><i class="icon-trash"></i> Excluir</button>
-                            <button id="${gerarHash(16)}" class="btn btn-success btn-salvar"><i class="icon-note"></i> Salvar</button>
-                        </div>							
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    $('body').append(modalHTML);
-    
-    const $modal = $('#' + modalId);
-
-    $modal.on('hidden.bs.modal', function () {
-        $(this).remove();
-        console.log('Modal destruído');
-        if (typeof callbackOnClose === 'function') {
-            callbackOnClose();
-        }
-    });
-
-    return $modal;
-}
-
-function carregaSelect(resource, selectContainerId, fieldkey, concatenar = true, successCallback){
-    RestRequest('GET',
-        $baseApiUrl+resource,
-        null,
-        function(xhr){
-            $(selectContainerId).html(`<div class="loading-label w-100">
-                        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
-                        Carregando ...
-                    </div>`);
-            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-        },
-        function(response, textStatus, jqXHR){
-            $(selectContainerId).html(`<select id="${$(selectContainerId).attr('data-control')}" class="form-select form-select-sm text-uppercase"></select>`); 
-            
-            $('#'+$(selectContainerId).attr('data-control')).append(`<option value="0"></option>`);
-            
-            $.each(response,function(index,value){
-                $('#'+$(selectContainerId).attr('data-control')).append(`<option value="${value[fieldkey]}">${((concatenar === true) ? value[fieldkey] + ' - ' : '') + value.descricao}</option>`);
-            });
-
-            if (typeof successCallback === 'function') {
-                successCallback(response, textStatus, jqXHR);
-            } 
-         },
-        function(jqXHR, textStatus, errorThrown){
-            $(selectContainerId).html(`${jqXHR.responseText}`);
-        });    
-}
-
-function carregaSelect2(resource, _modal, selectContainerId, successCallback, 
-    customProperties = null, select2Callback = null, changeCallback = null,
-    openCallback = null, closeCallback = null, unselectCallback = null) { // Novos parâmetros
-    
-    RestRequest('GET',
-        $baseApiUrl + resource,
-        null,
-        function(xhr){
-            $(selectContainerId).html(`<div class="loading-label w-100">
-                        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
-                        Carregando ...
-                    </div>`);
-            xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-        },
-        function(response, textStatus, jqXHR){
-            $(selectContainerId)
-            .html(`<select id="${$(selectContainerId).attr('data-control')}" class="form-select form-select-sm"></select>`); 
-            
-            var thisSelect = $('#' + $(selectContainerId).attr('data-control'));
-
-            // Armazena a resposta para usar no change
-            var selectData = response;
-
-            thisSelect.select2({
-                theme: "bootstrap-5",
-                dropdownParent: _modal,
-                language: "pt-BR",
-                placeholder: '',
-                allowClear: true,
-                data: $.map(response, function (item) {
-                    var dataItem = {
-                        text: item.descricao,
-                        id: item.id
-                    };
-                    
-                    // Adiciona propriedades customizadas se fornecidas
-                    if (customProperties) {
-                        Object.keys(customProperties).forEach(function(key) {
-                            dataItem[key] = item[customProperties[key]];
-                        });
-                    }
-                    
-                    return dataItem;
-                })
-            });          
-            
-            // Implementação dos eventos com callbacks
-            thisSelect.on("select2:open", function (e) { 
-                //console.log("select2:open", e);
-                if (typeof openCallback === 'function') {
-                    openCallback(e, thisSelect);
-                }
-            });
-            
-            thisSelect.on("select2:close", function (e) { 
-                //console.log("select2:close", e);
-                if (typeof closeCallback === 'function') {
-                    closeCallback(e, thisSelect);
-                }
-            });
-            
-            thisSelect.on("select2:unselect", function (e) { 
-                //console.log("select2:unselect", e);
-                if (typeof unselectCallback === 'function') {
-                    unselectCallback(e, thisSelect);
-                }
-            });
-
-            thisSelect.on("select2:select", function (e) { 
-                //console.log("select2:select", e);
-                var selectedData = e.params.data;
-                if (typeof select2Callback === 'function') {
-                    select2Callback(selectedData, thisSelect);
-                }            
-            });
-
-            thisSelect.on("change", function (e) { 
-                var selectedValue = $(this).val();
-                var selectedData = null;
-                
-                // Encontra os dados completos do item selecionado
-                if (selectedValue) {
-                    selectedData = selectData.find(function(item) {
-                        return item.id == selectedValue;
-                    });
-                    
-                    // Se não encontrou pelos dados originais, tenta pelos dados do Select2
-                    if (!selectedData) {
-                        var select2Data = $(this).select2('data');
-                        if (select2Data && select2Data.length > 0) {
-                            selectedData = select2Data[0];
-                        }
-                    }
-                }
-                
-                if (typeof changeCallback === 'function') {
-                    changeCallback(selectedData, selectedValue, thisSelect);
-                }                    
-            });          
-
-            if (typeof successCallback === 'function') {
-                successCallback(response, textStatus, jqXHR);
-            }            
-        },
-        function(jqXHR, textStatus, errorThrown){
-            $(selectContainerId)
-            .html(`${jqXHR.responseText}`);
-        });    
 }
 
 function TabToEnter(e) {
@@ -880,31 +583,36 @@ function EnviarImagem($this, successCallback, errorCallback) {
     };
 }
 
-function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_modal, showModalCallback, columns, 
-    _drawCallback = null, _select = false, _formatFunction = null)
+function CarregaDataTable(configDinamico = {})
 {
+    const configFixo = {
+        select: false,
+		formatFunction: null
+    };	
+	
+    const config = { ...configFixo, ...configDinamico };
+	
     const defaultColumns = [];    
-    const finalColumns = columns || defaultColumns;
+    const finalColumns = config.columns || defaultColumns;
 
     function defaultFormat(d) {
         return (
             ''
         );
     }
+	
+    const format = config.formatFunction || defaultFormat;    
 
-    const format = _formatFunction || defaultFormat;    
-
-    if (_select === true){
-        columns.unshift({data: null, orderable: false, searchable: false, "width": "5%", render: DataTable.render.select()});
+    if (config.select === true){
+        config.columns.unshift({data: null, orderable: false, searchable: false, "width": "5%", render: DataTable.render.select()});
     }
 
-    if (_formatFunction !== null){
-        columns.unshift({class: 'details-control', orderable: false, searchable: false, data: null, defaultContent: '', "width": "5%" });
+    if (config.formatFunction !== null){
+        config.columns.unshift({class: 'details-control', orderable: false, searchable: false, data: null, defaultContent: '', "width": "5%" });
     }
-
-    var $modal = createDynamicModal_01(title_modal,size_modal,body_modal,footer_modal);
-    var tableId = $modal.find('table').attr('id');
-
+    
+	var tableId = config.modal.find('table').attr('id');
+	
     var modalOpened = false;
 	
     var $tableElement = $(`#${tableId}`);
@@ -915,42 +623,31 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
 		$tableElement.empty();
 	}
 	
-    var $tabela = $(`#${tableId}`)
+    var $tabela = $tableElement
     .DataTable({
         "order": [[0, '']], // Sets an initial sort order (optional)      
         "stateSave": false,
         "autoWidth": false, // Desativa o cálculo automático de largura                
         "headerCallback": function(thead, data, start, end, display) {
-            //$(thead).hide();
-            //$('.dt-scroll-head').remove();
-            //$('.dt-scroll-foot').remove();
-            /*$('.dt-layout-row').first().addClass('dt-layout-row modal-header');
-            $('.dt-layout-row').last().addClass('dataTables_paginate');
-            $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo(modalId+' .modal-footer');*/
         },
         scrollX: false,
         ajax: 
         {
-            "url" :$baseApiUrl+resource,
+            "url" :$baseApiUrl+config.resource,
             "type": "GET", // Or POST, PUT, etc.
             "beforeSend": function (xhr) {
-                /*if (!modalOpened) {
-					showLoadingModal();
-				}*/
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             },
             "dataSrc": function (json) {
 				hideLoadingModal();
 
-                // Esta função é chamada quando os dados são carregados
                 if (!modalOpened) {
                     modalOpened = true;
                     
                     // Aguarda um momento para garantir que o DOM esteja pronto
                     setTimeout(() => {
-                        if (!$modal.hasClass('show') && !$modal.is(':visible')) {
-                            $modal.on('shown.bs.modal', function () {
+                        if (!config.modal.hasClass('show') && !config.modal.is(':visible')) {
+                            config.modal.on('shown.bs.modal', function () {
                                 $('#dt-search-0').focus();
                                 
                                 if (typeof showModalCallback === 'function') {
@@ -958,7 +655,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
                                 }
                             });
                             
-                            $modal.modal('show');
+                            config.modal.modal('show');
                         }
                     }, 50);
                 }
@@ -968,7 +665,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
             },	
             "error": handleDefaultError    
         },          
-        select: (_select === true) ? {style: 'os', selector: (_formatFunction === null) ? 'td:nth-child(1)':'td:nth-child(2)'} : false,
+        select: (config.select === true) ? {style: 'os', selector: (_formatFunction === null) ? 'td:nth-child(1)':'td:nth-child(2)'} : false,
         processing: true,
         serverSide: true,        
         rowId: 'id', // ← Aqui você define qual campo do JSON será o ID
@@ -999,7 +696,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
             $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
             $('.dt-layout-row').last().addClass('dataTables_paginate');
             $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo('#'+$modal.attr('id')+' .modal-footer');
+            $('.dataTables_paginate').appendTo('#'+config.modal.attr('id')+' .modal-footer');
 
             if (typeof _drawCallback === 'function') {
                 _drawCallback(settings);
@@ -1009,11 +706,11 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
             $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
             $('.dt-layout-row').last().addClass('dataTables_paginate');
             $('.dt-paging-button').addClass('btn btn-sm btn-primary')
-            $('.dataTables_paginate').appendTo('#'+$modal.attr('id')+' .modal-footer');
+            $('.dataTables_paginate').appendTo('#'+config.modal.attr('id')+' .modal-footer');
         }        
     });    
 
-    $(`#${tableId} tbody`).on('click', 'td.details-control', function () {
+    $tableElement.find('tbody').on('click', 'td.details-control', function () {
         var tr = $(this).parents('tr');
         var row = $tabela.row(tr);
  
@@ -1030,24 +727,7 @@ function CarregaDataTable(resource, title_modal, size_modal, body_modal, footer_
         }
     } );    
 
-    /*if (!$modal.hasClass('show') && !$modal.is(':visible')) {        
-        $modal.on('shown.bs.modal', function () {
-            $tabela.draw();
-
-            $('#dt-search-0').focus();
-
-            if (typeof showModalCallback === 'function') {
-                showModalCallback();
-            }
-        });
-    
-        $modal.modal('show');
-    }*/
-
-    return {
-        tabela: $tabela,
-        modal: $modal
-    };
+    return $tabela;
 }
 
 function CarregarFotoLista(_class){
@@ -1238,44 +918,63 @@ function safeGetDeep(objeto, caminho, defaultValue = 0) {
     }
 }
 
-function validarValor(valor, ehInteiro = false, soNumeros = false) {
-    // Se for undefined ou null
-    if (valor === undefined || valor === null) {
-        // Se for para tratar como inteiro, retorna 0
-        if (ehInteiro) {
-            return 0;
+function validarInput($input) {
+    let valor = $input.val();
+    
+    // Verifica se o valor está vazio
+    if (valor === null || valor === undefined || String(valor).trim() === '') {
+        return null;
+    }
+    
+    // Converte para string e remove espaços
+    valor = String(valor).trim();
+    
+    const type = $input.attr('type');
+    const hasCurrency = $input.hasClass('currency');
+    const hasFloat = $input.hasClass('float');
+    const hasDouble = $input.hasClass('double');
+    
+    // Se for campo numérico ou tiver classes numéricas
+    if (type === 'number' || hasCurrency || hasFloat || hasDouble) {
+        let valorNumerico = valor;
+        
+        // Tratamento especial para currency
+        if (hasCurrency) {
+            // Remove símbolos de moeda e converte vírgula para ponto
+            valorNumerico = valorNumerico.replace(/[^\d,.-]/g, '').replace(',', '.');
         }
-        // Caso contrário, retorna null
-        return null;
-    }
-    
-    // Se for string vazia ou só espaços em branco, retorna null
-    if (typeof valor === 'string' && valor.trim() === '') {
-        return null;
-    }    
-
-    // Se for para tratar como inteiro
-    if (ehInteiro) {
-        // Converte para inteiro usando parseInt
-        const numero = parseInt(valor);
-        // Se for NaN, retorna null, senão retorna o número
-        return isNaN(numero) ? null : numero;
-    }    
-
-    // Se for número (incluindo 0), retorna o número
-    if (typeof valor === 'number') {
-        return valor;
-    }
-    
-    // Se for string não vazia, retorna a string
-    if (typeof valor === 'string') {
-        if (soNumeros){
-            return valor.replace(/\D/g, '');
+        
+        const num = parseFloat(valorNumerico);
+        
+        if (isNaN(num)) {
+            return null;
+        }
+        
+        // Aplica casas decimais conforme a classe
+        if (hasCurrency) {
+            return parseFloat(num.toFixed(2));
+        } else if (hasFloat) {
+            return parseFloat(num.toFixed(7));
+        } else if (hasDouble) {
+            return parseFloat(num.toFixed(15));
         } else {
-            return $.trim(valor);
+            return num; // type="number" sem classe especial
         }
     }
     
-    // Para qualquer outro tipo, retorna null
-    return null;
+    // Para campos textuais, aplica text-transform
+    const textTransform = $input.css('text-transform');
+    
+    switch (textTransform) {
+        case 'uppercase':
+            return valor.toUpperCase();
+        case 'lowercase':
+            return valor.toLowerCase();
+        case 'capitalize':
+            return valor.replace(/\b\w/g, function(char) {
+                return char.toUpperCase();
+            });
+        default:
+            return valor;
+    }
 }

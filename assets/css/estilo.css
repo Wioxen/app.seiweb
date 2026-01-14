@@ -612,6 +612,10 @@ tr[data-dt-row] td {
 }
 
 .btn-sm-x {
-  font-size: 11px;
+  font-size: 10px;
   padding: 0px 4px;
+}
+
+#errorList {
+	font-size:1rem;
 }

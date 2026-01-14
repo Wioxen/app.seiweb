@@ -8,12 +8,10 @@ function DireitosClick(e){
     var thisDireitos = $(e);
     
     RestRequest('GET',
-        `${$baseApiUrl}${resourceDireitos}`,
+        `${$baseApiUrl}${resourceDireitos}/acesso`,
         null,
         null,
         function (data) {
-            hideLoadingModal();
-
             const defaultColumns = [{ 
                     data: 'descricao',              
                     orderable: false,
@@ -38,7 +36,7 @@ function DireitosClick(e){
             cadastroDireitos = 
                 CarregaDataTable
                 (
-                    'datatable?table='+resourceDireitos,
+                    resourceDireitos+'/datatable',
                     'Direitos do usuário',
                     'modal-lg',
                     `<table id="${resourceDireitos}Tb" class="row-border stripe hover" style="width:100%"></table>`,

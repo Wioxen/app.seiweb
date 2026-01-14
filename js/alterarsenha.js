@@ -7,19 +7,14 @@ function AlterarSenhaClick(e){
 
     modalAlterarSenha = createDynamicModal();
     modalAlterarSenha.find('.modal-title').html('<i class="fa fa-key"></i> Alterar Senha');
-    modalAlterarSenha.find('.modal-header-search').remove();
-    modalAlterarSenha.find('.me-auto').removeClass();
-    modalAlterarSenha.find('.btn-cancelar').remove();
-    modalAlterarSenha.find('.btn-excluir').remove();
-    modalAlterarSenha.find('.btn-salvar')
+	modalAlterarSenha.find('.modal-footer')
+		.html(`<button id="${gerarHash()}" class="btn btn-success"><i class="icon-note"></i> Salvar</button>`)
         .attr('disabled',true)
         .click(function(){
             $('#frmAlterarSenha').submit();
         });
-
+		
     modalAlterarSenha.find('.modal-body').load('templates/AlterarSenha.html #frmAlterarSenha', function(response, status, xhr) {
-
-
         // Validação da senha
         $('#password').on('input', function() {
             const password = $(this).val();

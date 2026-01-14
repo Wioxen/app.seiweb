@@ -8,23 +8,20 @@ function MeuPerfilClick(e){
 
     dataMeuPerfil = {};
 
-    RestRequest('GET',
-        $baseApiUrl+"perfil",
-        null,
-        function(xhr){
+    RestRequest({
+		method: 'GET',
+        url: $baseApiUrl+"perfil",
+        beforeSend: function(xhr){
             showLoadingModal();       
             xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
         },
-        function(response, status, xhr){
+        success: function(response, status, xhr){
             hideLoadingModal();
 
             modalMeuPerfil = createDynamicModal();
             modalMeuPerfil.find('.modal-title').html(`<i class="fa fa-user-circle"></i> ${$this.text()}`);
-            modalMeuPerfil.find('.modal-header-search').remove();
-            modalMeuPerfil.find('.me-auto').removeClass();
-            modalMeuPerfil.find('.btn-cancelar').remove();
-            modalMeuPerfil.find('.btn-excluir').remove();
-            modalMeuPerfil.find('.btn-salvar')
+			modalMeuPerfil.find('.modal-footer')
+				.html(`<button id="${gerarHash()}" class="btn btn-success"><i class="icon-note"></i> Salvar</button>`)
                 .click(function(){
                     $('#frmMeuPerfil').submit();
                 });
@@ -53,7 +50,8 @@ function MeuPerfilClick(e){
                     $('#MeuPerfilFirstName').focus();
                 }, 500);
             });            
-        });   
+        }
+	});   
 }
 
 function submitPerfil(e) {
@@ -83,8 +81,8 @@ function submitPerfil(e) {
 
             modalMeuPerfil.modal('hide');
 
-            swal({
-                title: `Olá, ${dataMeuPerfil.firstname}`,
+            Swal.fire({
+                title: `${dataMeuPerfil.firstname}`,
                 text: "Seu perfil foi atualizado com sucesso!",
                 icon: "success"
             });                    
