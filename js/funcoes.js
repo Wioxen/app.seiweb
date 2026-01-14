@@ -602,6 +602,53 @@ function EnviarImagem($this, successCallback, errorCallback) {
     };
 }
 
+function UploadSingleImage(configDinamico = {}) {
+	const configFixo = {
+	};
+    
+	const config = { ...configFixo, ...configDinamico };
+
+    var fdata = new FormData();
+    fdata.append("file", config.file);
+
+    var reader = new FileReader();
+	
+    reader.onload = (e) => {
+        showLoadingModal();       
+
+        $.ajax({
+            type: 'POST',
+            url: 'https://api.seiweb.com.br/uploads/images',
+            data: fdata,
+            cache: false,
+            contentType: false,
+            processData: false,
+            headers: {
+                "Authorization": localStorage.getItem('token')
+            },
+            success: function(response, textStatus, jqXHR) {
+                hideLoadingModal();
+    
+				if (typeof config.success === 'function') {
+					config.success(response, textStatus, jqXHR);
+				}       
+
+				Swal.fire({
+				  title: "Imagem enviada",
+				  imageUrl: e.target.result,
+				  imageAlt: "Image"
+				});				
+            }
+        });
+    };
+	
+	reader.readAsDataURL(config.file);
+
+    reader.onerror = function () {
+        console.log('there are some problems');
+    };
+}
+
 function CarregaDataTable(configDinamico = {})
 {
     const configFixo = {

@@ -72,63 +72,9 @@ function exibeLoadEmpresa(response, status, xhr)
 	$('#btnCep').off('click').on('click', ConsultaCepEmpresa);
 	$('#btnCnpj').off('click').on('click', ConsultaCnpjEmpresa);
 
-	$('#uploadLogoEmpresa').off('click').on('click', async function(event) {
-		const { value: file } = await Swal.fire({
-		  title: "Selecione uma imagem",
-		  input: "file",
-		  inputAttributes: {
-			"accept": "image/*",
-			"aria-label": "Carregue sua imagem"
-		  },
-		  showCancelButton: true,
-		  confirmButtonText: "Enviar",
-		  cancelButtonText: "Sair",
-		  showLoaderOnConfirm: true,
-		  allowOutsideClick: () => !Swal.isLoading()
-		});
-
-		if (file) {
-			var fdata = new FormData();
-			fdata.append("file", file);
-
-		  const reader = new FileReader();
-		  
-	
-		  reader.onload = (e) => {
-			showLoadingModal();       
-
-			$.ajax({
-				type: 'POST',
-				url: 'https://api.seiweb.com.br/uploads/images',
-				data: fdata,
-				cache: false,
-				contentType: false,
-				processData: false,
-				headers: {
-					"Authorization": localStorage.getItem('token')
-				},
-				success: function(response, textStatus, jqXHR) {
-					hideLoadingModal();
-					
-					dataEmpresa.logo = response;
-					$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);
-			
-					Swal.fire({
-					  title: "Imagem enviada",
-					  imageUrl: e.target.result,
-					  imageAlt: "A imagem enviada"
-					});
-				}
-			});			  
-
-		  };
-		  
-		  reader.readAsDataURL(file);
-		}	
-	});
+	$('#uploadLogoEmpresa').off('click').on('click', uploadLogoEmpresa);
 	
 	$('#apagarLogoEmpresa').off('click').on('click', apagarLogoEmpresa);
-	//$('#fileUploadEmpresa').off('change').on('change', fileUploadEmpresa);
 
 	$('#cnpj').trigger('input').trigger('change');
 	$('#cep').trigger('input').trigger('change');
@@ -405,23 +351,34 @@ function ConsultaCnpjEmpresa(){
 	});
 }
 
-/*function async uploadLogoEmpresa(e) {
-    /*e.preventDefault();
-    $('#fileUploadEmpresa').trigger('click');
-}*/
+async function uploadLogoEmpresa(event) {
+		const { value: file } = await Swal.fire({
+		  title: "Selecione uma imagem",
+		  input: "file",
+		  inputAttributes: {
+			"accept": "image/*",
+			"aria-label": "Carregue sua imagem"
+		  },
+		  showCancelButton: true,
+		  confirmButtonText: "Enviar",
+		  cancelButtonText: "Sair",
+		  showLoaderOnConfirm: true,
+		  allowOutsideClick: () => !Swal.isLoading()
+		});
+		
+		UploadSingleImage({
+			file: file,
+			success: function(response, textStatus, jqXHR){
+				dataEmpresa.logo = response;
+				$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);				
+			}
+		});
+	}
 
 function apagarLogoEmpresa() {
     dataEmpresa.logo = null;
     $('#LogoEmpresa').attr('src', '#');
 }
-
-/*function fileUploadEmpresa(e) {
-    EnviarImagem($(this), 
-    function (repo) {
-        dataEmpresa.logo = repo;
-        $('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);
-    });
-}*/
 
 function EmpresaNovoBairroClick(e){
     event.preventDefault();
