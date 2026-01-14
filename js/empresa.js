@@ -53,6 +53,7 @@ function exibeEmpresa(data) {
 		modal: modalTbEmpresa,
 		columns: defaultColumns
 	});
+	
 }
 
 function EmpresaClick(e) {	
