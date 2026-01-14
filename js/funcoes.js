@@ -302,7 +302,7 @@ function zPergunta_Exclui(configDinamico = {}){
 				  icon: "success"
 				});*/
 							
-				/*$.notify({
+				$.notify({
 					icon: 'icon-bell',
 					title: 'alerta',
 					message: "Registro excluído com sucesso.",
@@ -313,8 +313,9 @@ function zPergunta_Exclui(configDinamico = {}){
 						align: "center"
 					},
 					time: 300,
-				});*/
-				const Toast = Swal.mixin({
+				});
+				
+				/*const Toast = Swal.mixin({
 				  toast: true,
 				  position: "bottom",
 				  showConfirmButton: false,
@@ -329,7 +330,7 @@ function zPergunta_Exclui(configDinamico = {}){
 				Toast.fire({
 				  icon: "success",
 				  title: "Registro excluído com sucesso"
-				});  				
+				});*/  				
 
 				if (typeof config.success === 'function') {
 					config.success(response, textStatus, jqXHR);
