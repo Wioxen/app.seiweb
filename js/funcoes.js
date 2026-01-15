@@ -40,10 +40,10 @@ function showLoadingModal() {
 		allowEscapeKey: false,
 		showConfirmButton: false,
 		background: 'transparent',
-		backdrop: 'rgba(0,0,0,0.4)', // ou 'transparent' para totalmente transparente
+		backdrop: 'rgba(0,0,0,0.2)', // ou 'transparent' para totalmente transparente
 		didOpen: () => {
 			Swal.showLoading();					
-			/*setTimeout(() => {
+			/*	setTimeout(() => {
 				const loader = document.querySelector('.swal2-loader');
 				if (loader) {
 					loader.style.width = '70px';

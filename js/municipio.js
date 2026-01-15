@@ -14,7 +14,7 @@ function MunicipioClick(configDinamico = {})
 	modalMunicipio.find('.modal-title').html(`<i class="fa fa-plus-circle"></i> Adicionar Município`);
     modalMunicipio.find('.modal-dialog').addClass('modal-dialog-centered');
 	modalMunicipio.find('.modal-footer')
-	.html(`<button id="${gerarHash(16)}" class="btn btn-success btn-sm"><i class="fa fa-check"></i> Salvar</button>`)
+	.html(`<button id="${gerarHash(16)}" class="btn btn-success">Salvar</button>`)
 	.click(e => {
         e.preventDefault();
 		

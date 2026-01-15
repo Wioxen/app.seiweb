@@ -10,7 +10,7 @@ function CertificadoDigitalClick(e){
     modalCeritificadoDigital.find('.modal-title').html('<i class="fa-solid fa-certificate"></i> Certificado Digital');
     modalCeritificadoDigital.find('.modal-dialog').addClass('modal-dialog-centered');
 	modalCeritificadoDigital.find('.modal-footer')
-		.html(`<button id="${gerarHash()}" class="btn btn-success"><i class="icon-note"></i> Salvar</button>`)
+		.html(`<button id="${gerarHash()}" class="btn btn-success">Salvar</button>`)
         .click(function(){
             $('#frmCertificadoDigital').submit();
         });
