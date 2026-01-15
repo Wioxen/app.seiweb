@@ -369,7 +369,7 @@ async function uploadLogoEmpresa(event) {
 			$('#LogoEmpresa').click(function(){
 				Swal.fire({
 				  imageUrl: $imageUrl+dataEmpresa.logo,
-				  imageHeight: 500,				  
+				  imageHeight: 300,				  
 				  imageAlt: "A tall image"
 				});				
 			});			
