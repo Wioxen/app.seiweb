@@ -327,7 +327,8 @@ function carregarMenu() {
 						</li></ul>
 								</div>`);
 			
-			$('#dynamic-menu').append(renderMenu(data));					
+			$('#dynamic-menu').append(renderMenu(data));				
+
 		},
 		error: function(xhr, status, error) {
 			console.error('Erro ao carregar o menu:', error);

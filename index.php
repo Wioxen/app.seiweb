@@ -735,7 +735,7 @@
 						</ul>
 					</nav>
 					<div class="copyright ms-auto">
-						2025, v1.0.0 <i class="fas fa-bolt text-warning"></i> by <a href=#">SEIWEB</a>
+						v1.0.0 <i class="fas fa-bolt text-warning"></i> by <a href=#">SEIWEB</a>
 					</div>				
 				</div>
 			</footer>

@@ -88,6 +88,15 @@ function exibeLoadEmpresa(response, status, xhr)
 		
 		if (dataEmpresa.logo != null){
 			$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);
+			
+			$('#LogoEmpresa').click(function(){
+				Swal.fire({
+				  imageUrl: $imageUrl+dataEmpresa.logo,
+				  imageHeight: 500,				  
+				  imageAlt: "A tall image"
+				});				
+			});
+			
 		}
 		
 		if (dataEmpresa.aliquota !== 0){
@@ -356,7 +365,14 @@ async function uploadLogoEmpresa(event) {
 		file: file,
 		success: function(response, textStatus, jqXHR){
 			dataEmpresa.logo = response;
-			$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);				
+			$('#LogoEmpresa').attr('src', $imageUrl+dataEmpresa.logo);	
+			$('#LogoEmpresa').click(function(){
+				Swal.fire({
+				  imageUrl: $imageUrl+dataEmpresa.logo,
+				  imageHeight: 500,				  
+				  imageAlt: "A tall image"
+				});				
+			});			
 		}
 	});
 }

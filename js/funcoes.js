@@ -309,7 +309,7 @@ function zPergunta_Exclui(configDinamico = {}){
 				},{
 					type: 'success',
 					placement: {
-						from: "bottom",
+						from: "top",
 						align: "center"
 					},
 					time: 300,
