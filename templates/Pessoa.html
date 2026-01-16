@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		
+		<title>SEIWEB</title>
+		
+		<!-- Custom fonts for this template-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+		<link href="../assets/dist/css/estilo.css" rel="stylesheet" />
+	</head>
+	<body>
+		<form id="frmPessoa">
+			<div class="row row-cols-md-2">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-2">
+							<div class="row mb-3 text-center">
+								<div class="col-md-12">
+									<button class="btn btn-sm btn-light bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa fa-list"></i>
+									</button>
+									<div class="dropdown">
+										<ul class="dropdown-menu">
+											<li><a id="uploadLogoPessoa" class="dropdown-item" href="#"><i class="fa fa-cloud-upload"></i> Escolher arquivo</a></li>
+											<li><a id="apagarLogoPessoa" class="dropdown-item" href="#"><i class="fa fa-eraser"></i> Limpar</a></li>
+										</ul>
+									</div>
+									<input id="fileUploadPessoa" type="file" name="fileupload" hidden accept=".png, .jpg, .jpeg" />
+									<img id="LogoPessoa" class="card-img-top rounded-circle mb-3" src="#" alt="[FOTO]" style="max-height: 130px; max-width: 130px;" />
+									
+								</div>
+							</div>
+						</div>
+						<div class="col-md-10">
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label for="descricao" class="form-label required">Nome da Pessoa</label>
+									<input type="text" id="descricao" name="descricao" class="form-control form-control-sm text-uppercase" placeholder=""  />
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<ul class="list-group">
+										<li class="list-group-item d-flex justify-content-between align-items-center">
+											Documento
+											<span class="badge badge-warning badge-pill me-3">0</span>
+											<div class="dropdown">
+												<button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+													<i class="fa fa-ellipsis-h"></i>
+												</button>
+												<ul class="dropdown-menu" role="menu" style="">
+													<li>
+														<a class="dropdown-item" href="#">Action</a>
+														<a class="dropdown-item" href="#">Another action</a>
+														<div class="dropdown-divider"></div>
+														<a class="dropdown-item" href="#">Something else here</a>
+													</li>
+												</ul>
+											</div>							
+										</li>
+										<li class="list-group-item d-flex justify-content-between align-items-center">
+											Comprovante de residência
+											<span class="badge badge-warning badge-pill me-3">0</span>
+											<div class="dropdown">
+												<button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+													<i class="fa fa-ellipsis-h"></i>
+												</button>
+												<ul class="dropdown-menu" role="menu" style="">
+													<li>
+														<a class="dropdown-item" href="#">Action</a>
+														<a class="dropdown-item" href="#">Another action</a>
+														<div class="dropdown-divider"></div>
+														<a class="dropdown-item" href="#">Something else here</a>
+													</li>
+												</ul>
+											</div>							
+										</li>
+									</ul>			
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<ul class="nav nav-pills mb-3" id="pills-tab-emp" role="tablist">
+								<li class="nav-item" role="presentation">
+									<button class="nav-link btn-sm active" id="pills-home-tab-emp" data-bs-toggle="pill" data-bs-target="#pills-home-emp" type="button" role="tab" aria-controls="pills-home-emp" aria-selected="true">CADASTRO GERAL</button>
+								</li>
+							</ul>
+							<div class="tab-content" id="pills-tabContent-emp">
+								<div class="tab-pane fade show active" id="pills-home-emp" role="tabpanel" aria-labelledby="pills-home-tab-emp" tabindex="0">                        
+									<div class="row mb-1">
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-3">
+													<label class="form-label " for="cep">CEP</label>
+													<div class="input-group input-group-sm">
+														<input id="cep" type="text" class="form-control form-control-sm text-uppercase cep"  />
+														<button id="btnCep" class="btn btn-sm btn-light border" type="button" tabindex="-1">
+															<i class="fa fa-search"></i>
+														</button>
+													</div>
+												</div>
+												<div class="col-md-9">
+													<label class="form-label ">Endereço</label>
+													<input type="text" class="form-control form-control-sm text-uppercase" id="endereco"  />
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-6">
+													<label class="form-label d-flex justify-content-between align-items-center"> 
+														<span class="">Bairro 
+															<a class="btn btn-info btn-sm-x" href="#" onclick="PessoaBairroClick(this);">
+																<i class="fa fa-plus"></i>
+															</a>
+														</span>
+													</label>
+													<div id="selectPessoaBairro">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="form-label d-flex justify-content-between align-items-center"> 
+														<span class="">Município 
+															<a class="btn btn-info btn-sm-x" href="#" onclick="PessoaMunicipioClick(this);">
+																<i class="fa fa-plus"></i>
+															</a>
+														</span>
+													</label>
+													<div id="selectPessoaMunicipio">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>									
+									<div class="row mb-1">
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-3">
+													<label class="form-label">Número</label>
+													<input type="text" class="form-control form-control-sm text-uppercase" id="numero" />
+												</div>
+												<div class="col-md-9">
+													<label class="form-label">Complemento</label>
+													<input type="text" class="form-control form-control-sm text-uppercase" id="complemento" />
+												</div>									
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-6">
+													<label class="form-label d-flex justify-content-between align-items-center"> 
+														<span>Naturalidade
+															<a class="btn btn-info btn-sm-x" href="#" onclick="PessoaNatClick(this);">
+																<i class="fa fa-plus"></i>
+															</a>
+														</span>
+													</label>
+													<div id="selectPessoaNat">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="form-label d-flex justify-content-between align-items-center"> 
+														<span class="">Nacionalidade 
+															<a class="btn btn-info btn-sm-x" href="#" onclick="PessoaPaisClick(this);">
+																<i class="fa fa-plus"></i>
+															</a>
+														</span>
+													</label>
+													<div id="selectPessoaPais">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>										
+									</div>
+									<div class="row mb-1">
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-6">
+															<label class="form-label d-flex justify-content-between align-items-center" for="">Gênero</label>
+															<div id="selectPessoaSexo">
+																<div class="loading-label w-100">
+																	<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+																	Carregando ...
+																</div>
+															</div>														
+														</div>
+														<div class="col-md-6">
+															<label class="form-label d-flex justify-content-between align-items-center" for="dtNasc">Nascimento</label>
+															<input type="text" class="form-control form-control-sm data" id="dtNasc" placeholder="" />
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="form-label d-flex justify-content-between align-items-center"> 
+														<span class="">Estado Civil 
+															<a class="btn btn-info btn-sm-x" href="#" onclick="PessoaEstadoCivilClick(this);">
+																<i class="fa fa-plus"></i>
+															</a>
+														</span>
+													</label>
+													<div id="selectPessoaEstadoCivil">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>
+													</div>
+												</div>
+											</div>                                 
+										</div>									
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-6">
+															<label class="form-label d-flex justify-content-between align-items-center" for="cpfCnpj">Documento</label>
+															<input type="text" class="form-control form-control-sm text-uppercase number" id="cpfCnpj" placeholder="" />
+														</div>
+														<div class="col-md-6">
+															<label class="form-label d-flex justify-content-between align-items-center" for="rg">RG</label>
+															<input type="text" class="form-control form-control-sm" id="rg" placeholder="" />
+														</div>
+													</div>	
+												</div>
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-6">
+															<label class="form-label d-flex justify-content-between align-items-center" for="telefone">Telefone</label>
+															<input type="text" class="form-control form-control-sm text-uppercase telefone" id="tel" placeholder="" />        
+														</div>
+														<div class="col-md-6">
+															<label class="form-label d-flex justify-content-between">Celular
+																<span>
+																	<input class="form-check-input me-1" type="checkbox" id="celWhats" placeholder="Celular">
+																	<label for="celWhats"><i class="fa fa-whatsapp fw-bold text-success"></i></label>                                    
+																</span>
+															</label>
+															<input id="cel" name="cel" type="text" class="form-control form-control-sm celular" />
+														</div>
+													</div>	
+												</div>
+											</div>										
+										</div>
+									</div>
+									<div class="row mb-3">
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-6">
+													<label class="form-label d-flex justify-content-between align-items-center" for="email">Email</label>
+													<input type="email" class="form-control form-control-sm email" id="email" placeholder="" />        
+												</div>
+												<div class="col-md-6">
+													<label class="form-label d-flex justify-content-between align-items-center" for="senhaNet">Senha	</label>
+													<input type="text" class="form-control form-control-sm text-uppercase" id="senhaNet" placeholder="" />
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- Bootstrap core JavaScript-->
+		<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+	</body>
+</html>

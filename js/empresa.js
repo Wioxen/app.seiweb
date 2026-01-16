@@ -321,6 +321,7 @@ function SalvarEmpresaClick(e){
 function ConsultaCepEmpresa(){
 	ConsultaCep({
 		resource: 'Empresa',
+		cep: $('#cep').val(),
 		success: function(response, textStatus, jqXHR){
 			preencherFormularioCompleto(response, '#frmEmpresa');
             dataEmpresa.bairroId = response.bairroId;

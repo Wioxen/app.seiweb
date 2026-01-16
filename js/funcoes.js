@@ -7,29 +7,29 @@ $(document).on({
         $(this).css('z-index', zIndex);
         setTimeout(function () {
             $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
-                .addClass('modal-stack')
-                .attr('id', 'stack-' + $this.attr('id'));
-        }, 0);
-    },
+			.addClass('modal-stack')
+			.attr('id', 'stack-' + $this.attr('id'));
+		}, 0);
+	},
     'shown.bs.modal': function () {
         if ($('#stack-' + $(this).attr('id')).length) {
             if ((parseInt($('#stack-' + $(this).attr('id')).css('z-index'))) !== (zIndex - 1)) {
                 $('#stack-' + $(this).attr('id')).css('z-index', zIndex - 1);
-            }
-        }
-    },
+			}
+		}
+	},
     'hidden.bs.modal': function () {
         $(this).removeAttr('style');
         if ($('.modal:visible').length === 0) {
             setTimeout(function () {
                 $(document.body).removeClass('modal-open');
-            }, 200);
-        } else {
+			}, 200);
+			} else {
             setTimeout(function () {
                 $(document.body).addClass('modal-open');
-            }, 200);
-        }
-    }
+			}, 200);
+		}
+	}
 }, '.modal');
 
 
@@ -46,10 +46,10 @@ function showLoadingModal() {
 			/*	setTimeout(() => {
 				const loader = document.querySelector('.swal2-loader');
 				if (loader) {
-					loader.style.width = '70px';
-					loader.style.height = '70px';
-					loader.style.borderWidth = '6px';
-					loader.style.borderTopColor = '#3498db';
+				loader.style.width = '70px';
+				loader.style.height = '70px';
+				loader.style.borderWidth = '6px';
+				loader.style.borderTopColor = '#3498db';
 				}
 			}, 10); */
 		}
@@ -72,41 +72,41 @@ function processErrorData(errorData, errorList) {
             messages.forEach(message => {
                 errorList.append(`
                     <div class="list-group-item list-group-item-danger text-start">
-                        ${message}
+					${message}
                     </div>
-                `);
-            });
-        }
-    } else if (errorData.detail) {
+				`);
+			});
+		}
+		} else if (errorData.detail) {
         // Se não houver erros específicos, mostra a mensagem geral
         errorList.append(`
             <div class="list-group-item list-group-item-danger text-start">
-                ${errorData.detail}
+			${errorData.detail}
             </div>
-        `);
-    } else if (errorData.title) {
+		`);
+		} else if (errorData.title) {
         // Se não houver erros específicos, mostra a mensagem geral
         errorList.append(`
             <div class="list-group-item list-group-item-danger text-start">
-                ${errorData.title}
+			${errorData.title}
             </div>
-        `);
-    } else {
+		`);
+		} else {
         // Se o formato for desconhecido, mostra o erro completo
         errorList.append(`
             <div class="list-group-item list-group-item-danger text-start">
-                ${JSON.stringify(errorData)}
+			${JSON.stringify(errorData)}
             </div>
-        `);
-    }
+		`);
+	}
 	
 	/*console.log(errorData);
-	
-	if (errorData.status === 403){
+		
+		if (errorData.status === 403){
 		errorList.append(`
-			<div class="list-group-item list-group-item-danger text-start">
-				${$('#first-name').text()}, você não tem permissão para acessar este modulo!
-			</div>
+		<div class="list-group-item list-group-item-danger text-start">
+		${$('#first-name').text()}, você não tem permissão para acessar este modulo!
+		</div>
 		`);
 	}*/	
 }
@@ -116,7 +116,7 @@ function showErrors(errorResponse) {
     {
         if (errorResponse.status === 401){
             redirectToLogin();
-        }
+		}
 		
 		var errorModalLabel = "Ops!";
 		
@@ -130,71 +130,71 @@ function showErrors(errorResponse) {
             try {
                 const errorData = JSON.parse(errorResponse.responseText);
                 processErrorData(errorData, errorList);
-            } catch (e) {
+				} catch (e) {
                 // Se não conseguir parsear, mostra o texto cru
                 errorList.append(`
                     <div class="list-group-item list-group-item-danger text-start">
-                        ${errorResponse.responseText}
+					${errorResponse.responseText}
                     </div>
-                `);
-            }
-        } 
+				`);
+			}
+		} 
         // Se não houver responseText, verifica se há objeto errors
         else if (errorResponse.errors) {
             processErrorData(errorResponse, errorList);
-        }
+		}
         // Se não houver nenhum dos anteriores, mostra a mensagem genérica
         else {
 			if (errorResponse.status === 403){
 				errorList.append(`
 					<div class="list-group-item list-group-item-danger text-start">
-						${$('#first-name').text()}, você não tem permissão para acessar este modulo!
+					${$('#first-name').text()}, você não tem permissão para acessar este modulo!
 					</div>
 				`);
-			}	else {			
+				}	else {			
 				errorList.append(`
 					<div class="list-group-item list-group-item-danger text-start">
-						${typeof errorResponse === 'string' ? errorResponse : 'Ocorreu um erro desconhecido.'}
+					${typeof errorResponse === 'string' ? errorResponse : 'Ocorreu um erro desconhecido.'}
 					</div>
 				`);
 			}
-        }
+		}
 		
 		Swal.fire({
-		  title: errorModalLabel,
-		  icon: 'error',
-		  html: errorList,
-		  scrollbarPadding: true,
-		  customClass: {
-			confirmButton: "btn btn-success"
+			title: errorModalLabel,
+			icon: 'error',
+			html: errorList,
+			scrollbarPadding: true,
+			customClass: {
+				confirmButton: "btn btn-success"
 			},
 		});
 		
 		errorList.empty();
-    } catch (e) {
+		} catch (e) {
         console.log('Erro ao processar mensagem de erro:', e);
         $('#errorContainer').removeClass('d-none').html(
             typeof errorResponse === 'string' ? errorResponse : 'Erro ao processar mensagem de erro.'
-        );
-    }
+		);
+	}
 }
 
 function handleDefaultError(jqXHR, textStatus, errorThrown) {
     hideLoadingModal();
-
+	
     if (jqXHR.responseText || (jqXHR.status && jqXHR.status >= 400)) {
         showErrors(jqXHR);
-    } else {
+		} else {
         let errorMessage = 'Ocorreu um erro ao processar a requisição.';
         
         if (status === 'timeout') {
             errorMessage = 'Tempo de requisição excedido. Tente novamente.';
-        } else if (errorThrown) {
+			} else if (errorThrown) {
             errorMessage = errorThrown;
-        }
+		}
         
         showErrors(errorMessage);
-    }					
+	}					
 }
 
 function RestRequest(configDinamico = {})
@@ -209,16 +209,16 @@ function RestRequest(configDinamico = {})
 	{
 		url: config.url,
         beforeSend: function(xhr){
+			xhr.setRequestHeader('remoteip', localStorage.getItem('remoteip'));
+			xhr.setRequestHeader('user_agent', localStorage.getItem('user_agent'));
+			xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             if (typeof config.beforeSend === 'function')
 			{
                 config.beforeSend(xhr);
-            } else {
-                xhr.setRequestHeader('remoteip', localStorage.getItem('remoteip'));
-                xhr.setRequestHeader('user_agent', localStorage.getItem('user_agent'));
-                xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
+			} else {
 				showLoadingModal();       
-            }            
-        },
+			}            
+		},
 		type: config.method,
         datatype: 'json',
         contentType: 'application/json'
@@ -226,24 +226,24 @@ function RestRequest(configDinamico = {})
 	
     if ((config.data !== null) && (config.data !== undefined)) {
         ajaxConfig.data = JSON.stringify(config.data);
-        console.log(ajaxConfig.data);
-    }	
+        //console.log(ajaxConfig.data);
+	}	
 	
 	$.ajax(ajaxConfig)
 	.done(function(response, textStatus, jqXHR) {
         if (typeof config.success === 'function') {
             config.success(response, textStatus, jqXHR);
-        } else {
+			} else {
             console.log('Operação concluída com sucesso');
-        }
+		}
 	})
 	.fail(function(jqXHR, textStatus, errorThrown) {
         if (typeof config.error === 'function') {
             config.error(jqXHR, textStatus, errorThrown);
-        } else {
+			} else {
             hideLoadingModal();
             handleDefaultError(jqXHR, textStatus, errorThrown);
-        }
+		}
 	})
 	.always(function() {
         if (typeof config.always === 'function') {
@@ -254,30 +254,27 @@ function RestRequest(configDinamico = {})
 
 function exibeerror(xhr, status, error) {
     hideLoadingModal();
-    console.log(xhr);
-    console.log(status);
-    console.log(error);
     handleDefaultError(xhr, status, error);
 }
 
 function zPergunta(texto, yesCallback) {
 	Swal.fire({
-	  title: 'Responda',
-	  text: `${texto}`,
-	  icon: "question",
-	  showCancelButton: true,
-	  customClass: {
-		confirmButton: "btn btn-success",
-		cancelButton: "btn btn-danger"
-	  },
-	  confirmButtonText: "Sim, eu confirmo",
-	  cancelButtonText: "Não",	  
-	}).then((result) => {
+		title: 'Responda',
+		text: `${texto}`,
+		icon: "question",
+		showCancelButton: true,
+		customClass: {
+			confirmButton: "btn btn-success",
+			cancelButton: "btn btn-danger"
+		},
+		confirmButtonText: "Sim, eu confirmo",
+		cancelButtonText: "Não",	  
+		}).then((result) => {
 		if (result.isConfirmed) {
 			if (yesCallback && typeof yesCallback === 'function') {
 				yesCallback();
 			}
-		} else {
+			} else {
 			swal.close();
 		}								
 	});	
@@ -297,16 +294,16 @@ function zPergunta_Exclui(configDinamico = {}){
 				hideLoadingModal();
 				
 				/*Swal.fire({
-				  title: "Excluído!",
-				  text: "Registro excluído com sucesso.",
-				  icon: "success"
+					title: "Excluído!",
+					text: "Registro excluído com sucesso.",
+					icon: "success"
 				});*/
-							
+				
 				$.notify({
 					icon: 'icon-bell',
 					title: 'Mensagem',
 					message: "Registro excluído com sucesso.",
-				},{
+					},{
 					type: 'success',
 					placement: {
 						from: "top",
@@ -316,22 +313,22 @@ function zPergunta_Exclui(configDinamico = {}){
 				});
 				
 				/*const Toast = Swal.mixin({
-				  toast: true,
-				  position: "bottom",
-				  showConfirmButton: false,
-				  timer: 5000,
-				  timerProgressBar: true,
-				  didOpen: (toast) => {
+					toast: true,
+					position: "bottom",
+					showConfirmButton: false,
+					timer: 5000,
+					timerProgressBar: true,
+					didOpen: (toast) => {
 					toast.onmouseenter = Swal.stopTimer;
 					toast.onmouseleave = Swal.resumeTimer;
-				  }
-				});
-				
-				Toast.fire({
-				  icon: "success",
-				  title: "Registro excluído com sucesso"
+					}
+					});
+					
+					Toast.fire({
+					icon: "success",
+					title: "Registro excluído com sucesso"
 				});*/  				
-
+				
 				if (typeof config.success === 'function') {
 					config.success(response, textStatus, jqXHR);
 				}				
@@ -345,7 +342,7 @@ function zAlerta(_message) {
 		icon: 'icon-bell',
 		title: 'alerta',
 		message: _message,
-	},{
+		},{
 		type: 'success',
 		placement: {
 			from: "top",
@@ -358,11 +355,11 @@ function zAlerta(_message) {
 /*function checkTurnstileStatus() {
     const response = turnstile.getResponse();
     if (response) {
-        hideLoadingModal();
+	hideLoadingModal();
     } else {
-        if (!$('#loadingModal').hasClass('show') && !$('#loadingModal').is(':visible')) {
-            showLoadingModal();
-        }
+	if (!$('#loadingModal').hasClass('show') && !$('#loadingModal').is(':visible')) {
+	showLoadingModal();
+	}
     }
 }*/
 
@@ -373,44 +370,44 @@ function preencherCampo($campo, valor) {
     // Converte valores null/undefined para string vazia
     if (valor === null || valor === undefined) {
         valor = '';
-    }
+	}
     
     switch (tagName) {
         case 'input':
-            switch (tipo) {
-                case 'checkbox':
-                    $campo.prop('checked', Boolean(valor));
-                    break;
-                case 'radio':
-                    $campo.filter(`[value="${valor}"]`).prop('checked', true);
-                    break;
-                case 'file':
-                    // Campos file geralmente não podem ser preenchidos por segurança
-                    console.warn('Campos do tipo file não podem ser preenchidos programaticamente');
-                    break;
-                default:
-                    $campo.val(valor);
-                    break;
-            }
-            break;
-            
+		switch (tipo) {
+			case 'checkbox':
+			$campo.prop('checked', Boolean(valor));
+			break;
+			case 'radio':
+			$campo.filter(`[value="${valor}"]`).prop('checked', true);
+			break;
+			case 'file':
+			// Campos file geralmente não podem ser preenchidos por segurança
+			console.warn('Campos do tipo file não podem ser preenchidos programaticamente');
+			break;
+			default:
+			$campo.val(valor);
+			break;
+		}
+		break;
+		
         case 'select':
-            if ($campo.attr('multiple')) {
-                // Select múltiplo
-                $campo.val(Array.isArray(valor) ? valor : [valor]);
+		if ($campo.attr('multiple')) {
+			// Select múltiplo
+			$campo.val(Array.isArray(valor) ? valor : [valor]);
             } else {
-                $campo.val(valor);
-            }
-            break;
-            
+			$campo.val(valor);
+		}
+		break;
+		
         case 'textarea':
-            $campo.val(valor);
-            break;
-            
+		$campo.val(valor);
+		break;
+		
         default:
-            $campo.text(valor);
-            break;
-    }
+		$campo.text(valor);
+		break;
+	}
     
     // Dispara evento change para atualizar qualquer validação ou comportamento
     $campo.trigger('change');
@@ -419,52 +416,55 @@ function preencherCampo($campo, valor) {
 function preencherFormularioCompleto(payload, formSelector = 'form') {
     const $form = $(formSelector);
     
-    function preencherRecursivo(obj, prefixo = '') {
-        $.each(obj, function(key, value) {
-            // Trata casos especiais de notação com colchetes aninhados
-            const chaveCompleta = prefixo ? `${prefixo}[${key}]` : key;
-
-            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                // Se for objeto, chama recursivamente
-                preencherRecursivo(value, chaveCompleta);
-            } else if (Array.isArray(value)) {
-                // Se for array, trata cada elemento
-                value.forEach((item, index) => {
-                    if (typeof item === 'object') {
-                        preencherRecursivo(item, `${chaveCompleta}[${index}]`);
-                    } else {
-                        // Para arrays simples, procura por campos com nome no formato "nome[index]"
-                        const nomeCampo = `${chaveCompleta}[${index}]`;
-                        const $campo = $form.find(`[name="${nomeCampo}"], [id="${nomeCampo}"], [data-field="${nomeCampo}"]`);
-                        if ($campo.length) preencherCampo($campo, item);
-                    }
-                });
-            } else {
-                // Valor simples - procura por campos com o nome exato
-                const $campo = $form.find(`[name="${chaveCompleta}"], [id="${chaveCompleta}"], [data-field="${chaveCompleta}"]`);
-                
-                // Se não encontrar com o nome completo, tenta encontrar campos com namesets aninhados
-                if (!$campo.length && chaveCompleta.includes('[')) {
-                    // Extrai apenas a parte final do nome (último nível)
-                    const partes = chaveCompleta.split('[');
-                    const nomeSimples = partes[partes.length - 1].replace(']', '');
-                    
-                    // Procura por campos com o nome simples (última parte)
-                    const $campoSimples = $form.find(`[name="${nomeSimples}"], [id="${nomeSimples}"], [data-field="${nomeSimples}"]`);
-                    if ($campoSimples.length) {
-                        preencherCampo($campoSimples, value);
-                        return;
-                    }
-                }
-                
-                if ($campo.length) {
-                    preencherCampo($campo, value);
-                }
-            }
-        });
-    }
-    
-    preencherRecursivo(payload);
+	if ((payload !== undefined) && (payload !== null)){
+		
+		function preencherRecursivo(obj, prefixo = '') {
+			$.each(obj, function(key, value) {
+				// Trata casos especiais de notação com colchetes aninhados
+				const chaveCompleta = prefixo ? `${prefixo}[${key}]` : key;
+				
+				if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+					// Se for objeto, chama recursivamente
+					preencherRecursivo(value, chaveCompleta);
+					} else if (Array.isArray(value)) {
+					// Se for array, trata cada elemento
+					value.forEach((item, index) => {
+						if (typeof item === 'object') {
+							preencherRecursivo(item, `${chaveCompleta}[${index}]`);
+							} else {
+							// Para arrays simples, procura por campos com nome no formato "nome[index]"
+							const nomeCampo = `${chaveCompleta}[${index}]`;
+							const $campo = $form.find(`[name="${nomeCampo}"], [id="${nomeCampo}"], [data-field="${nomeCampo}"]`);
+							if ($campo.length) preencherCampo($campo, item);
+						}
+					});
+					} else {
+					// Valor simples - procura por campos com o nome exato
+					const $campo = $form.find(`[name="${chaveCompleta}"], [id="${chaveCompleta}"], [data-field="${chaveCompleta}"]`);
+					
+					// Se não encontrar com o nome completo, tenta encontrar campos com namesets aninhados
+					if (!$campo.length && chaveCompleta.includes('[')) {
+						// Extrai apenas a parte final do nome (último nível)
+						const partes = chaveCompleta.split('[');
+						const nomeSimples = partes[partes.length - 1].replace(']', '');
+						
+						// Procura por campos com o nome simples (última parte)
+						const $campoSimples = $form.find(`[name="${nomeSimples}"], [id="${nomeSimples}"], [data-field="${nomeSimples}"]`);
+						if ($campoSimples.length) {
+							preencherCampo($campoSimples, value);
+							return;
+						}
+					}
+					
+					if ($campo.length) {
+						preencherCampo($campo, value);
+					}
+				}
+			});
+		}
+		
+		preencherRecursivo(payload);
+	}
 }
 
 function createDynamicModal(callbackOnClose = null) {
@@ -473,36 +473,37 @@ function createDynamicModal(callbackOnClose = null) {
     
     // Criar a estrutura do modal
     const modalHTML = `
-        <div class="modal fade" id="${modalId}"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-            <div class="modal-dialog modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary" style="color: white;">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    $('body').append(modalHTML);
-    
-    const $modal = $('#' + modalId);
-
-    $modal.on('hidden.bs.modal', function () {
-        $(this).remove();
-        console.log('Modal destruído');
-
-        if (typeof callbackOnClose === 'function') {
-            callbackOnClose();
-        }        
-    });
-
-    return $modal;
+	<div class="modal fade" id="${modalId}"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+	<div class="modal-dialog modal-dialog-scrollable">
+	<div class="modal-content">
+	<div class="modal-header bg-primary" style="color: white;">
+	<h5 class="modal-title"></h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	</div>
+	<div class="modal-body">
+	</div>
+	<div class="modal-footer">
+	</div>
+	</div>
+	</div>
+	</div>
+	`;
+	
+	$('body').append(modalHTML);
+	
+	const $modal = $('#' + modalId);
+	
+	$modal.on('hidden.bs.modal', function () {
+		$(this).remove();
+		
+		//console.log('Modal destruído');
+		
+		if (typeof callbackOnClose === 'function') {
+			callbackOnClose();
+		}        
+	});
+	
+	return $modal;
 }
 
 function TabToEnter(e) {
@@ -510,18 +511,18 @@ function TabToEnter(e) {
     if (keyCode === 13) {
         e.preventDefault();
         $.focusNext();
-    }
+	}
 }
 
 function soNumeros(e) {
     var keyCode = e.keyCode || e.which,
-        pattern = /\d/,
-        // Permite somente Backspace, Delete e as setas direita e esquerda, números do teclado numérico - 96 a 105 - (além dos números)
-        keys = [46, 8, 9, 13, 37, 39, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
-
+	pattern = /\d/,
+	// Permite somente Backspace, Delete e as setas direita e esquerda, números do teclado numérico - 96 a 105 - (além dos números)
+	keys = [46, 8, 9, 13, 37, 39, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
+	
     if (!pattern.test(String.fromCharCode(keyCode)) && $.inArray(keyCode, keys) === -1) {
         return false;
-    }
+	}
 }
 
 function extrairNumeros(texto) {
@@ -529,20 +530,20 @@ function extrairNumeros(texto) {
     if ((texto === undefined) || (texto === null))
     {
         return null;
-    } else {
+		} else {
         return texto.replace(/\D/g, '');
-    }
+	}
 }
 
 function StrToNumber(number) {
     var $string = $.trim(number);
-
+	
     if (($string === '') || ($string === null) || ($string === undefined)) {
         return 0;
-    } else {
+		} else {
         $string = $string.replace(/[^0-9]/g, '');
         return parseInt(number);
-    }
+	}
 }
 
 function StrToDecimal(decimalString) {
@@ -559,13 +560,13 @@ function EnviarImagem($this, successCallback, errorCallback) {
     var fileInput = $this[0];
     var file = fileInput.files[0];
     fdata.append("file", file);
-
+	
     var reader = new FileReader();
     reader.readAsBinaryString(file);
-
+	
     reader.onload = function () {
         showLoadingModal();       
-
+		
         $.ajax({
             type: 'POST',
             url: 'https://api.seiweb.com.br/uploads/images',
@@ -575,31 +576,31 @@ function EnviarImagem($this, successCallback, errorCallback) {
             processData: false,
             headers: {
                 "Authorization": localStorage.getItem('token')
-            },
+			},
             success: function(response, textStatus, jqXHR) {
                 hideLoadingModal();
-    
+				
                 if (typeof successCallback === 'function') {
                     successCallback(response, textStatus, jqXHR);
-                } else {
+					} else {
                     console.log('Operação concluída com sucesso');
-                }
-            },
+				}
+			},
             error: function(jqXHR, textStatus, errorThrown) {
                 hideLoadingModal();
-
+				
                 handleDefaultError(jqXHR, textStatus, errorThrown);
-
+				
                 if (typeof errorCallback === 'function') {
                     errorCallback(jqXHR, textStatus, errorThrown);
-                }
-            }
-        });
-    };
-
+				}
+			}
+		});
+	};
+	
     reader.onerror = function () {
         console.log('there are some problems');
-    };
+	};
 }
 
 function UploadSingleImage(configDinamico = {}) {
@@ -607,15 +608,15 @@ function UploadSingleImage(configDinamico = {}) {
 	};
     
 	const config = { ...configFixo, ...configDinamico };
-
+	
     var fdata = new FormData();
     fdata.append("file", config.file);
-
+	
     var reader = new FileReader();
 	
     reader.onload = (e) => {
         showLoadingModal();       
-
+		
         $.ajax({
             type: 'POST',
             url: 'https://api.seiweb.com.br/uploads/images',
@@ -625,32 +626,32 @@ function UploadSingleImage(configDinamico = {}) {
             processData: false,
             headers: {
                 "Authorization": localStorage.getItem('token')
-            },
+			},
             success: function(response, textStatus, jqXHR) {
                 hideLoadingModal();
-    
+				
 				if (typeof config.success === 'function') {
 					config.success(response, textStatus, jqXHR);
 				}       
-
+				
 				Swal.fire({
-				  title: "Imagem enviada",
-				  imageUrl: e.target.result,
-				  imageAlt: "Image"
+					title: "Imagem enviada",
+					imageUrl: e.target.result,
+					imageAlt: "Image"
 				});				
-            },
+			},
             error: handleDefaultError
-        });
-    };
+		});
+	};
 	
 	if ((config.file !== null) && (config.file !== undefined))
 	{
 		reader.readAsDataURL(config.file);
 	}
-
+	
     reader.onerror = function () {
         console.log('there are some problems');
-    };
+	};
 }
 
 function CarregaDataTable(configDinamico = {})
@@ -658,35 +659,35 @@ function CarregaDataTable(configDinamico = {})
     const configFixo = {
         select: false,
 		formatFunction: null
-    };	
+	};	
 	
     const config = { ...configFixo, ...configDinamico };
 	
     const defaultColumns = [];    
     const finalColumns = config.columns || defaultColumns;
-
+	
     function defaultFormat(d) {
         return (
             ''
-        );
-    }
+		);
+	}
 	
     const format = config.formatFunction || defaultFormat;    
-
+	
     if (config.select === true){
         config.columns.unshift({data: null, orderable: false, searchable: false, "width": "5%", render: DataTable.render.select()});
-    }
-
+	}
+	
     if (config.formatFunction !== null){
         config.columns.unshift({class: 'details-control', orderable: false, searchable: false, data: null, defaultContent: '', "width": "5%" });
-    }
+	}
     
 	var tableId = config.modal.find('table').attr('id');
 	
     var modalOpened = false;
 	
     var $tableElement = $(`#${tableId}`);
-
+	
 	if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
 		var existingTable = $tableElement.DataTable();
 		existingTable.destroy();
@@ -699,7 +700,7 @@ function CarregaDataTable(configDinamico = {})
         "stateSave": false,
         "autoWidth": false, // Desativa o cálculo automático de largura                
         "headerCallback": function(thead, data, start, end, display) {
-        },
+		},
         scrollX: false,
         ajax: 
         {
@@ -707,10 +708,10 @@ function CarregaDataTable(configDinamico = {})
             "type": "GET", // Or POST, PUT, etc.
             "beforeSend": function (xhr) {
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-            },
+			},
             "dataSrc": function (json) {
 				hideLoadingModal();
-
+				
                 if (!modalOpened) {
                     modalOpened = true;
                     
@@ -722,19 +723,19 @@ function CarregaDataTable(configDinamico = {})
                                 
                                 if (typeof showModalCallback === 'function') {
                                     showModalCallback();
-                                }
-                            });
+								}
+							});
                             
                             config.modal.modal('show');
-                        }
-                    }, 50);
-                }
+						}
+					}, 50);
+				}
                 
                 // Retorna os dados para o DataTable processar
                 return json.data || json;
-            },	
+			},	
             "error": handleDefaultError    
-        },          
+		},          
         select: (config.select === true) ? {style: 'os', selector: (_formatFunction === null) ? 'td:nth-child(1)':'td:nth-child(2)'} : false,
         processing: true,
         serverSide: true,        
@@ -746,7 +747,7 @@ function CarregaDataTable(configDinamico = {})
             //"infoFiltered": "(filtrados de _MAX_ registros no total)",
             select: {
                 rows: " %d selecionado(s)"
-            },
+			},
             "emptyTable": "Nenhum registro disponível",            
             "infoFiltered": "",
             "infoPostFix": "",
@@ -760,43 +761,43 @@ function CarregaDataTable(configDinamico = {})
                 "previous": "<i class='fa fa-chevron-left'></i>",
                 "next": "<i class='fa fa-chevron-right'></i>",
                 "last": "<i class='fa fa-angle-double-right'></i>"
-            }
-        },               
+			}
+		},               
         "drawCallback": function (settings) {
             $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
             $('.dt-layout-row').last().addClass('dataTables_paginate');
             $('.dt-paging-button').addClass('btn btn-sm btn-primary')
             $('.dataTables_paginate').appendTo('#'+config.modal.attr('id')+' .modal-footer');
-
+			
             if (typeof _drawCallback === 'function') {
                 _drawCallback(settings);
-            }
-        },                        
+			}
+		},                        
         "initComplete": function() {
             $('.dt-layout-row').first().addClass('dt-layout-row modal-header pt-0');
             $('.dt-layout-row').last().addClass('dataTables_paginate');
             $('.dt-paging-button').addClass('btn btn-sm btn-primary')
             $('.dataTables_paginate').appendTo('#'+config.modal.attr('id')+' .modal-footer');
-        }        
-    });    
-
+		}        
+	});    
+	
     $tableElement.find('tbody').on('click', 'td.details-control', function () {
         var tr = $(this).parents('tr');
         var row = $tabela.row(tr);
- 
+		
         if ( row.child.isShown() ) {
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');       
-        }
+		}
         else {
             // Open this row
             var childRow = row.child( format(row.data()) );
             childRow.show();
             tr.addClass('shown');
-        }
-    } );    
-
+		}
+	} );    
+	
     return $tabela;
 }
 
@@ -806,24 +807,24 @@ function CarregarFotoLista(_class){
         if ($this.data('foto') !== "")
         {
             $this.html(`<img class="avatar-img rounded-circle" src="assets/img/semfoto.png" style="width: 39px; height: 39px;" />`);      
-        } else {
+			} else {
             RestRequest(
                 'GET',
                 $imageUrl+$this.data('foto'),
                 null,
                 function (xhr) {
                     xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-                },
+				},
                 function (response, textStatus, jqXHR) {
                     $this.html(`<img class="avatar-img rounded-circle" src="${response}" style="width: 39px; height: 39px;" />`);      
-                },
+				},
                 function(jqXHR, textStatus, errorThrown)
                 {
                     $this.html(`<img class="avatar-img rounded-circle" src="assets/img/semfoto.png" style="width: 39px; height: 39px;" />`);      
-                }); 
-        }
-    })
-
+				}); 
+		}
+	})
+	
 }
 
 // Função para formatar a data e hora
@@ -856,39 +857,39 @@ function StrToValue(_value)
 
 function StrToInt(_number){
     var _string = $.trim(_number);
-
+	
     if ((_string === '') || (_string === null) || (_string === undefined)) {
         return 0;
-    } else {
+		} else {
         _string = _string.replace(/[^0-9]/g, '');
         return parseInt(_number);
-    }
-
+	}
+	
 }
 
 function StrToDate($value) {
     var $string = $.trim($value);
     return ($string === '') ? null :
-        $.trim($string).split('/')[2] + '-' +
-        $.trim($string).split('/')[1] + '-' +
-        $.trim($string).split('/')[0];
+	$.trim($string).split('/')[2] + '-' +
+	$.trim($string).split('/')[1] + '-' +
+	$.trim($string).split('/')[0];
 }
 
 
 function DateToStr($value) {
     var $string = $.trim($value);
-
+	
     if ($string === '')
-        return '';
-
+	return '';
+	
     $string = $string.substr(0, 10);
-
+	
     return $.trim($string).split('-')[2] + '/' + $.trim($string).split('-')[1] + '/' + $.trim($string).split('-')[0];
 }
 
 function VarToStr($value) {
     return (($value === null) || ($value === undefined)) ? '' : $.trim($value);
-
+	
 }
 
 function gerarHash (_size = 16) {
@@ -897,7 +898,7 @@ function gerarHash (_size = 16) {
     
     for (let i = 0; i < _size; i++) {
         hash += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+	}
     
     return hash;
 };
@@ -912,15 +913,15 @@ function CarregarFoto(thisFoto,_photo,_size="140px")
             function (xhr) {
                 thisFoto.html('<i class="fa fa-spin fa-spinner fa-3x"></i>');
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
-            },
+			},
             function (response, textStatus, jqXHR) {
                 thisFoto.html(`<img class="card-img-top rounded-circle" src="${response}" alt="[FOTO]" style="max-height: ${_size}; width: ${_size};" />`);      
-            },
+			},
             function(jqXHR, textStatus, errorThrown)
             {
                 thisFoto.html(`<img class="card-img-top rounded-circle" src="#" alt="[FOTO]" style="max-height: ${_size}; width: ${_size};" />`);      
-            });    
-    }
+			});    
+	}
 }
 
 
@@ -930,32 +931,6 @@ function checkboxValue(checkbox) {
     
     // Retorna valorA se estiver checado, valorB se não estiver
     return estaChecado ? true : false;
-}
-
-function ConvertToInt(_value)
-{
-    console.log(_value);
-
-    if ((_value === undefined) || (_value === null))
-    {
-        return 0;
-    }
-
-    return parseInt(_value);
-}
-
-function IntToValue(_value) {
-    try {
-        console.log(_value);
-        if (_value === 0) {
-            return null;
-        } else {
-            return _value;
-        }
-    } catch (error) {
-        console.error('Erro na função IntToValue:', error);
-        return 0;
-    }
 }
 
 function safeGet(objeto, campo, defaultValue = 0) {
@@ -977,15 +952,15 @@ function safeGetDeep(objeto, caminho, defaultValue = 0) {
         for (const campo of campos) {
             if (resultado === null || resultado === undefined || !(campo in resultado)) {
                 return defaultValue;
-            }
+			}
             resultado = resultado[campo];
-        }
+		}
         
         return resultado ?? defaultValue;
-    } catch (error) {
-        console.error('Erro em safeGetDeep:', error);
-        return defaultValue;
-    }
+		} catch (error) {
+		console.error('Erro em safeGetDeep:', error);
+		return defaultValue;
+	}
 }
 
 function validarInput($input) {
@@ -993,8 +968,8 @@ function validarInput($input) {
     
     // Verifica se o valor está vazio
     if (valor === null || valor === undefined || String(valor).trim() === '') {
-        return null;
-    }
+		return null;
+	}
     
     // Converte para string e remove espaços
     valor = String(valor).trim();
@@ -1006,47 +981,47 @@ function validarInput($input) {
     
     // Se for campo numérico ou tiver classes numéricas
     if (type === 'number' || hasCurrency || hasFloat || hasDouble) {
-        let valorNumerico = valor;
-        
-        // Tratamento especial para currency
-        if (hasCurrency) {
-            // Remove símbolos de moeda e converte vírgula para ponto
-            valorNumerico = valorNumerico.replace(/[^\d,.-]/g, '').replace(',', '.');
-        }
-        
-        const num = parseFloat(valorNumerico);
-        
-        if (isNaN(num)) {
-            return null;
-        }
-        
-        // Aplica casas decimais conforme a classe
-        if (hasCurrency) {
-            return parseFloat(num.toFixed(2));
-        } else if (hasFloat) {
-            return parseFloat(num.toFixed(7));
-        } else if (hasDouble) {
-            return parseFloat(num.toFixed(15));
-        } else {
-            return num; // type="number" sem classe especial
-        }
-    }
+		let valorNumerico = valor;
+		
+		// Tratamento especial para currency
+		if (hasCurrency) {
+			// Remove símbolos de moeda e converte vírgula para ponto
+			valorNumerico = valorNumerico.replace(/[^\d,.-]/g, '').replace(',', '.');
+		}
+		
+		const num = parseFloat(valorNumerico);
+		
+		if (isNaN(num)) {
+			return null;
+		}
+		
+		// Aplica casas decimais conforme a classe
+		if (hasCurrency) {
+			return parseFloat(num.toFixed(2));
+			} else if (hasFloat) {
+			return parseFloat(num.toFixed(7));
+			} else if (hasDouble) {
+			return parseFloat(num.toFixed(15));
+			} else {
+			return num; // type="number" sem classe especial
+		}
+	}
     
     // Para campos textuais, aplica text-transform
     const textTransform = $input.css('text-transform');
     
     switch (textTransform) {
-        case 'uppercase':
-            return valor.toUpperCase();
-        case 'lowercase':
-            return valor.toLowerCase();
-        case 'capitalize':
-            return valor.replace(/\b\w/g, function(char) {
-                return char.toUpperCase();
-            });
-        default:
-            return valor;
-    }
+		case 'uppercase':
+		return valor.toUpperCase();
+		case 'lowercase':
+		return valor.toLowerCase();
+		case 'capitalize':
+		return valor.replace(/\b\w/g, function(char) {
+			return char.toUpperCase();
+		});
+		default:
+		return valor;
+	}
 }
 
 function ConsultaCep(configDinamico = {}){
@@ -1054,18 +1029,18 @@ function ConsultaCep(configDinamico = {}){
 	};
     
 	const config = { ...configFixo, ...configDinamico };
-
+	
     RestRequest({
 		method: 'POST',
-        url: $baseApiUrl+'apiservice/cep',
-        data: {modulo: config.resource, cep: $('#cep').val()},
-        success: function(response, textStatus, jqXHR){
-            hideLoadingModal();
-
-            if (typeof config.success === 'function') {
-                config.success(response, textStatus, jqXHR);
-            }   
-        }
+		url: $baseApiUrl+'apiservice/cep',
+		data: {modulo: config.resource, cep: config.cep},
+		success: function(response, textStatus, jqXHR){
+			hideLoadingModal();
+			
+			if (typeof config.success === 'function') {
+				config.success(response, textStatus, jqXHR);
+			}   
+		}
 	});	
 }
 
@@ -1074,17 +1049,17 @@ function ConsultaCnpj(configDinamico = {}){
 	};
     
 	const config = { ...configFixo, ...configDinamico };
-
+	
     RestRequest({
 		method: 'POST',
-        url: $baseApiUrl+'apiservice/receitaWs',
-        data: {modulo: config.resource, cnpj: $.trim($('#cnpj').val())},
-        success: function(response, textStatus, jqXHR){
-            hideLoadingModal();
-
-            if (typeof config.success === 'function') {
-                config.success(response, textStatus, jqXHR);
-            }   
-        }
+		url: $baseApiUrl+'apiservice/receitaWs',
+		data: {modulo: config.resource, cnpj: $.trim($('#cnpj').val())},
+		success: function(response, textStatus, jqXHR){
+			hideLoadingModal();
+			
+			if (typeof config.success === 'function') {
+				config.success(response, textStatus, jqXHR);
+			}   
+		}
 	});	
-}
+}	

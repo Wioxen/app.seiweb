@@ -18,6 +18,7 @@ function initializeReady()
 	notifDropdown();
 	shortCut();
 	profile_pic();
+	carregarGeo();
 	
 	carregarMenu();
 	

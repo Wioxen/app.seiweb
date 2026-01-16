@@ -1,5 +1,6 @@
 function carregaSelect2(configDinamico = {}) { // Novos parâmetros    
 	const configFixo = {
+		defaultText: 'descricao'
 	};
     
 	const config = { ...configFixo, ...configDinamico };
@@ -30,7 +31,7 @@ function carregaSelect2(configDinamico = {}) { // Novos parâmetros
 			if (Array.isArray(response)) {				
 				response.forEach(function (item) {
 					var dataItem = {
-						text: item.descricao,
+						text: item[config.defaultText],
 						id: item.id
 					};
 
