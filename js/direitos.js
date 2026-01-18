@@ -143,7 +143,8 @@ function SalvarDireitosClick(e){
 		
         dataDireitos.acessos = _acessos;
 		
-        RestRequest({(dataDireitos.id === 0 ? 'POST' : 'PUT'),
+        RestRequest({
+			method: (dataDireitos.id === 0 ? 'POST' : 'PUT'),
             url: $baseApiUrl+"Role"+(dataDireitos.id === 0 ? '' : `/${dataDireitos.id}`),
             data: dataDireitos,
 			success: function (response, textStatus, jqXHR) {
