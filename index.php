@@ -726,6 +726,9 @@
 
 <!-- World map (replace with your desired map) -->
 <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+    <script src="assets/js/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
+    <script src="assets/js/brazil.js" type="text/javascript"></script>
+
 
 	<!-- Sweet Alert
 	<script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>-->

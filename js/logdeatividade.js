@@ -1,7 +1,6 @@
-var dataLog = undefined;
-var modalLog = undefined;
-var cadastroLog = undefined;
-var resourceLog = "LogDeAtividade";
+//var dataLog = undefined;
+//var cadastroLog = undefined;
+//var resourceLog = "";
     
 function DetailLog (d) {
     console.log(d);
@@ -24,8 +23,9 @@ function DetailLog (d) {
 
 function LogDeAtividadeClick(e){
     event.preventDefault();
+	
     var $this = $(e);
-
+	
     const defaultColumns = [
         {
             data: 'sucesso',
@@ -57,7 +57,7 @@ function LogDeAtividadeClick(e){
         },
     ];
 
-    cadastroLog = 
+    /*cadastroLog = 
         CarregaDataTable
         (
             'datatable/'+resourceLog,
@@ -72,7 +72,19 @@ function LogDeAtividadeClick(e){
             },
             false,
             DetailLog
-        );           
+	);*/           
         
-    cadastroLog.modal.find('.modal-title').html('<i class="fa fa-history"></i> Log de atividades');        
+	
+    var modalTbLog = createDynamicModal();
+	modalTbLog.find('.modal-title').html('<i class="fa fa-history"></i> Log de atividades');
+	modalTbLog.find('.modal-dialog').addClass('modal-xl');
+	modalTbLog.find('.modal-body')
+		.html(`<table id="LogDeAtividadeTb" class="row-border stripe hover" style="width:100%"></table>`)
+	
+	CarregaDataTable({
+		resource: 'datatable/LogDeAtividades',
+		modal: modalTbLog,
+		columns: defaultColumns,
+		formatFunction: DetailLog
+	});	   	
 }

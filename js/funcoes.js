@@ -214,7 +214,7 @@ function RestRequest(configDinamico = {})
 			xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
             if (typeof config.beforeSend === 'function')
 			{
-                config.beforeSend(xhr);
+				config.beforeSend(xhr);
 			} else {
 				showLoadingModal();       
 			}            
@@ -605,6 +605,7 @@ function EnviarImagem($this, successCallback, errorCallback) {
 
 function UploadSingleImage(configDinamico = {}) {
 	const configFixo = {
+		alertSuccess: true
 	};
     
 	const config = { ...configFixo, ...configDinamico };
@@ -634,11 +635,13 @@ function UploadSingleImage(configDinamico = {}) {
 					config.success(response, textStatus, jqXHR);
 				}       
 				
-				Swal.fire({
-					title: "Imagem enviada",
-					imageUrl: e.target.result,
-					imageAlt: "Image"
-				});				
+				if (config.alertSuccess === true) {
+					Swal.fire({
+						title: "Imagem enviada",
+						imageUrl: e.target.result,
+						imageAlt: "Image"
+					});				
+				}
 			},
             error: handleDefaultError
 		});
@@ -706,7 +709,7 @@ function CarregaDataTable(configDinamico = {})
         {
             "url" :$baseApiUrl+config.resource,
             "type": "GET", // Or POST, PUT, etc.
-            "beforeSend": function (xhr) {
+            "beforeSend": function (xhr) {				
                 xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
 			},
             "dataSrc": function (json) {
@@ -1063,3 +1066,49 @@ function ConsultaCnpj(configDinamico = {}){
 		}
 	});	
 }	
+
+
+function DownloadFile(configDinamico = {}) {
+	const configFixo = {
+	};
+    
+	const config = { ...configFixo, ...configDinamico };
+	
+	$.ajax({
+		url: config.url,
+		cache: false,
+		xhr:function () {
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState == 2) {
+					if (xhr.status == 200) {
+						xhr.responseType = "blob";
+						}else {
+						xhr.responseType = "text";
+					}
+				}
+			};
+			return xhr;
+		},
+		success:function (data) {
+			//Convert the Byte Data to BLOB object.
+			var blob = new Blob([data],{ type: "application/octetstream" });
+			
+			//Check the Browser type and download the File.
+			var isIE  = false || !!document.documentMode;
+			if (isIE) {
+				window.navigator.msSaveBlob(blob, config.fileName);
+				}else {
+				var url = window.URL ||window.webkitURL;
+				link = url.createObjectURL(blob);
+				var a = $("<a />");
+				a.attr("download", config.fileName);
+				a.attr("href", link);
+				$("body").append(a);
+				a[0].click();
+				$("body").remove(a);
+			}
+		},
+		error: exibeerror
+	});
+};

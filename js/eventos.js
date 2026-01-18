@@ -400,10 +400,10 @@ function carregarGeo() {
 			$('#Geolocation').html(`<div class="card card-round">
 				<div class="card-header">
 				<div class="card-head-row card-tools-still-right">
-				<h4 class="card-title">Geolocalização por país</h4>
+				<h4>Nacionalidades</h4>
 				</div>
 				<p class="card-category">
-				Mapa da distribuição de pessoas cadastradas por país</p>
+				Mapa de pessoas por nacionalidade</p>
 				</div>
 				<div class="card-body">
 				<div class="row">
@@ -457,10 +457,101 @@ function carregarGeo() {
 				onRegionTooltipShow(event, tooltip) {
 					tooltip.css({ backgroundColor: '#435ebe' })
 				}
-			});			
+			});
+			
+			/*var map_settings = {
+              map: 'brazil',
+              zoomButtons: false,
+              zoomMax: 1,
+              regionStyle: {
+                  initial: {
+                      'fill-opacity': 0.9,
+                      stroke: '#000',
+                      'stroke-width': 100,
+                      'stroke-opacity': 1
+                  },
+                  hover: {
+                      fill: '#00709a'
+                  }
+              },
+              backgroundColor: '#fff',
+              series: {
+                  regions: [{
+                      values: {
+                          // Região Norte
+                          ac: '#fff9c2',
+                          am: '#fff9c2',
+                          ap: '#fff9c2',
+                          pa: '#fff9c2',
+                          ro: '#fff9c2',
+                          rr: '#fff9c2',
+                          to: '#fff9c2',
+                          // Região Nordeste
+                          al: '#fcdeeb',
+                          ba: '#fcdeeb',
+                          ce: '#fcdeeb',
+                          ma: '#fcdeeb',
+                          pb: '#fcdeeb',
+                          pe: '#fcdeeb',
+                          pi: '#fcdeeb',
+                          rn: '#fcdeeb',
+                          se: '#fcdeeb',
+                          // Região Centro-Oeste
+                          df: '#feb83d',
+                          go: '#feb83d',
+                          ms: '#feb83d',
+                          mt: '#feb83d',
+                          // Região Sudeste
+                          es: '#e8ec9b',
+                          mg: '#e8ec9b',
+                          rj: '#e8ec9b',
+                          sp: '#e8ec9b',
+                          // Região Sul
+                          pr: '#fef56c',
+                          rs: '#fef56c',
+                          sc: '#fef56c'
+                      },
+                      attribute: 'fill'
+                  }]
+              },
+              container: $('#world-map'),
+              onRegionClick: function (event, code) {
+                  $('#clicked-region span').text(code);
+              },
+              onRegionOver: function (event, code) {
+                  $('#hovered-region span').text(code);
+              }
+          };
+
+          map = new jvm.WorldMap($.extend(true, {}, map_settings));*/
+	
+			
+			
 		},
 		error: function(xhr, status, error) {
 			console.error('Erro ao carregar o Geo:', error);
+		}
+	});
+}
+
+function inicializacao(){
+	RestRequest({
+		url: `${$baseApiUrl}inicializacao`,
+		method: 'GET',
+		success: function(data) {
+			hideLoadingModal();
+			$.notify({
+				icon: 'icon-bell',
+				title: 'SEIWEB',
+				message: 'Sistema inicializado com sucesso.',
+			},{
+				type: 'secondary',
+				placement: {
+					from: "bottom",
+					align: "right"
+				},
+				time: 1000,
+			});			
 		}
 	});
 }

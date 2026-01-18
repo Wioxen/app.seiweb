@@ -1,7 +1,8 @@
 var dataPessoa = undefined;
 var modalPessoa = undefined;
 var tbPessoa = undefined;
-var resourcePessoa = "Pessoa";
+
+const resourcePessoa = "Pessoa";
 
 function exibePessoa(data) {
 	const defaultColumns  = [
@@ -103,7 +104,12 @@ function exibeLoadPessoa(response, status, xhr)
 	});
 
 	$('#uploadLogoPessoa').off('click').on('click', uploadLogoPessoa);	
+	$('#UploadDocumento').off('click').on('click', uploadDocumentoPessoa);	
+	$('#UploadComprovante').off('click').on('click', uploadComprovantePessoa);	
+
 	$('#apagarLogoPessoa').off('click').on('click', apagarLogoPessoa);
+	$('#ApagarDocumento').off('click').on('click', ApagarPessoaDocumento);
+	$('#ApagarComprovante').off('click').on('click', ApagarPessoaComprovante);
 
 	/*$('#cnpj').trigger('input').trigger('change');
 	$('#cep').trigger('input').trigger('change');
@@ -114,6 +120,13 @@ function exibeLoadPessoa(response, status, xhr)
 	
 	if ((dataPessoa.dtNasc !== '') && (dataPessoa.dtNasc !== null))
 		$('#dtNasc').val(DateToStr(dataPessoa.dtNasc)).trigger('input').trigger('change');
+	
+	if ((dataPessoa.imgDocumento !== '') && (dataPessoa.imgDocumento !== null))
+		$('#BadgeDocumento').text('1');
+
+	if ((dataPessoa.imgComprovante !== '') && (dataPessoa.imgComprovante !== null))
+		$('#BadgeComprovante').text('1');
+
 	
 	if (dataPessoa.foto != null){
 			$('#LogoPessoa').attr('src', $imageUrl+dataPessoa.foto);
@@ -362,7 +375,113 @@ async function uploadLogoPessoa(event) {
 	});
 }
 
+async function uploadDocumentoPessoa(event) {
+	const { value: file } = await Swal.fire({
+	  title: "Selecione uma imagem",
+	  input: "file",
+	  inputAttributes: {
+		"accept": "image/*,.pdf",
+		"aria-label": "Carregue sua imagem"
+	  },
+	  showCancelButton: true,
+	  confirmButtonText: "Enviar",
+	  cancelButtonText: "Sair",
+	  showLoaderOnConfirm: true,
+	  allowOutsideClick: () => !Swal.isLoading()
+	});
+	
+	UploadSingleImage({
+		file: file,
+		alertSuccess: false,
+		success: function(response, textStatus, jqXHR){
+			$.notify({
+					icon: 'icon-bell',
+					title: 'Mensagem',
+					message: "Documento enviado com sucesso.",
+					},{
+					type: 'success',
+					placement: {
+						from: "top",
+						align: "center"
+					},
+					time: 300,
+				});				
+				
+			$('#BadgeDocumento').text('1');
+			dataPessoa.imgDocumento = response;
+			$('#UploadDocumento').attr('src', $imageUrl+dataPessoa.imgDocumento);				
+		}
+	});
+}
+
+async function uploadComprovantePessoa(event) {
+	const { value: file } = await Swal.fire({
+	  title: "Selecione uma imagem",
+	  input: "file",
+	  inputAttributes: {
+		"accept": "image/*,.pdf",
+		"aria-label": "Carregue sua imagem"
+	  },
+	  showCancelButton: true,
+	  confirmButtonText: "Enviar",
+	  cancelButtonText: "Sair",
+	  showLoaderOnConfirm: true,
+	  allowOutsideClick: () => !Swal.isLoading()
+	});
+	
+	UploadSingleImage({
+		file: file,
+		alertSuccess: false,
+		success: function(response, textStatus, jqXHR){
+			$.notify({
+					icon: 'icon-bell',
+					title: 'Mensagem',
+					message: "Comprovante enviado com sucesso.",
+					},{
+					type: 'success',
+					placement: {
+						from: "top",
+						align: "center"
+					},
+					time: 300,
+				});		
+				
+			$('#BadgeComprovante').text('1');
+			dataPessoa.imgComprovante = response;
+			$('#UploadComprovante').attr('src', $imageUrl+dataPessoa.imgComprovante);		
+		}
+	});
+}
+
 function apagarLogoPessoa() {
     dataPessoa.foto = null;
     $('#LogoPessoa').attr('src', '#');
+}
+
+function ApagarPessoaDocumento() {
+    dataPessoa.imgDocumento = null;
+    $('#ApagarDocumento').attr('src', '#');
+	$('#BadgeDocumento').text('0');
+}
+
+function ApagarPessoaComprovante() {
+    dataPessoa.imgComprovante = null;
+    $('#ApagarComprovante').attr('src', '#');
+	$('#BadgeComprovante').text('0');
+}
+
+function DownloadPessoaDocumento()
+{
+	DownloadFile({
+		url: $imageUrl+dataPessoa.imgDocumento,
+		fileName: dataPessoa.imgDocumento
+	});
+}
+
+function DownloadPessoaComprovante()
+{
+	DownloadFile({
+		url: $imageUrl+dataPessoa.imgComprovante,
+		fileName: dataPessoa.imgComprovante
+	});
 }

@@ -22,18 +22,5 @@ function initializeReady()
 	
 	carregarMenu();
 	
-	//$('.logo').attr('href',$baseApiUrl+'index.php?token='+$('#token').val()+'&p=');
-	
-	$.notify({
-		icon: 'icon-bell',
-		title: 'SEIWEB',
-		message: 'Sistema inicializado com sucesso.',
-	},{
-		type: 'secondary',
-		placement: {
-			from: "bottom",
-			align: "right"
-		},
-		time: 1000,
-	});		
+    inicializacao();
 }

@@ -29,11 +29,10 @@
 										<ul class="dropdown-menu">
 											<li><a id="uploadLogoPessoa" class="dropdown-item" href="#"><i class="fa fa-cloud-upload"></i> Escolher arquivo</a></li>
 											<li><a id="apagarLogoPessoa" class="dropdown-item" href="#"><i class="fa fa-eraser"></i> Limpar</a></li>
+											<!--<li><a class="dropdown-item" href="#" onclick="DownloadPessoFoto('f68ab22373bd266f393f302a695702ad.jpg');"><i class="fa fa-eraser"></i> Download</a></li>-->
 										</ul>
 									</div>
-									<input id="fileUploadPessoa" type="file" name="fileupload" hidden accept=".png, .jpg, .jpeg" />
-									<img id="LogoPessoa" class="card-img-top rounded-circle mb-3" src="#" alt="[FOTO]" style="max-height: 130px; max-width: 130px;" />
-									
+									<img id="LogoPessoa" class="card-img-top rounded-circle mb-3" src="#" alt="[FOTO]" style="max-height: 130px; max-width: 130px;" />									
 								</div>
 							</div>
 						</div>
@@ -49,34 +48,32 @@
 									<ul class="list-group">
 										<li class="list-group-item d-flex justify-content-between align-items-center">
 											Documento
-											<span class="badge badge-warning badge-pill me-3">0</span>
+											<span id="BadgeDocumento" class="badge badge-warning badge-pill me-3">0</span>
 											<div class="dropdown">
 												<button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 													<i class="fa fa-ellipsis-h"></i>
 												</button>
 												<ul class="dropdown-menu" role="menu" style="">
 													<li>
-														<a class="dropdown-item" href="#">Action</a>
-														<a class="dropdown-item" href="#">Another action</a>
-														<div class="dropdown-divider"></div>
-														<a class="dropdown-item" href="#">Something else here</a>
+														<li><a id="UploadDocumento" class="dropdown-item" href="#"><i class="fa fa-cloud-upload"></i> Escolher arquivo</a></li>
+														<li><a id="ApagarDocumento" class="dropdown-item" href="#"><i class="fa fa-eraser"></i> Limpar</a></li>
+														<li><a id="DownloadDocumento" class="dropdown-item" href="#" onclick="DownloadPessoaDocumento();"><i class="fa fa-cloud-download"></i> Download</a></li>
 													</li>
 												</ul>
 											</div>							
 										</li>
 										<li class="list-group-item d-flex justify-content-between align-items-center">
 											Comprovante de residência
-											<span class="badge badge-warning badge-pill me-3">0</span>
+											<span id="BadgeComprovante" class="badge badge-warning badge-pill me-3">0</span>
 											<div class="dropdown">
 												<button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 													<i class="fa fa-ellipsis-h"></i>
 												</button>
 												<ul class="dropdown-menu" role="menu" style="">
 													<li>
-														<a class="dropdown-item" href="#">Action</a>
-														<a class="dropdown-item" href="#">Another action</a>
-														<div class="dropdown-divider"></div>
-														<a class="dropdown-item" href="#">Something else here</a>
+														<li><a id="UploadComprovante" class="dropdown-item" href="#"><i class="fa fa-cloud-upload"></i> Escolher arquivo</a></li>
+														<li><a id="ApagarComprovante" class="dropdown-item" href="#"><i class="fa fa-eraser"></i> Limpar</a></li>
+														<li><a id="DownloadComprovante" class="dropdown-item" href="#" onclick="DownloadPessoaComprovante();"><i class="fa fa-cloud-download"></i> Download</a></li>
 													</li>
 												</ul>
 											</div>							
