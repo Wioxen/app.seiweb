@@ -619,3 +619,7 @@ tr[data-dt-row] td {
 #errorList {
 	font-size:1rem;
 }
+
+.btn-outline-secondary {
+  --bs-btn-border-color: #ced4da;
+}

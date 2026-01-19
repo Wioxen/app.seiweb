@@ -39,7 +39,7 @@ function exibeEmpresa(data) {
 	
     var modalTbEmpresa = createDynamicModal();        
 	
-	modalTbEmpresa.find('.modal-title').text('Empresa');
+	modalTbEmpresa.find('.modal-title').text('Empresas');
 	modalTbEmpresa.find('.modal-dialog').addClass('modal-lg');
 	modalTbEmpresa.find('.modal-body').html(`<table id="EmpresaTb" class="row-border stripe hover" style="width:100%"></table>`);
 	modalTbEmpresa.find('.modal-footer').html(`<div class="me-auto">

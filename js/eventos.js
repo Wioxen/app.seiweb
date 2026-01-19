@@ -202,14 +202,14 @@ function shortCut(){
 function LogOutClick(e){
 	e.preventDefault();
 	zPergunta(`${$('#first-name').text()}, deseja realmente sair do sistema?`,function(){
-		RestRequest('POST',
-			$baseApiUrl+"Logout",
-			null,
-			null,
-			function (response, textStatus, jqXHR) {
+		RestRequest({
+			method: 'POST',
+			url: $baseApiUrl+"Logout",
+			success: function (response, textStatus, jqXHR) {
 				hideLoadingModal();
 				redirectToLogin();
-			});                          
+			}
+		});                          
 	});
 	/*Swal.fire({
 		title: 'Responda',
@@ -538,8 +538,13 @@ function inicializacao(){
 	RestRequest({
 		url: `${$baseApiUrl}inicializacao`,
 		method: 'GET',
+		beforeSend: function(xhr){
+			showLoadingModal();
+			$('#NomeEmpresa').html('<i class="fa fa-spin fa-spinner"><i>');
+		},
 		success: function(data) {
 			hideLoadingModal();
+			$('#NomeEmpresa').html(`<h3 class="fw-bold mb-3 me-3">${data.empresa} <span class="badge badge-secondary">${data.cnpj}</span></h3>`);
 			$.notify({
 				icon: 'icon-bell',
 				title: 'SEIWEB',

@@ -29,27 +29,27 @@ function exibePessoa(data) {
 			"width": "8%",
 			"render": function(data, type, row) {
 				return `<div class="dropdown">
-						<button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="fa fa-ellipsis-h"></i>
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-						<li><a class="dropdown-item" href="#" onclick="EditarPessoaClick(this);"><i class="fas fa-edit"></i> Editar</a></li>					
-						</ul>
-						</div>`                        
+				<button class="btn btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+				<i class="fa fa-ellipsis-h"></i>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+				<li><a class="dropdown-item" href="#" onclick="EditarPessoaClick(this);"><i class="fas fa-edit"></i> Editar</a></li>					
+				</ul>
+				</div>`                        
 			}
 		},
 	];	
 	
     var modalTbPessoa = createDynamicModal();        
 	
-	modalTbPessoa.find('.modal-title').text('Pessoa');
+	modalTbPessoa.find('.modal-title').html('<i class="fas fa-user-friends"></i> Pessoas');
 	modalTbPessoa.find('.modal-dialog').addClass('modal-lg');
 	modalTbPessoa.find('.modal-body')
-		.html(`<table id="PessoaTb" class="row-border stripe hover" style="width:100%"></table>`)
+	.html(`<table id="PessoaTb" class="row-border stripe hover" style="width:100%"></table>`)
 	modalTbPessoa.find('.modal-footer').html(`<div class="me-auto">
-	<button id="${gerarHash()}" type="button" class="btn btn-success" onclick="NovoPessoaClick(this);">
-	<i class="icon-plus me-2"></i>Novo Cadastro
-	</button>
+		<button id="${gerarHash()}" type="button" class="btn btn-success" onclick="NovoPessoaClick(this);">
+		<i class="icon-plus me-2"></i>Novo Cadastro
+		</button>
 	</div>`);
 	
 	tbPessoa = CarregaDataTable({
@@ -68,21 +68,36 @@ function PessoaClick(e) {
 	});  
 }
 
-function ResetDefaultPessoa(onModalCallback){
+function ResetDefaultPessoa(configDinamico = {}){
+	const configFixo = {
+		saveClick: SalvarPessoaClick,
+		showDelete: true
+	};
+    
+	const config = { ...configFixo, ...configDinamico };	
+	
     hideLoadingModal();
-
-	/*Create modal*/
+	
     modalPessoa = createDynamicModal(function(){
         dataPessoa = null;
-    }); 
-
-    modalPessoa.find('.modal-title').text('Cadastrar Pessoa');
+	}); 
+	
+	var BtnSalvarHash = gerarHash();
+	var BtnExcluirHash = gerarHash();
+	
+    modalPessoa.find('.modal-title').html('Cadastrar Pessoa');
     modalPessoa.find('.modal-dialog').addClass('modal-dialog-scrollable').addClass('modal-xl');
     modalPessoa.find('.modal-footer').html(`<div class="me-auto">
-	<button id="${gerarHash()}" class="btn btn-warning" onclick="CancelarPessoaClick(this);"><i class="icon-close"></i> Cancelar</button>
-	<button id="${gerarHash()}" class="btn btn-danger" onclick="ExcluirPessoaClick(this);"><i class="icon-trash"></i> Excluir</button>
-	<button id="${gerarHash()}" class="btn btn-success" onclick="SalvarPessoaClick(this);"><i class="icon-note"></i> Salvar</button>
+		<button id="${gerarHash()}" class="btn btn-warning" onclick="CancelarPessoaClick(this);"><i class="icon-close"></i> Cancelar</button>
+		<button id="${BtnExcluirHash}" class="btn btn-danger" onclick="ExcluirPessoaClick(this);"><i class="icon-trash"></i> Excluir</button>
+		<button id="${BtnSalvarHash}" class="btn btn-success"><i class="icon-note"></i> Salvar</button>
 	</div>`);
+	
+	if (config.showDelete !== true) {
+		$('#'+BtnExcluirHash).remove();
+	}
+	
+	$('#'+BtnSalvarHash).click(config.saveClick);	
 	
     modalPessoa.find('.modal-header-search').hide();	
 	
@@ -90,78 +105,78 @@ function ResetDefaultPessoa(onModalCallback){
         modal: modalPessoa,       
         template: 'templates/'+resourcePessoa+'.html #frm'+resourcePessoa,
 		onLoad: exibeLoadPessoa,
-		onModal: onModalCallback
+		onModal: config.modalCallback
 	});                
 }
 
 function exibeLoadPessoa(response, status, xhr)
 {
 	$('#btnCep').off('click').on('click', ConsultaCepPessoa);
-
+	
 	$('#cep').on('blur', function() {
 		if ((dataPessoa.cep !== '') && (dataPessoa.cep !== null))
-			$('#btnCep').click();
+		$('#btnCep').click();
 	});
-
+	
 	$('#uploadLogoPessoa').off('click').on('click', uploadLogoPessoa);	
 	$('#UploadDocumento').off('click').on('click', uploadDocumentoPessoa);	
 	$('#UploadComprovante').off('click').on('click', uploadComprovantePessoa);	
-
+	
 	$('#apagarLogoPessoa').off('click').on('click', apagarLogoPessoa);
 	$('#ApagarDocumento').off('click').on('click', ApagarPessoaDocumento);
 	$('#ApagarComprovante').off('click').on('click', ApagarPessoaComprovante);
-
+	
 	/*$('#cnpj').trigger('input').trigger('change');
-	$('#cep').trigger('input').trigger('change');
-	$('#telefone').trigger('input').trigger('change');
+		$('#cep').trigger('input').trigger('change');
+		$('#telefone').trigger('input').trigger('change');
 	$('#celular').trigger('input').trigger('change');*/
 	
 	preencherFormularioCompleto(dataPessoa, '#frm'+resourcePessoa);  
 	
 	if ((dataPessoa.dtNasc !== '') && (dataPessoa.dtNasc !== null))
-		$('#dtNasc').val(DateToStr(dataPessoa.dtNasc)).trigger('input').trigger('change');
+	$('#dtNasc').val(DateToStr(dataPessoa.dtNasc)).trigger('input').trigger('change');
 	
-	if ((dataPessoa.imgDocumento !== '') && (dataPessoa.imgDocumento !== null))
-		$('#BadgeDocumento').text('1');
-
-	if ((dataPessoa.imgComprovante !== '') && (dataPessoa.imgComprovante !== null))
-		$('#BadgeComprovante').text('1');
-
+	if ((dataPessoa.imgDocumento !== undefined) && (dataPessoa.imgDocumento !== '') && (dataPessoa.imgDocumento !== null))
+	$('#BadgeDocumento').text('1');
+	
+	if ((dataPessoa.imgComprovante !== undefined) && (dataPessoa.imgComprovante !== '') && (dataPessoa.imgComprovante !== null))
+	$('#BadgeComprovante').text('1');
+	
 	
 	if (dataPessoa.foto != null){
-			$('#LogoPessoa').attr('src', $imageUrl+dataPessoa.foto);
-			
-			$('#LogoPessoa').click(function(){
-				Swal.fire({
-				  imageUrl: $imageUrl+dataPessoa.foto,
-				  imageHeight: 300,				  
-				  imageAlt: "A tall image"
-				});				
-			});
-			
-		}	
+		$('#LogoPessoa').attr('src', $imageUrl+dataPessoa.foto);
 		
+		$('#LogoPessoa').click(function(){
+			Swal.fire({
+				imageUrl: $imageUrl+dataPessoa.foto,
+				imageHeight: 300,				  
+				imageAlt: "A tall image"
+			});				
+		});
+		
+	}	
+	
 	CarregaPessoaSelect('#selectPessoaBairro','Bairro','bairroId');
 	CarregaPessoaSelect('#selectPessoaMunicipio','Municipio','municipioId');	
 	CarregaPessoaSelect('#selectPessoaNat','Municipio','natId');	
 	CarregaPessoaSelect('#selectPessoaPais','pais','paisId','nacionalidade');
 	CarregaPessoaSelect('#selectPessoaEstadoCivil','estadoCivil','estadoCivilId');
-
+	
     carregaSelect2({
 		url: $baseApiUrl+'lista/sexo',
 		container: '#selectPessoaSexo',
         modal: modalPessoa,
         success: function(response, textStatus, jqXHR){
 			$('#selectPessoaSexo')
-				.find('select')
-				.val(safeGet(dataPessoa, 'sexo'))
-				.trigger('change');  
-        },
+			.find('select')
+			.val(safeGet(dataPessoa, 'sexo'))
+			.trigger('change');  
+		},
         change: function(data, value, element){
             if ((data !== null) && (data !== undefined)){
 				dataPessoa.sexo = data.id;				
-            }
-        },
+			}
+		},
         unselect: function(e){
 			dataPessoa.sexo = null;
 		}		
@@ -174,8 +189,10 @@ function NovoPessoaClick(e)
 	
 	dataPessoa = { id: 0 };
 	
-	ResetDefaultPessoa(function(){
-		$('#descricao').focus();
+	ResetDefaultPessoa({
+		modalCallback: function(){
+			$('#descricao').focus();
+		}
 	});	
 }
 
@@ -193,9 +210,11 @@ function EditarPessoaClick(e){
 		success: function(response, textStatus, jqXHR){
 			hideLoadingModal();
 			dataPessoa = response;
-			ResetDefaultPessoa(function(){
-				$('#descricao').focus();
-			});
+			ResetDefaultPessoa({
+				modalCallback: function(){
+					$('#descricao').focus();
+				}
+			});	
 		}
 	});  	
 }
@@ -214,9 +233,18 @@ function ExcluirPessoaClick(e){
 	});
 }
 
-function SalvarPessoaClick(e){
-    event.preventDefault();
-	
+function SalvarPessoaClick(){
+	SalvarPessoa(function(response, textStatus, jqXHR){
+		if (jqXHR.status === 201){
+			dataPessoa.id = response.id;
+		}                
+		hideLoadingModal();
+		modalPessoa.modal('hide');
+		tbPessoa.ajax.reload();		
+	});
+}
+
+function SalvarPessoa(successCallback){
 	dataPessoa.descricao = validarInput($('#descricao'));
 	dataPessoa.numero = validarInput($('#numero'));
 	dataPessoa.complemento = validarInput($('#complemento'));
@@ -234,14 +262,11 @@ function SalvarPessoaClick(e){
 		url: $baseApiUrl+resourcePessoa+(dataPessoa.id === 0 ? '' : `/${dataPessoa.id}`),
 		data: dataPessoa,
 		success: function (response, textStatus, jqXHR) {
-			if (jqXHR.status === 201){
-				dataPessoa.id = response.id;
-			}                
-			hideLoadingModal();
-			modalPessoa.modal('hide');
-			tbPessoa.ajax.reload();
+			if (typeof successCallback === 'function') {
+				successCallback(response, textStatus, jqXHR);
+			}
 		}
-	}); 
+	}); 	
 }
 
 function CarregaPessoaSelect(container, resource, field, defaultText = 'descricao'){
@@ -252,15 +277,15 @@ function CarregaPessoaSelect(container, resource, field, defaultText = 'descrica
         modal: modalPessoa,
         success: function(response, textStatus, jqXHR){
             $(container)
-				.find('select')
-                .val(safeGet(dataPessoa, field))
-                .trigger('change');
-        },
+			.find('select')
+			.val(safeGet(dataPessoa, field))
+			.trigger('change');
+		},
         change: function(data, value, element){
             if ((data !== null) && (data !== undefined)){
                 dataPessoa[field] = data.id;
-            }
-        },
+			}
+		},
         unselect: function(e){
 			dataPessoa[field] = null;
 		}	
@@ -280,7 +305,7 @@ function ConsultaCepPessoa(){
             dataPessoa.municipioId = response.municipioId;
 			CarregaPessoaSelect('#selectPessoaBairro','Bairro','bairroId');
 			CarregaPessoaSelect('#selectPessoaMunicipio','Municipio','municipioId');	
-           $('#numero').focus();			
+			$('#numero').focus();			
 		}
 	});
 }
@@ -346,17 +371,17 @@ function PessoaNatClick(e){
 
 async function uploadLogoPessoa(event) {
 	const { value: file } = await Swal.fire({
-	  title: "Selecione uma imagem",
-	  input: "file",
-	  inputAttributes: {
-		"accept": "image/*",
-		"aria-label": "Carregue sua imagem"
-	  },
-	  showCancelButton: true,
-	  confirmButtonText: "Enviar",
-	  cancelButtonText: "Sair",
-	  showLoaderOnConfirm: true,
-	  allowOutsideClick: () => !Swal.isLoading()
+		title: "Selecione uma imagem",
+		input: "file",
+		inputAttributes: {
+			"accept": "image/*",
+			"aria-label": "Carregue sua imagem"
+		},
+		showCancelButton: true,
+		confirmButtonText: "Enviar",
+		cancelButtonText: "Sair",
+		showLoaderOnConfirm: true,
+		allowOutsideClick: () => !Swal.isLoading()
 	});
 	
 	UploadSingleImage({
@@ -366,9 +391,9 @@ async function uploadLogoPessoa(event) {
 			$('#LogoPessoa').attr('src', $imageUrl+dataPessoa.foto);	
 			$('#LogoPessoa').click(function(){
 				Swal.fire({
-				  imageUrl: $imageUrl+dataPessoa.foto,
-				  imageHeight: 300,				  
-				  imageAlt: "A tall image"
+					imageUrl: $imageUrl+dataPessoa.foto,
+					imageHeight: 300,				  
+					imageAlt: "A tall image"
 				});				
 			});			
 		}
@@ -377,17 +402,17 @@ async function uploadLogoPessoa(event) {
 
 async function uploadDocumentoPessoa(event) {
 	const { value: file } = await Swal.fire({
-	  title: "Selecione uma imagem",
-	  input: "file",
-	  inputAttributes: {
-		"accept": "image/*,.pdf",
-		"aria-label": "Carregue sua imagem"
-	  },
-	  showCancelButton: true,
-	  confirmButtonText: "Enviar",
-	  cancelButtonText: "Sair",
-	  showLoaderOnConfirm: true,
-	  allowOutsideClick: () => !Swal.isLoading()
+		title: "Selecione uma imagem",
+		input: "file",
+		inputAttributes: {
+			"accept": "image/*,.pdf",
+			"aria-label": "Carregue sua imagem"
+		},
+		showCancelButton: true,
+		confirmButtonText: "Enviar",
+		cancelButtonText: "Sair",
+		showLoaderOnConfirm: true,
+		allowOutsideClick: () => !Swal.isLoading()
 	});
 	
 	UploadSingleImage({
@@ -395,18 +420,18 @@ async function uploadDocumentoPessoa(event) {
 		alertSuccess: false,
 		success: function(response, textStatus, jqXHR){
 			$.notify({
-					icon: 'icon-bell',
-					title: 'Mensagem',
-					message: "Documento enviado com sucesso.",
-					},{
-					type: 'success',
-					placement: {
-						from: "top",
-						align: "center"
-					},
-					time: 300,
-				});				
-				
+				icon: 'icon-bell',
+				title: 'Mensagem',
+				message: "Documento enviado com sucesso.",
+				},{
+				type: 'success',
+				placement: {
+					from: "top",
+					align: "center"
+				},
+				time: 300,
+			});				
+			
 			$('#BadgeDocumento').text('1');
 			dataPessoa.imgDocumento = response;
 			$('#UploadDocumento').attr('src', $imageUrl+dataPessoa.imgDocumento);				
@@ -416,17 +441,17 @@ async function uploadDocumentoPessoa(event) {
 
 async function uploadComprovantePessoa(event) {
 	const { value: file } = await Swal.fire({
-	  title: "Selecione uma imagem",
-	  input: "file",
-	  inputAttributes: {
-		"accept": "image/*,.pdf",
-		"aria-label": "Carregue sua imagem"
-	  },
-	  showCancelButton: true,
-	  confirmButtonText: "Enviar",
-	  cancelButtonText: "Sair",
-	  showLoaderOnConfirm: true,
-	  allowOutsideClick: () => !Swal.isLoading()
+		title: "Selecione uma imagem",
+		input: "file",
+		inputAttributes: {
+			"accept": "image/*,.pdf",
+			"aria-label": "Carregue sua imagem"
+		},
+		showCancelButton: true,
+		confirmButtonText: "Enviar",
+		cancelButtonText: "Sair",
+		showLoaderOnConfirm: true,
+		allowOutsideClick: () => !Swal.isLoading()
 	});
 	
 	UploadSingleImage({
@@ -434,18 +459,18 @@ async function uploadComprovantePessoa(event) {
 		alertSuccess: false,
 		success: function(response, textStatus, jqXHR){
 			$.notify({
-					icon: 'icon-bell',
-					title: 'Mensagem',
-					message: "Comprovante enviado com sucesso.",
-					},{
-					type: 'success',
-					placement: {
-						from: "top",
-						align: "center"
-					},
-					time: 300,
-				});		
-				
+				icon: 'icon-bell',
+				title: 'Mensagem',
+				message: "Comprovante enviado com sucesso.",
+				},{
+				type: 'success',
+				placement: {
+					from: "top",
+					align: "center"
+				},
+				time: 300,
+			});		
+			
 			$('#BadgeComprovante').text('1');
 			dataPessoa.imgComprovante = response;
 			$('#UploadComprovante').attr('src', $imageUrl+dataPessoa.imgComprovante);		
@@ -482,6 +507,6 @@ function DownloadPessoaComprovante()
 {
 	DownloadFile({
 		url: $imageUrl+dataPessoa.imgComprovante,
-		fileName: dataPessoa.imgComprovante
+	fileName: dataPessoa.imgComprovante
 	});
-}
+	}	

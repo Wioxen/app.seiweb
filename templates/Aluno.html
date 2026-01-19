@@ -1,282 +1,118 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SEIWEB</title>
-
-    <!-- Custom fonts for this template-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="../assets/dist/css/estilo.css" rel="stylesheet" />
-</head>
-<body>
-    <div id="frmAluno">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="d-flex justify-content-center">
-                        <div class="text-center">
-                            <button class="btn btn-sm btn-light bg-transparent border-0 mb-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa fa-list"></i>
-                            </button>
-                            <div class="dropdown">
-                                <ul class="dropdown-menu">
-                                    <li><a id="uploadFotoAluno" class="dropdown-item" href="#"><i class="fa fa-cloud-upload"></i> Escolher arquivo</a></li>
-                                    <li><a id="apagarFotoAluno" class="dropdown-item" href="#"><i class="fa fa-eraser"></i> Apagar</a></li>
-                                </ul>
-                            </div>
-                            <input id="fileUploadAluno" type="file" name="fileupload" hidden accept=".png, .jpg, .jpeg" />
-                            <span id="FotoAluno">[FOTO]</span>     
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-10">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col">
-                                    <label class="form-label">RM <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top"
-        data-bs-custom-class="custom-tooltip"
-        data-bs-title="O registro de matrícula será gerado após a gravação dos dados."></i></label>
-                                    <input type="text" class="form-control form-control-sm text-uppercase" id="rm" name="rm" readonly />
-                                </div>
-                                <div class="col">
-                                </div>
-                            </div>                            
-                        </div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col">
-                                    <label class="form-label">Saída do Colégio <a href="#" onclick="AlunoNovoSaidaClick(this);"><i class="fa fa-plus-circle"></i></a></label>
-                                    <div id="selectSaida" data-control="AlunoSaida">
-                                        <div class="loading-label w-100">
-                                            <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
-                                            Carregando, aguarde ...
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <label class="form-label">Senha Internet</label>
-                                    <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoSenhaNet" name="pessoa[senhaNet]" readonly />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-1">
-                        <div class="col-md-12">
-                            <label class="form-label required">Nome</label>
-                            <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoNome" name="pessoa[descricao]" required />
-                        </div>
-                    </div>
-                    <div class="row mb-1">
-                        <div class="col-md-3">
-                            <label class="form-label">Nascimento</label>
-                            <input type="text" class="form-control form-control-sm text-uppercase data" id="AlunoDtNasc" name="pessoa[dtNasc]" required />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Sexo</label>
-                            <div id="selectSexo" data-control="AlunoSexo">
-                                <div class="loading-label w-100">
-                                    <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
-                                    Carregando, aguarde ...
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">RG</label>
-                            <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoRg" name="pessoa[rg]" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">CPF</label>
-                            <input type="text" class="form-control form-control-sm text-uppercase cpf" id="AlunoCpf" name="pessoa[cpfCnpj]" />
-                        </div>
-                    </div>                    
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link btn-sm active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true"><i class="fa fa-home"></i> DADOS DO ALUNO</button>
-                    </li>
-                    <!--<li class="nav-item" role="presentation">
-                        <button class="nav-link btn-sm" id="pills-end-tab" data-bs-toggle="pill" data-bs-target="#pills-end" type="button" role="tab" aria-controls="pills-end" aria-selected="false"><i class="fa fa-home"></i> ENDEREÇO</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link btn-sm" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false"><i class="fa fa-users"></i> RESPONSÁVEIS</button>
-                    </li>-->
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link btn-sm" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false"><i class="fa fa-id-card"></i> MATRÍCULA</button>
-                    </li>
-                    </ul>
-                    <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                        <!--<div class="row mb-1">
-                            <div class="col-md-4">
-                            </div>
-                            <div class="col-md-4 text-center">
-                                <label class="form-label" for="estcivilpais">Estado civil dos pais</label>
-                                <select id="estcivilpais" class="form-select form-select-sm">
-                                    <option value="0"></option>
-                                    <option value="1">Solteiro(a)</option>
-                                    <option value="2">Casado(a)</option>
-                                    <option value="3">Divorciado(a)</option>
-                                    <option value="4">Viúvo(a)</option>
-                                    <option value="5">Separado(a)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                            </div>
-                        </div>-->
-                        <div class="row mb-1">
-                            <div class="col-md-6">
-                                <label class="form-label" for="pai">Nome do pai</label>
-                                <div class="input-group input-group-sm">
-                                    <input id="alunopai" type="text" class="form-control form-control-sm text-uppercase" data-title="Pai" data-field="pai" data-resource="responsavel" tabindex="-1" required />
-                                    <button id="BtnAlunoPai" class="btn btn-sm btn-light border border-1 filaluno" data-parent="#alunopai" type="button" tabindex="-1">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label" for="bairro">Nome da mãe</label>
-                                <div class="input-group input-group-sm">
-                                    <input id="alunomae" type="text" class="form-control form-control-sm text-uppercase" data-title="Mãe" data-field="mae" data-resource="responsavel" tabindex="-1" required />
-                                    <button id="BtnAlunoMae" class="btn btn-sm btn-light border border-1 filaluno" data-parent="#alunomae" type="button" tabindex="-1">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>                        
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="form-label required" for="cep">CEP</label>
-                                        <div class="input-group input-group-sm">
-                                            <input id="cep" type="text" class="form-control form-control-sm text-uppercase cep" required />
-                                            <button id="btnAlunoCep" class="btn btn-sm btn-light border" type="button" tabindex="-1">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-9">
-                                        <label class="form-label required">Endereço</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoEndereco" required />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col">
-                                        <label class="form-label required">Bairro</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoBairro" tabindex="-1" />
-                                    </div>
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-9">
-                                                <label class="form-label">Município</label>
-                                                <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoMunicipio" tabindex="-1" readonly />
-                                            </div>                                    
-                                            <div class="col-3">
-                                                <label class="form-label">UF</label>
-                                                <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoUf" tabindex="-1" readonly />
-                                            </div>                                    
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="form-label">Número</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoNumero" />
-                                    </div>                                    
-                                    <div class="col-9">
-                                        <label class="form-label">Complemento  </label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoComplemento" />
-                                    </div>                                    
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <label class="form-label">Naturalidade</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoNat" />
-                                    </div>                                    
-                                    <div class="col-6">
-                                        <label class="form-label">Nacionalidade</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoNac" />
-                                    </div>                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <label class="form-label">Telefone</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoEndereco" required />
-                                    </div>                                    
-                                    <div class="col-6">
-                                        <label class="form-label">Celular</label>
-                                        <div class="input-group input-group-sm">
-                                            <input id="AlunoCel" type="text" class="form-control form-control-sm cel" />
-                                            <div class="input-group-text d-flex justify-content-between">
-                                                <input class="form-check-input me-1" type="checkbox" id="AlunoWhats">
-                                                <label for="AlunoWhats"><i class="fa fa-whatsapp text-success"></i></label>
-                                            </div>
-                                        </div>
-                                    </div>                                    
-                                </div>
-                            </div>
-                            <div class="col">
-                                <label class="form-label">Email</label>
-                                <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoEndereco" required />
-                            </div>
-                        </div>
-                        <div class="row mb-1">
-                            <div class="col">
-                                <label class="form-label">Colégio de origem</label>
-                                <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoEndereco" required />
-                            </div>
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <label class="form-label required">Telefone</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoEndereco" required />
-                                    </div>                                    
-                                    <div class="col-6">
-                                        <label class="form-label required">Celular</label>
-                                        <input type="text" class="form-control form-control-sm text-uppercase" id="AlunoEndereco" required />
-                                    </div>                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div class="tab-pane fade" id="pills-end" role="tabpanel" aria-labelledby="pills-end-tab">
-
-                    </div>
-                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>-->
-                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
-                    </div>
-
-                </div>
-            </div>
-        </div>    
-    </div>
-    <!-- Bootstrap core JavaScript-->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		
+		<title>SEIWEB</title>
+		
+		<!-- Custom fonts for this template-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+		<link href="../assets/dist/css/estilo.css" rel="stylesheet" />
+	</head>
+	<body>
+		<form id="frmAluno">
+			<div class="row row-cols-md-2">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-2 d-flex justify-content-center align-items-center">
+							<span id="FotoAluno">[FOTO]</span>
+						</div>
+						<div class="col-md-10">
+							<div class="row mb-1">
+								<label for="rm" class="col-md-2 col-form-label">RM</label>
+								<div class="col-sm-2">
+								  <input type="text" class="form-control form-control-sm fw-bold" id="rm" value="0" readonly="readonly">
+								</div>
+							</div>
+							<div class="row" data-field1="pessoaId" data-field2="pessoa">
+								<label for="rm" class="col-md-2 col-form-label">Nome do aluno</label>
+								<div class="col-10">
+									<div class="input-group mb-3">
+										<select id="SelectAluno" class="form-select form-select-sm"></select>
+										<span id="WUbXHCXFdX" onclick="BtnEditarPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
+										<span id="NwaXxiHSwd" onclick="BtnNovoPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
+									</div>								  
+								</div>
+								
+							</div>
+							<div class="row" data-field1="paiId" data-field2="pai">
+								<label for="rm" class="col-md-2 col-form-label">Pai do aluno</label>
+								<div class="col-sm-10">
+									<div class="input-group mb-3">
+										<select id="SelectPaiAluno" class="form-select form-select-sm"></select>
+										<span id="xUe7fjeZQ0" onclick="BtnEditarPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
+										<span id="FN3HC03bLt" onclick="BtnNovoPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
+									</div>	
+								</div>
+							</div>
+							<div class="row" data-field1="maeId" data-field2="mae">
+								<label for="rm" class="col-md-2 col-form-label">Mãe do aluno</label>
+								<div class="col-sm-10">
+									<div class="input-group mb-3">
+										<select id="SelectMaeAluno" class="form-select form-select-sm"></select>
+										<span id="Be80MuJCJ1" onclick="BtnEditarPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
+										<span id="njmjkRx9wU" onclick="BtnNovoPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
+									</div>	
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--<div class="row mb-3">
+						<div class="col-md-6">
+							<div class="row">
+								<div class="col-md-6">
+									<label for="descricao" class="form-label">Saída do aluno</label>
+									<input type="text" id="descricao" name="descricao" class="form-control form-control-sm text-uppercase" placeholder=""  />
+								</div>
+								<div class="col-md-6">
+									<label for="descricao" class="form-label">Colégio de origem</label>
+									<input type="text" id="descricao" name="descricao" class="form-control form-control-sm text-uppercase" placeholder=""  />
+								</div>
+							</div>
+							
+						</div>
+					</div>		-->
+					<div class="row">
+						<div class="col-md-12">
+							<ul class="nav nav-pills mb-3" id="pills-tab-emp" role="tablist">
+								<li class="nav-item" role="presentation">
+									<button class="nav-link btn-sm active" id="pills-home-tab-emp" data-bs-toggle="pill" data-bs-target="#pills-home-emp" type="button" role="tab" aria-controls="pills-home-emp" aria-selected="true">MATRÍCULA</button>
+								</li>
+							</ul>
+							<div class="tab-content" id="pills-tabContent-emp">
+								<div class="tab-pane fade show active" id="pills-home-emp" role="tabpanel" aria-labelledby="pills-home-tab-emp" tabindex="0">                        
+									<div class="row">
+										<div class="col">
+											<div class="row">
+												<div class="col-md-12">
+												</div>
+											</div>
+										</div>
+										<div class="col">
+											<div class="row">
+												<div class="col-md-12">
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- Bootstrap core JavaScript-->
+		<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+	</body>
 </html>

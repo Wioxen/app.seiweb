@@ -1,4 +1,5 @@
-function carregarTemplateModal(configDinamico = {}) {    
+function carregarTemplateModal(configDinamico = {}) {
+    
     // Configurações fixas
     const configFixo = {
         masks: {
@@ -12,7 +13,7 @@ function carregarTemplateModal(configDinamico = {}) {
             '.dinheiro': {
                 mask: 'R$ 999.999.999.999,99',
                 reverse: true
-            },
+				},
             '.numero': '9999999999'
         },
         autocompleteCampo: '#pesquisaCrud',
@@ -51,6 +52,20 @@ function carregarTemplateModal(configDinamico = {}) {
             return;
         }
 
+		$('input, select, textarea')
+		.on('focus', function() {
+			$(this).css({
+				'background-color': '#FFFFE0',
+				'border-color': '#ffcc00'
+			});
+		})
+		.on('blur', function() {
+			$(this).css({
+				'background-color': '',
+				'border-color': ''
+			});
+		});
+		
         // Aplica máscaras nos inputs
         aplicarMascaras(config.masks);
 

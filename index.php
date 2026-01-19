@@ -161,12 +161,12 @@
 				<div class="page-inner">
 					<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
 						<div>
-							<h3 class="fw-bold mb-3">Colégio DEMO</h3>
+							<h3 id="NomeEmpresa" class="fw-bold mb-3"></h3>
 							<small id="data-hora" class="op-7 mb-2"></small>
 						</div>
 						<div class="ms-md-auto py-2 py-md-0">
 							<a href="#" class="btn btn-label-info btn-round me-2" onclick="UsuarioAcessoClick(this);"><i class="fa fa-user"></i> Visitante</a>
-							<a href="#" class="btn btn-primary btn-round" onclick="alunoClick(this);"><i class="fa-solid fa-user-graduate"></i> Cadastrar aluno</a>
+							<a href="#" class="btn btn-primary btn-round" onclick="AlunoClick(this);"><i class="fa-solid fa-user-graduate"></i> Cadastrar aluno</a>
 						</div>
 					</div>
 					<div class="row">
@@ -777,8 +777,7 @@
 	<script src="assets/js/jquery.mask.js"></script>
 	<script src="assets/js/carregar-template.js"></script>
 	<script src="js/eventos.js"></script>
-	<script src="js/init.js"></script>
-	<script src="js/global.js"></script>
+	<script src="js/inicializacao.js"></script>
 	<script src="js/funcoes.js"></script>
 	<script src="js/select.js"></script>
 	<script src="js/municipio.js"></script>
@@ -795,27 +794,5 @@
 	<script src="js/logdeatividade.js"></script>
 	<script src="js/pais.js"></script>
 	<script src="js/pessoa.js"></script>
-	
-	<script>
-	// Opcional: Adicionar também um listener para mudanças dinâmicas
-	$(document).on('show.bs.collapse', function(e) {
-		var target = $(e.target);
-		if (target.hasClass('collapse')) {
-			target.prev('a').attr('aria-expanded', 'true');
-			target.closest('.nav-item.modulo').addClass('active');
-		}
-	});
-
-	// Remover a classe active quando o collapse for fechado
-	$(document).on('hide.bs.collapse', function(e) {
-		var target = $(e.target);
-		if (target.hasClass('collapse')) {
-			target.prev('a').attr('aria-expanded', 'false');
-			target.closest('.nav-item.modulo').removeClass('active');
-		}
-	});				
-
-	$(document).ready(initializeReady);
-	</script>		
 </body>
 </html>
