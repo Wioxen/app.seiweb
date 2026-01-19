@@ -164,6 +164,7 @@
 							<h3 id="NomeEmpresa" class="fw-bold mb-3"></h3>
 							<small id="data-hora" class="op-7 mb-2"></small>
 						</div>
+						
 						<div class="ms-md-auto py-2 py-md-0">
 							<a href="#" class="btn btn-label-info btn-round me-2" onclick="UsuarioAcessoClick(this);"><i class="fa fa-user"></i> Visitante</a>
 							<a href="#" class="btn btn-primary btn-round" onclick="AlunoClick(this);"><i class="fa-solid fa-user-graduate"></i> Cadastrar aluno</a>
