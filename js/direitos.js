@@ -125,7 +125,7 @@ function EditarDireitosClick(e){
 				RestRequest({
 					method: 'GET',
 					beforeSend: function(xhr){
-						//console.log(xhr);
+						console.log(xhr);						
 					},
 					url: $baseApiUrl+"DireitosUsuario",
 					success: exibeAcessos
