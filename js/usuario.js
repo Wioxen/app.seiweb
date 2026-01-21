@@ -41,12 +41,6 @@ function ReenviarEmail(e){
 
 function exibeUsuarios(data) {
 	const defaultColumns = [
-		/*{
-			class: 'warning-Usuario', orderable: false, searchable: false, data: null, defaultContent: '', "width": "2%",
-			"render": function(data, type, row) {
-			return `<span><i class="fa fa-exclamation-triangle text-warning"></i></span>`
-			} 
-		},*/
 		{
 			data: 'foto',
 			orderable: false,
