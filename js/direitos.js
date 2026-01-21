@@ -124,6 +124,9 @@ function EditarDireitosClick(e){
 				$('#DireitosDescricao').val(dataDireitos.descricao);
 				RestRequest({
 					method: 'GET',
+					beforeSend: function(xhr){
+						//console.log(xhr);
+					},
 					url: $baseApiUrl+"DireitosUsuario",
 					success: exibeAcessos
 				});					
