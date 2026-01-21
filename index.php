@@ -795,5 +795,6 @@
 	<script src="js/logdeatividade.js"></script>
 	<script src="js/pais.js"></script>
 	<script src="js/pessoa.js"></script>
+	<script src="js/curso.js"></script>
 </body>
 </html>

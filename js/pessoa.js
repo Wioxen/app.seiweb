@@ -113,10 +113,11 @@ function exibeLoadPessoa(response, status, xhr)
 {
 	$('#btnCep').off('click').on('click', ConsultaCepPessoa);
 	
-	$('#cep').on('blur', function() {
-		if ((dataPessoa.cep !== '') && (dataPessoa.cep !== null))
-		$('#btnCep').click();
-	});
+	/*$('#cep').on('blur', function() {
+		if ((dataPessoa.cep !== '') && (dataPessoa.cep !== null)){
+			$('#btnCep').click();
+		}
+	});*/
 	
 	$('#uploadLogoPessoa').off('click').on('click', uploadLogoPessoa);	
 	$('#UploadDocumento').off('click').on('click', uploadDocumentoPessoa);	
@@ -125,13 +126,10 @@ function exibeLoadPessoa(response, status, xhr)
 	$('#apagarLogoPessoa').off('click').on('click', apagarLogoPessoa);
 	$('#ApagarDocumento').off('click').on('click', ApagarPessoaDocumento);
 	$('#ApagarComprovante').off('click').on('click', ApagarPessoaComprovante);
-	
-	/*$('#cnpj').trigger('input').trigger('change');
-		$('#cep').trigger('input').trigger('change');
-		$('#telefone').trigger('input').trigger('change');
-	$('#celular').trigger('input').trigger('change');*/
-	
+		
 	preencherFormularioCompleto(dataPessoa, '#frm'+resourcePessoa);  
+
+	$('#cep').trigger('input').trigger('change');
 	
 	if ((dataPessoa.dtNasc !== '') && (dataPessoa.dtNasc !== null))
 	$('#dtNasc').val(DateToStr(dataPessoa.dtNasc)).trigger('input').trigger('change');
@@ -300,7 +298,7 @@ function ConsultaCepPessoa(){
 			preencherFormularioCompleto(response, '#frmPessoa');
 			dataPessoa.endereco = validarInput($('#endereco'));
 			dataPessoa.cep = response.cep;
-			$('#cep').trigger('input').trigger('change');
+			//$('#cep').val(response.cep).trigger('input').trigger('change');				
 			dataPessoa.bairroId = response.bairroId;
             dataPessoa.municipioId = response.municipioId;
 			CarregaPessoaSelect('#selectPessoaBairro','Bairro','bairroId');

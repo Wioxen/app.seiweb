@@ -68,7 +68,6 @@ function carregarTemplateModal(configDinamico = {}) {
 		
         // Aplica máscaras nos inputs
         aplicarMascaras(config.masks);
-
         //
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))        
@@ -112,14 +111,29 @@ function aplicarMascaras(masks) {
     });
 
     $('input.numero').off('keydown').on('keydown', soNumeros);
-    $("input, select, textarea").bind('keypress', TabToEnter);
+    
+	$("input, select, textarea").bind('keypress', TabToEnter);
 
     $('.float').maskMoney({ prefix: '', allowNegative: true, thousands: '.', decimal: ',', affixesStay: false, precision: 6 });
-    $('.currency').maskMoney({ prefix: '', allowNegative: true, thousands: '.', decimal: ',', affixesStay: false });
+    
+	$('.currency').maskMoney({ prefix: '', allowNegative: true, thousands: '.', decimal: ',', affixesStay: false });
 
-    $(".data").css('text-align', 'center');
+    $(".data")
+		.datepicker({
+		   dateFormat: 'dd/mm/yy',
+		   dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+		   dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+		   dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+		   monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+		   monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+		   nextText: 'Proximo',
+		   prevText: 'Anterior'
+		})
+		.css('text-align', 'center');
+		
     $(".currency").css('text-align', 'right');
-    $(".float").css('text-align', 'right');
+    
+	$(".float").css('text-align', 'right');
 }
 
 // Função para configurar autocomplete (mantida)

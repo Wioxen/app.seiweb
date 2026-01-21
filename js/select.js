@@ -242,3 +242,35 @@ function LoadPessoaSelect2(configDinamico = {}) {
 			}                    			
 		});
 }
+
+
+function LoadSelect3(configDinamico = {}) { // Novos parâmetros    
+	const configFixo = {
+	};
+    
+	const config = { ...configFixo, ...configDinamico };
+	
+	const thisContainer = $(config.container);
+
+	carregaSelect2({
+		url: config.url,
+		container: config.container,
+        modal: config.modal,
+        success: function(response, textStatus, jqXHR){
+			thisContainer
+			.find('select')
+			.val(safeGet(config.data, config.field))
+			.trigger('change');  
+		},
+        change: function(data, value, element){
+            if ((data !== null) && (data !== undefined)){
+				config.data[config.field] = data.id;				
+			} else {
+				config.data[config.field] = null;
+			}
+		},
+        unselect: function(e){
+			config.data[config.field] = null;
+		}		
+	});	
+}

@@ -5,6 +5,8 @@ var TbDireitos = undefined;
 const resourceDireitos = 'Role';
 
 function exibeDireitos(data) {
+	$title = data.caption;
+
 	const defaultColumns = [{ 
 		data: 'descricao',              
 		orderable: false,
@@ -28,7 +30,7 @@ function exibeDireitos(data) {
 	
     var modalTbDireitos = createDynamicModal();        
 	
-	modalTbDireitos.find('.modal-title').text('Direitos do usuário');
+	modalTbDireitos.find('.modal-title').text(data.label);
 	modalTbDireitos.find('.modal-dialog').addClass('modal-lg');
 	modalTbDireitos.find('.modal-body')
 	.html(`<table id="${resourceDireitos}Tb" class="row-border stripe hover" style="width:100%"></table>`)
@@ -48,7 +50,7 @@ function exibeDireitos(data) {
 function DireitosClick(e){
 	RestRequest({
 		method: 'GET',
-		url: `${$baseApiUrl}${resourcePessoa}/acesso`,
+		url: `${$baseApiUrl}role/acesso`,
 		success: exibeDireitos
 	});  	
 }
@@ -67,7 +69,7 @@ function ResetDefaultDireitos(onLoadCallback){
     modalDireitos.find('.modal-header-search').hide();
 	
 	/*Create modal*/
-    modalDireitos.find('.modal-title').text('Direitos');
+    modalDireitos.find('.modal-title').text($title);
     modalDireitos.find('.modal-dialog').addClass('modal-dialog-scrollable').addClass('modal-lg');
     modalDireitos.find('.modal-footer').html(`<div class="me-auto">
 		<button id="${gerarHash()}" class="btn btn-warning" onclick="CancelarDireitosClick(this);"><i class="icon-close"></i> Cancelar</button>
@@ -122,9 +124,6 @@ function EditarDireitosClick(e){
 				$('#DireitosDescricao').val(dataDireitos.descricao);
 				RestRequest({
 					method: 'GET',
-					beforeSend: function(xhr){
-						console.log(xhr);
-					},
 					url: $baseApiUrl+"DireitosUsuario",
 					success: exibeAcessos
 				});					
