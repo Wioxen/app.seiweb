@@ -372,7 +372,7 @@ function renderMenu(items) {
 // Função para atualizar o display em tempo real
 function atualizarDataHora() {
     const dataHoraFormatada = formatarDataHora();
-    $('#data-hora').text(dataHoraFormatada);
+    $('.data-hora').text(dataHoraFormatada);
 }
 
 function startDataHora() {

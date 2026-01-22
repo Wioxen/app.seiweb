@@ -115,12 +115,12 @@
 								</div>
 								<input id="search" type="text" placeholder="Search ..." class="form-control">
 							</div>-->
-							<small id="data-hora" class="op-7 mb-2"></small>
+							<small id="data-hora" class="op-7 mb-2 data-hora"></small>
 						</nav>
 
 						<ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
 							<li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-haspopup="true">
+								<!--<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-haspopup="true">
 									<i class="fa fa-search"></i>
 								</a>
 								<ul class="dropdown-menu dropdown-search animated fadeIn">
@@ -129,7 +129,8 @@
 											<input type="text" placeholder="Search ..." class="form-control">
 										</div>
 									</form>
-								</ul>
+								</ul>-->
+								<small id="data-hora" class="op-7 mb-2 data-hora"></small>
 							</li>
 							<li class="nav-item topbar-icon dropdown hidden-caret">
 								<a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
