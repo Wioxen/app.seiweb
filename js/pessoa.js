@@ -131,14 +131,11 @@ function exibeLoadPessoa(response, status, xhr)
 
 	$('#cep').trigger('input').trigger('change');
 	
-	if ((dataPessoa.dtNasc !== '') && (dataPessoa.dtNasc !== null))
-	$('#dtNasc').val(DateToStr(dataPessoa.dtNasc)).trigger('input').trigger('change');
-	
 	if ((dataPessoa.imgDocumento !== undefined) && (dataPessoa.imgDocumento !== '') && (dataPessoa.imgDocumento !== null))
-	$('#BadgeDocumento').text('1');
+		$('#BadgeDocumento').text('1');
 	
 	if ((dataPessoa.imgComprovante !== undefined) && (dataPessoa.imgComprovante !== '') && (dataPessoa.imgComprovante !== null))
-	$('#BadgeComprovante').text('1');
+		$('#BadgeComprovante').text('1');
 	
 	
 	if (dataPessoa.foto != null){

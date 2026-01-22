@@ -33,7 +33,6 @@ function exibeCurso(data) {
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
 						<li><a class="dropdown-item" href="#" onclick="EditarCursoClick(this);"><i class="fas fa-edit"></i> Editar</a></li>					
-						<li><a class="dropdown-item" href="#" onclick="TurmasClick(this);"><i class="fas fa-user-group"></i> Turmas</a></li>					
 						</ul>
 						</div>`                        
 			}

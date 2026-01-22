@@ -623,3 +623,8 @@ tr[data-dt-row] td {
 .btn-outline-secondary {
   --bs-btn-border-color: #ced4da;
 }
+
+.yearpicker-container {
+    z-index: 1065 !important; /* Bootstrap modal: 1050, backdrop: 1040 */
+    position: fixed !important;
+}

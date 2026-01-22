@@ -100,10 +100,24 @@ function carregarTemplateModal(configDinamico = {}) {
 
 // Função para aplicar máscaras (mantida)
 function aplicarMascaras(masks) {
+    $(".data")
+		.datepicker({
+		   dateFormat: 'dd/mm/yy',
+		   dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+		   dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+		   dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+		   monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+		   monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+		   nextText: 'Proximo',
+		   prevText: 'Anterior'
+		})
+	.css('text-align', 'center');
+	
     $.each(masks, function(selector, mask) {
         if ($(selector).length > 0) {
             if (typeof mask === 'string') {
-                $(selector).mask(mask);
+                $(selector)
+					.mask(mask);
             } else if (typeof mask === 'object') {
                 $(selector).mask(mask.mask, mask);
             }
@@ -117,20 +131,7 @@ function aplicarMascaras(masks) {
     $('.float').maskMoney({ prefix: '', allowNegative: true, thousands: '.', decimal: ',', affixesStay: false, precision: 6 });
     
 	$('.currency').maskMoney({ prefix: '', allowNegative: true, thousands: '.', decimal: ',', affixesStay: false });
-
-    $(".data")
-		.datepicker({
-		   dateFormat: 'dd/mm/yy',
-		   dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-		   dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-		   dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-		   monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-		   monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-		   nextText: 'Proximo',
-		   prevText: 'Anterior'
-		})
-		.css('text-align', 'center');
-		
+	
     $(".currency").css('text-align', 'right');
     
 	$(".float").css('text-align', 'right');

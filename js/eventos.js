@@ -540,11 +540,14 @@ function inicializacao(){
 		method: 'GET',
 		beforeSend: function(xhr){
 			showLoadingModal();
-			$('#NomeEmpresa').html('<i class="fa fa-spin fa-spinner"><i>');
+			$('#DvEmpresa').html('<i class="fa fa-spin fa-spinner fa-2x"><i>');
 		},
 		success: function(data) {
 			hideLoadingModal();
-			$('#NomeEmpresa').html(`<h3 class="fw-bold mb-3 me-3">${data.empresa} <span class="badge badge-secondary">${data.cnpj}</span></h3>`);
+			dataConfiguracao = data.configuracoes
+			$('#AnoTexto').text(dataConfiguracao.ano);
+			$('#DvEmpresa').html(`<h3 class="fw-bold me-3">${data.empresa} <span class="badge badge-secondary">${data.cnpj}</span></h3>
+				<h3 id="AnoTexto" class="text-danger fw-bold">${dataConfiguracao.ano}</h3>`);
 			$.notify({
 				icon: 'icon-bell',
 				title: 'SEIWEB',

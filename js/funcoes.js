@@ -416,55 +416,79 @@ function preencherCampo($campo, valor) {
 function preencherFormularioCompleto(payload, formSelector = 'form') {
     const $form = $(formSelector);
     
-	if ((payload !== undefined) && (payload !== null)){
-		
-		function preencherRecursivo(obj, prefixo = '') {
-			$.each(obj, function(key, value) {
-				// Trata casos especiais de notação com colchetes aninhados
-				const chaveCompleta = prefixo ? `${prefixo}[${key}]` : key;
-				
-				if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-					// Se for objeto, chama recursivamente
-					preencherRecursivo(value, chaveCompleta);
-					} else if (Array.isArray(value)) {
-					// Se for array, trata cada elemento
-					value.forEach((item, index) => {
-						if (typeof item === 'object') {
-							preencherRecursivo(item, `${chaveCompleta}[${index}]`);
-							} else {
-							// Para arrays simples, procura por campos com nome no formato "nome[index]"
-							const nomeCampo = `${chaveCompleta}[${index}]`;
-							const $campo = $form.find(`[name="${nomeCampo}"], [id="${nomeCampo}"], [data-field="${nomeCampo}"]`);
-							if ($campo.length) preencherCampo($campo, item);
-						}
-					});
-					} else {
-					// Valor simples - procura por campos com o nome exato
-					const $campo = $form.find(`[name="${chaveCompleta}"], [id="${chaveCompleta}"], [data-field="${chaveCompleta}"]`);
-					
-					// Se não encontrar com o nome completo, tenta encontrar campos com namesets aninhados
-					if (!$campo.length && chaveCompleta.includes('[')) {
-						// Extrai apenas a parte final do nome (último nível)
-						const partes = chaveCompleta.split('[');
-						const nomeSimples = partes[partes.length - 1].replace(']', '');
-						
-						// Procura por campos com o nome simples (última parte)
-						const $campoSimples = $form.find(`[name="${nomeSimples}"], [id="${nomeSimples}"], [data-field="${nomeSimples}"]`);
-						if ($campoSimples.length) {
-							preencherCampo($campoSimples, value);
-							return;
-						}
-					}
-					
-					if ($campo.length) {
-						preencherCampo($campo, value);
-					}
-				}
-			});
-		}
-		
-		preencherRecursivo(payload);
-	}
+    if ((payload !== undefined) && (payload !== null)){
+        
+        function preencherRecursivo(obj, prefixo = '') {
+            $.each(obj, function(key, value) {
+                // Trata casos especiais de notação com colchetes aninhados
+                const chaveCompleta = prefixo ? `${prefixo}[${key}]` : key;
+                
+                if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    // Se for objeto, chama recursivamente
+                    preencherRecursivo(value, chaveCompleta);
+                } else if (Array.isArray(value)) {
+                    // Se for array, trata cada elemento
+                    value.forEach((item, index) => {
+                        if (typeof item === 'object') {
+                            preencherRecursivo(item, `${chaveCompleta}[${index}]`);
+                        } else {
+                            // Para arrays simples, procura por campos com nome no formato "nome[index]"
+                            const nomeCampo = `${chaveCompleta}[${index}]`;
+                            const $campo = $form.find(`[name="${nomeCampo}"], [id="${nomeCampo}"], [data-field="${nomeCampo}"]`);
+                            if ($campo.length) preencherCampo($campo, item);
+                        }
+                    });
+                } else {
+                    // Valor simples - procura por campos com o nome exato
+                    const $campo = $form.find(`[name="${chaveCompleta}"], [id="${chaveCompleta}"], [data-field="${chaveCompleta}"]`);
+                    
+                    // Se não encontrar com o nome completo, tenta encontrar campos com namesets aninhados
+                    if (!$campo.length && chaveCompleta.includes('[')) {
+                        // Extrai apenas a parte final do nome (último nível)
+                        const partes = chaveCompleta.split('[');
+                        const nomeSimples = partes[partes.length - 1].replace(']', '');
+                        
+                        // Procura por campos com o nome simples (última parte)
+                        const $campoSimples = $form.find(`[name="${nomeSimples}"], [id="${nomeSimples}"], [data-field="${nomeSimples}"]`);
+                        if ($campoSimples.length) {
+                            preencherCampo($campoSimples, value);
+                            return;
+                        }
+                    }
+                    
+                    if ($campo.length) {
+                        // VERIFICA SE É UM CAMPO DE DATA PELO NOME/ID
+                        const campoNome = $campo.attr('name') || $campo.attr('id') || '';
+                        
+                        // Verifica se é um campo de data pelo nome comum
+                        if (campoNome.toLowerCase().includes('data') || 
+                            campoNome.toLowerCase().includes('date') ||
+                            campoNome.toLowerCase().includes('dt')) {
+                            
+                            // Verifica se o valor é uma string que representa uma data
+                            if (typeof value === 'string' && value.match(/\d{4}-\d{2}-\d{2}/)) {
+                                // Formata a data para o formato brasileiro (dd/mm/yyyy)
+                                const data = new Date(value);
+                                const dia = String(data.getDate()).padStart(2, '0');
+                                const mes = String(data.getMonth() + 1).padStart(2, '0');
+                                const ano = data.getFullYear();
+                                const dataFormatada = `${dia}/${mes}/${ano}`;
+                                
+                                // Preenche o campo e aciona os eventos
+                                $campo.val(dataFormatada).trigger('input').trigger('change');
+                                return;
+                            }
+                        }
+                        
+                        // Preenchimento normal para outros campos
+                        preencherCampo($campo, value);
+                    }
+                }
+            });
+        }
+        
+        preencherRecursivo(payload);
+    }
 }
 
 function createDynamicModal(callbackOnClose = null) {
@@ -879,15 +903,28 @@ function StrToDate($value) {
 }
 
 
-function DateToStr($value) {
-    var $string = $.trim($value);
-	
-    if ($string === '')
-	return '';
-	
-    $string = $string.substr(0, 10);
-	
-    return $.trim($string).split('-')[2] + '/' + $.trim($string).split('-')[1] + '/' + $.trim($string).split('-')[0];
+function DateToStr(data) {
+    if (!data) return '';
+    
+    // Se já for string, retorna como está
+    if (typeof data === 'string') {
+        // Tenta converter se for no formato ISO
+        if (data.match(/\d{4}-\d{2}-\d{2}/)) {
+            const partes = data.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+        return data;
+    }
+    
+    // Se for objeto Date
+    if (data instanceof Date) {
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        return `${dia}/${mes}/${ano}`;
+    }
+    
+    return null;
 }
 
 function VarToStr($value) {

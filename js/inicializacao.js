@@ -1,6 +1,7 @@
 var $baseApiUrl = undefined;
 var $loginUrl = undefined;
 var $title = undefined;
+var dataConfiguracao = undefined;
 
 const $imageUrl = "https://uploads.seiweb.com.br/images/";
 

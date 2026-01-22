@@ -15,17 +15,25 @@
     <link href="../assets/dist/css/estilo.css" rel="stylesheet" />
 </head>
 <body>
-    <form id="frmCurso">
+    <form id="frmTurma">
         <div class="row">
-			<label for="Descricao" class="col-md-3 col-form-label">Nome</label>
-			<div class="col-md-9">
+			<div class="col-md-12 d-flex justify-content-end">
+				<div class="form-check form-switch">
+				  <input class="form-check-input" type="checkbox" role="switch" id="Ativo" name="ativo" checked>
+				  <label class="form-check-label" for="flexSwitchCheckChecked">ativo</label>
+				</div>			
+			</div>	
+        </div>
+        <div class="row">
+			<label for="Descricao" class="col-md-2 col-form-label">Nome</label>
+			<div class="col-md-10">
 				<input id="Descricao" name="descricao" class="form-control form-control-sm text-uppercase" type="text" />
 			</div>	
         </div>
         <div class="row">
-			<label class="col-md-3 col-form-label">Etapa de ensino</label>
-			<div class="col-md-9">
-				<div id="SelectEtapaDeEnsino">
+			<label class="col-md-2 col-form-label">Curso</label>
+			<div class="col-md-10">
+				<div id="SelectCurso">
 					<div class="loading-label w-100">
 						<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
 						Carregando registros, aguarde ...
@@ -34,29 +42,45 @@
 			</div>	
         </div>
         <div class="row">
-			<label class="col-md-3 col-form-label">Série</label>
-			<div class="col-md-1">
-				<input id="Serie" name="serie" class="form-control form-control-sm text-uppercase numero" type="text" value="0" />
+			<label for="Sala" class="col-md-2 col-form-label">Sala</label>
+			<div class="col-md-2">
+				<input id="Sala" name="sala" class="form-control form-control-sm text-uppercase" type="text" value="A" maxlength="1" />
 			</div>	
         </div>
         <div class="row">
-			<label class="col-md-3 col-form-label">Próximo curso</label>
-			<div class="col-md-9">
-				<div id="SelectProximoCurso">
-					<div class="loading-label w-100">
-						<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
-						Carregando registros, aguarde ...
-					</div>
-				</div>
+			<label for="Vagas" class="col-md-2 col-form-label">Vagas</label>
+			<div class="col-md-3">
+				<input id="Vagas" name="vagas" class="form-control form-control-sm text-uppercase" type="number" value="0" />
 			</div>	
         </div>
         <div class="row">
-			<label for="rm" class="col-md-3 col-form-label">Faixa etária</label>
-			<div class="col-md-2">
-				<input id="FaixaEtaria1" name="faixaEtaria1" class="form-control form-control-sm text-uppercase numero" type="number" value="0" />
+			<label for="Turno" class="col-md-2 col-form-label">Turno</label>
+			<div class="col-md-4">
+				<select id="Turno" name="turno" class="form-select form-select-sm">
+					<option value="N"></option>
+					<option value="M">Matutino</option>
+					<option value="V">Vespertino</option>
+					<option value="N">Noturno</option>
+					<option value="I">Integral</option>
+				</select>
 			</div>	
-			<div class="col-md-2">
-				<input id="FaixaEtaria2" name="faixaEtaria2" class="form-control form-control-sm text-uppercase numero" type="number"  value="0" />
+        </div>
+        <div class="row">
+			<label for="Ano" class="col-md-2 col-form-label">Ano</label>
+			<div class="col-md-3">
+				<input id="Ano" name="ano" class="form-control form-control-sm text-uppercase" type="number" value="0" />
+			</div>	
+        </div>
+        <div class="row">
+			<label for="DtInicio" class="col-md-2 col-form-label">Inicío</label>
+			<div class="col-md-3">
+				<input type="text" class="form-control form-control-sm data" id="DtInicio" name="dtInicio" />
+			</div>	
+        </div>
+        <div class="row">
+			<label for="DtFim" class="col-md-2 col-form-label">Término</label>
+			<div class="col-md-3">
+				<input type="text" class="form-control form-control-sm data" id="DtFim" name="dtFim" />
 			</div>	
         </div>
     </div>

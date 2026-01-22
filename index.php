@@ -107,14 +107,15 @@
 
 					<div class="container-fluid">
 						<nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-							<div class="input-group">
+							<!--<div class="input-group">
 								<div class="input-group-prepend">
 									<button type="submit" class="btn btn-search pe-1">
 										<i class="fa fa-search search-icon"></i>
 									</button>
 								</div>
-								<input type="text" placeholder="Search ..." class="form-control">
-							</div>
+								<input id="search" type="text" placeholder="Search ..." class="form-control">
+							</div>-->
+							<small id="data-hora" class="op-7 mb-2"></small>
 						</nav>
 
 						<ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
@@ -160,9 +161,9 @@
 			<div class="container">
 				<div class="page-inner">
 					<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-						<div>
-							<h3 id="NomeEmpresa" class="fw-bold mb-3"></h3>
-							<small id="data-hora" class="op-7 mb-2"></small>
+						<div id="DvEmpresa">
+							<!--<h2 id="NomeEmpresa" class="fw-bold"></h2>
+							<h2 id="AnoTexto" class="text-danger fw-bold"></h2>-->
 						</div>
 						
 						<div class="ms-md-auto py-2 py-md-0">
@@ -772,10 +773,11 @@
 
 	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 	<!--<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>	
 	<script src="assets/js/jquery.tabbable.js"></script>
-	<script src="assets/js/jquery.mask.js"></script>
+	<script src="assets/js/jquery.tabbable.js"></script>
 	<script src="assets/js/carregar-template.js"></script>
 	<script src="js/eventos.js"></script>
 	<script src="js/inicializacao.js"></script>
@@ -796,5 +798,6 @@
 	<script src="js/pais.js"></script>
 	<script src="js/pessoa.js"></script>
 	<script src="js/curso.js"></script>
+	<script src="js/turma.js"></script>
 </body>
 </html>
