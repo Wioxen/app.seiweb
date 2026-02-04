@@ -115,7 +115,7 @@ function exibeLoadPessoa(response, status, xhr)
 	
 	/*$('#cep').on('blur', function() {
 		if ((dataPessoa.cep !== '') && (dataPessoa.cep !== null)){
-			$('#btnCep').click();
+		$('#btnCep').click();
 		}
 	});*/
 	
@@ -126,16 +126,16 @@ function exibeLoadPessoa(response, status, xhr)
 	$('#apagarLogoPessoa').off('click').on('click', apagarLogoPessoa);
 	$('#ApagarDocumento').off('click').on('click', ApagarPessoaDocumento);
 	$('#ApagarComprovante').off('click').on('click', ApagarPessoaComprovante);
-		
+	
 	preencherFormularioCompleto(dataPessoa, '#frm'+resourcePessoa);  
-
+	
 	$('#cep').trigger('input').trigger('change');
 	
 	if ((dataPessoa.imgDocumento !== undefined) && (dataPessoa.imgDocumento !== '') && (dataPessoa.imgDocumento !== null))
-		$('#BadgeDocumento').text('1');
+	$('#BadgeDocumento').text('1');
 	
 	if ((dataPessoa.imgComprovante !== undefined) && (dataPessoa.imgComprovante !== '') && (dataPessoa.imgComprovante !== null))
-		$('#BadgeComprovante').text('1');
+	$('#BadgeComprovante').text('1');
 	
 	
 	if (dataPessoa.foto != null){
@@ -279,6 +279,8 @@ function CarregaPessoaSelect(container, resource, field, defaultText = 'descrica
         change: function(data, value, element){
             if ((data !== null) && (data !== undefined)){
                 dataPessoa[field] = data.id;
+				} else {
+				dataPessoa[field] = null;
 			}
 		},
         unselect: function(e){
@@ -307,8 +309,8 @@ function ConsultaCepPessoa(){
 
 function PessoaBasico(title,container,resource,fieldName){
 	event.preventDefault();
-	
-	BasicoClick({
+	dataBasico = {id: 0};
+	ExibeBasico({
 		title: title,
 		url: $baseApiUrl+resource,
 		success: function(response, textStatus, jqXHR){
@@ -502,6 +504,6 @@ function DownloadPessoaComprovante()
 {
 	DownloadFile({
 		url: $imageUrl+dataPessoa.imgComprovante,
-	fileName: dataPessoa.imgComprovante
+		fileName: dataPessoa.imgComprovante
 	});
-	}	
+}	

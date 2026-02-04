@@ -26,16 +26,16 @@
 							<div class="row mb-1">
 								<label for="rm" class="col-md-2 col-form-label">RM</label>
 								<div class="col-sm-2">
-								  <input type="text" class="form-control form-control-sm fw-bold" id="rm" value="0" readonly="readonly">
+									<input type="text" class="form-control form-control-sm fw-bold" id="rm" value="0" readonly="readonly">
 								</div>
 							</div>
 							<div class="row" data-field1="pessoaId" data-field2="pessoa">
 								<label for="rm" class="col-md-2 col-form-label fw-bold">Nome do aluno</label>
 								<div class="col-sm-10">
-									<div class="input-group">
+									<div id="input-group-SelectAluno" class="input-group input-group-sm">
 										<select id="SelectAluno" class="form-select form-select-sm"></select>
-										<span id="WUbXHCXFdX" onclick="BtnEditarPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
-										<span id="NwaXxiHSwd" onclick="BtnNovoPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
+										<span id="WUbXHCXFdX" onclick="BtnEditarPessoaAlunoClick(this, dataAluno);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
+										<span id="NwaXxiHSwd" onclick="BtnNovoPessoaAlunoClick(this, dataAluno);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
 									</div>								  
 								</div>
 								
@@ -43,67 +43,151 @@
 							<div class="row" data-field1="paiId" data-field2="pai">
 								<label for="rm" class="col-md-2 col-form-label">Pai do aluno</label>
 								<div class="col-sm-10">
-									<div class="input-group">
+									<div id="input-group-SelectPaiAluno" class="input-group input-group-sm">
 										<select id="SelectPaiAluno" class="form-select form-select-sm"></select>
-										<span id="xUe7fjeZQ0" onclick="BtnEditarPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
-										<span id="FN3HC03bLt" onclick="BtnNovoPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
+										<span id="xUe7fjeZQ0" onclick="BtnEditarPessoaAlunoClick(this, dataAluno);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
+										<span id="FN3HC03bLt" onclick="BtnNovoPessoaAlunoClick(this, dataAluno);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
 									</div>	
 								</div>
 							</div>
 							<div class="row" data-field1="maeId" data-field2="mae">
 								<label for="rm" class="col-md-2 col-form-label">Mãe do aluno</label>
 								<div class="col-sm-10">
-									<div class="input-group">
+									<div id="input-group-SelectMaeAluno" class="input-group input-group-sm">
 										<select id="SelectMaeAluno" class="form-select form-select-sm"></select>
-										<span id="Be80MuJCJ1" onclick="BtnEditarPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
-										<span id="njmjkRx9wU" onclick="BtnNovoPessoaAlunoClick(this);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
+										<span id="Be80MuJCJ1" onclick="BtnEditarPessoaAlunoClick(this, dataAluno);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
+										<span id="njmjkRx9wU" onclick="BtnNovoPessoaAlunoClick(this, dataAluno);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
 									</div>	
 								</div>
 							</div>
 						</div>
 					</div>
-					<!--<div class="row mb-3">
-						<div class="col-md-6">
-							<div class="row">
-								<div class="col-md-6">
-									<label for="descricao" class="form-label">Saída do aluno</label>
-									<input type="text" id="descricao" name="descricao" class="form-control form-control-sm text-uppercase" placeholder=""  />
-								</div>
-								<div class="col-md-6">
-									<label for="descricao" class="form-label">Colégio de origem</label>
-									<input type="text" id="descricao" name="descricao" class="form-control form-control-sm text-uppercase" placeholder=""  />
-								</div>
-							</div>
-							
-						</div>
-					</div>		-->
 					<div class="row">
 						<div class="col-md-12">
 							<ul class="nav nav-pills mb-3" id="pills-tab-emp" role="tablist">
 								<li class="nav-item" role="presentation">
-									<button class="nav-link btn-sm active" id="pills-home-tab-emp" data-bs-toggle="pill" data-bs-target="#pills-home-emp" type="button" role="tab" aria-controls="pills-home-emp" aria-selected="true">MATRÍCULA</button>
+									<button class="nav-link active" id="pills-home-tab-emp" data-bs-toggle="pill" data-bs-target="#pills-home-emp" type="button" role="tab" aria-controls="pills-home-emp" aria-selected="true"><i class="fas fa-address-card"></i> Matrícula</button>
+								</li>
+								<li class="nav-item" role="presentation">
+									<button class="nav-link" id="pills-home-tab-emp2" data-bs-toggle="pill" data-bs-target="#pills-home-emp2" type="button" role="tab" aria-controls="pills-home-emp2" aria-selected="true"><i class="fas fa-hand-holding-usd"></i> Financeiro</button>
 								</li>
 							</ul>
-							<div class="tab-content" id="pills-tabContent-emp">
-								<div class="tab-pane fade show active" id="pills-home-emp" role="tabpanel" aria-labelledby="pills-home-tab-emp" tabindex="0">                        
-									<div class="row">
-										<div class="col">
-											<div class="row">
-												<div class="col-md-12">
-												</div>
+							<div class="tab-content" id="pills-tabContent-emp">	
+								<div class="tab-pane fade show active" id="pills-home-emp" role="tabpanel" aria-labelledby="pills-home-tab-emp" tabindex="0"> 
+									<!--<div class="" style="position: absolute; height: 50%; width: 100%; background-color: #fff; opacity: .4;pointer-events: none; user-select: none; cursor: not-allowed;">
+										<div class="d-flex justify-content-center align-items-center h-100">
+											<div class="spinner-border" role="status">
+												<span class="sr-only">Loading...</span>
 											</div>
 										</div>
-										<div class="col">
-											<div class="row">
-												<div class="col-md-12">
+									</div>-->
+									<div class="row">
+										<div class="col-md-7">
+											<div class="row" data-field1="respPedId" data-field2="respPed">
+												<label for="rm" class="col-md-4 col-form-label">Resp. Pedagógico</label>
+												<div class="col-sm-8">
+													<div id="input-group-SelectRespPed" class="input-group input-group-sm">
+														<select id="SelectRespPed" class="form-select form-select-sm"></select>
+														<span id="GmwJgv8gL9" onclick="BtnEditarPessoaAlunoClick(this, dataAlunoLetivo);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-edit"></i></span>
+														<span id="BXQ5ULmTsH" onclick="BtnNovoPessoaAlunoClick(this, dataAlunoLetivo);" class="btn btn-outline-secondary btn-sm"><i class="fas fa-user-plus"></i></span>
+													</div>	
 												</div>
 											</div>
 											<div class="row">
-												<div class="col-md-12">
-												</div>
+												<label class="col-md-4 col-form-label">Curso</label>
+												<div class="col-md-8">
+													<div id="SelectCurso">
+														<div class="loading-label w-100">
+														<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+														Carregando ...
+														</div>
+													</div>
+												</div>	
 											</div>
+											<div class="row">
+												<label class="col-md-4 col-form-label">Turma</label>
+												<div class="col-md-8">
+													<div id="SelectTurma">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>													
+													</div>
+												</div>	
+											</div>		
+											<div class="row">
+												<span class="col-md-4 col-form-label">&nbsp;</span>
+												<div class="col-md-2">
+													<span id="VagasCriadas" class="badge badge-primary fw-bold w-100">Vagas 0 </span>	
+												</div>	
+												<div class="col-md-2">
+													<span id="VagasOcupadas" class="badge badge-warning fw-bold w-100">Ocupadas 0</span>														
+												</div>	
+												<div class="col-md-2">
+													<span id="VagasLivres" class="badge badge-success fw-bold w-100">Livres 0</span>														
+												</div>	
+											</div>
+											<div class="row">
+												<label for="Nro" class="col-md-4 col-form-label">Nro</label>
+												<div class="col-md-3">
+													<input id="Nro" name="nro" class="form-control form-control-sm text-uppercase" type="number" value="0" />
+												</div>	
+											</div>
+											<div class="row">
+												<label for="DtMatricula" class="col-md-4 col-form-label">Data da Matrícula</label>
+												<div class="col-md-3">
+													<input type="text" class="form-control form-control-sm data" id="DtMatricula" name="dtMatricula" />
+												</div>	
+											</div>
+											<div class="row">
+												<label for="" class="col-md-4 col-form-label">Saída do Colégio</label>
+												<div class="col-sm-8">
+													<div id="SelectSaida"class="input-group input-group-sm">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>
+													</div>
+												</div>											
+											</div>
+											<div class="row">
+												<label for="" class="col-md-4 col-form-label">Colégio de Origem</label>
+												<div class="col-md-8">
+													<div id="SelectOrigem" class="input-group input-group-sm">
+														<div class="loading-label w-100">
+															<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+															Carregando ...
+														</div>															
+													</div>	
+												</div>											
+											</div>
+										</div>
+										<div class="col-md-5">
+											<!--<div class="row">
+												<label for="Nro" class="col-md-4 col-form-label">Nro do Contrato</label>
+												<div class="col-md-3">
+													<input id="Nro" name="nro" class="form-control form-control-sm text-uppercase" type="number" value="0" />
+												</div>	
+											</div>
+											<div class="row">
+												<label class="form-label d-flex justify-content-between align-items-center"> 
+													<span class="">Classificação 
+														<a class="btn btn-info btn-sm-x" href="#" onclick="#">
+															<i class="fa fa-plus"></i>
+														</a>
+													</span>
+												</label>
+												<div id="SelectClassificaaco">
+													<div class="loading-label w-100">
+														<span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+														Carregando ...
+													</div>
+												</div>
+											</div>-->
 										</div>
 									</div>
+								</div>
+								<div class="tab-pane fade" id="pills-home-emp2" role="tabpanel" aria-labelledby="pills-home-tab-emp2" tabindex="0">    
 								</div>
 							</div>
 						</div>

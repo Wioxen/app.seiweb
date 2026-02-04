@@ -788,7 +788,7 @@
 	<script src="js/basico.js"></script>
 	<script src="js/certificadodigital.js"></script>
 	<script src="js/empresa.js"></script>
-	<script src="js/saidadoaluno.js"></script>
+	<script src="js/saida.js"></script>
 	<script src="js/aluno.js"></script>
 	<script src="js/usuario.js"></script>
 	<script src="js/direitos.js"></script>

@@ -1,6 +1,8 @@
 function carregaSelect2(configDinamico = {}) { // Novos parâmetros    
 	const configFixo = {
-		defaultText: 'descricao'
+		defaultText: 'descricao',
+		multiple: false,
+		tags: false
 	};
     
 	const config = { ...configFixo, ...configDinamico };
@@ -20,6 +22,9 @@ function carregaSelect2(configDinamico = {}) { // Novos parâmetros
 		},
         success: function(response, textStatus, jqXHR){
             thisContainer.html(`<select id="${gerarHash()}" class="form-select form-select-sm"></select>`); 
+			
+			if (config.multiple === true)
+				thisContainer.attr('multiple','multiple');
             
             var thisSelect = thisContainer.find('select');
 			
@@ -59,7 +64,10 @@ function carregaSelect2(configDinamico = {}) { // Novos parâmetros
                 language: "pt-BR",
                 placeholder: '',
                 allowClear: true,
-                data: arrData
+                data: arrData,
+				tags: config.tags,
+				multiple: config.multiple,
+				tokenSeparators: [',', ' ']				
 			});          
             
             // Implementação dos eventos com callbacks
@@ -224,13 +232,13 @@ function LoadPessoaSelect2(configDinamico = {}) {
 			if ((selectedValue !== undefined) && (selectedValue !== null)){
 				RestRequest({
 					method: 'GET',
-					url: $baseApiUrl+'pessoa/'+selectedValue.id,
+					url: $baseApiUrl+'pessoa/'+selectedValue.id+'/foto',
 					beforeSend: function(xhr){
 						thisFoto.html('<span class="fa fa-spin fa-spinner fa-2x"></span>');
 					},
 					success: function(data)
 					{
-						thisFoto.html(`<img class="card-img-top rounded-circle mb-3" src="${$imageUrl+data.foto}" alt="[FOTO]" style="max-height: 130px; max-width: 130px;" />`);
+						thisFoto.html(`<img class="card-img-top rounded-circle mb-3" src="${$imageUrl+data}" alt="[FOTO]" style="max-height: 130px; max-width: 130px;" />`);
 					}
 				});							
 			} else {
@@ -261,6 +269,10 @@ function LoadSelect3(configDinamico = {}) { // Novos parâmetros
 			.find('select')
 			.val(safeGet(config.data, config.field))
 			.trigger('change');  
+			
+			if (typeof config.success === 'function') {
+				config.success(response, textStatus, jqXHR);
+			} 			
 		},
         change: function(data, value, element){
             if ((data !== null) && (data !== undefined)){

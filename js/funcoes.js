@@ -216,7 +216,10 @@ function RestRequest(configDinamico = {})
 			{
 				config.beforeSend(xhr);
 			} else {
-				showLoadingModal();       
+				const swalContainer = document.querySelector('.swal2-container');
+				if (!swalContainer) {
+					showLoadingModal();
+				}
 			}            
 		},
 		type: config.method,

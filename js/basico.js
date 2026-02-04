@@ -1,7 +1,7 @@
 var dataBasico = undefined;
 var modalBasico = undefined;
 
-function BasicoClick(configDinamico = {})
+function ExibeBasico(configDinamico = {})
 {
 	const configFixo = {
 	};
@@ -16,12 +16,10 @@ function BasicoClick(configDinamico = {})
 	.click(e => {
         e.preventDefault();
 		
-		dataBasico = {};
-		dataBasico.id = 0;
 		dataBasico.descricao = validarInput($('#BasicoDescricao'));
 		
 		RestRequest({
-			method: 'POST',
+			method: (dataBasico.id === 0 ? 'POST' : 'PUT'),
 			url: config.url,
 			data: dataBasico,
 			success: function (response, textStatus, jqXHR) {                    
@@ -44,7 +42,7 @@ function BasicoClick(configDinamico = {})
         modal: modalBasico,       
         template: 'templates/Basico.html #frmBasico',
 		onModal: function(){
-			$('#BasicoDescricao').focus();
+			$('#BasicoDescricao').val(dataBasico.descricao).focus();
 		}
 	});    
 }
